@@ -393,7 +393,7 @@ def test_publish_end_to_end(chain, files, monkeypatch):
 def test_publisher_guards(chain):
     w3 = chain["w3"]
     stranger = w3.eth.account.create()
-    with pytest.raises(PublishError, match="doesn't own the oracle"):
+    with pytest.raises(PublishError, match="isn.t allowed to publish to the oracle"):
         publish.Publisher(w3, chain["factory"], stranger)
     with pytest.raises(PublishError, match="isn't a valid address"):
         publish.Publisher(w3, "0x123", chain["owner"])

@@ -232,7 +232,8 @@ class Publisher:
     """Talks to the deployed contracts. Finds the exchange and oracle from the factory address."""
 
     def __init__(self, w3: Web3, factory_address: str, account=None, log=print, require_owner: bool = True):
-        """require_owner=False is for actions anyone may take (launching a fund, depositing)."""
+        """require_owner=True (publishing) needs the owner or an approved publisher; False is for actions
+        anyone may take (launching a fund, depositing)."""
         self.w3, self.account, self.log = w3, account, log
         if not w3.is_connected():
             raise PublishError("Can't reach the chain. Check MONAD_RPC_URL in .env.")
@@ -245,10 +246,12 @@ class Publisher:
         self.exchange = w3.eth.contract(address=factory.functions.exchange().call(), abi=EXCHANGE_ABI)
         self.oracle = w3.eth.contract(address=self.exchange.functions.oracle().call(), abi=ORACLE_ABI)
         if account is not None:
+            # Publishing needs the owner or a wallet the owner approved as a publisher on BOTH contracts.
             for name, contract in (("oracle", self.oracle), ("exchange", self.exchange)) if require_owner else ():
-                owner = contract.functions.owner().call()
-                if owner != account.address:
-                    raise PublishError(f"This wallet ({account.address}) doesn't own the {name}; {owner} does.")
+                if not contract.functions.canPublish(account.address).call():
+                    owner = contract.functions.owner().call()
+                    raise PublishError(f"This wallet ({account.address}) isn't allowed to publish to the {name}. "
+                                       f"Ask its owner ({owner}) to approve it as a publisher.")
             self._nonce = w3.eth.get_transaction_count(account.address, "pending")
 
     def send(self, call, label: str, extra_gas: int = 0) -> str:

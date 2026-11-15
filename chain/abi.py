@@ -96,10 +96,18 @@ EXCHANGE_ABI = [
     _fn("stockOf", [("ticker", "bytes32")], ["address"]),
     _fn("allStocks", [], ["address[]"]),
     _fn("listStock", [("name", "string"), ("symbol", "string")], ["address"], "nonpayable"),
+    _fn("isPublisher", [("account", "address")], ["bool"]),
+    _fn("canPublish", [("account", "address")], ["bool"]),
+    _fn("setPublisher", [("account", "address"), ("allowed", "bool")], [], "nonpayable"),
+    _fn("transferOwnership", [("newOwner", "address")], [], "nonpayable"),
 ]
 
 ORACLE_ABI = [
     _fn("owner", [], ["address"]),
+    _fn("isPublisher", [("account", "address")], ["bool"]),
+    _fn("canPublish", [("account", "address")], ["bool"]),
+    _fn("setPublisher", [("account", "address"), ("allowed", "bool")], [], "nonpayable"),
+    _fn("transferOwnership", [("newOwner", "address")], [], "nonpayable"),
     _fn("priceOf", [("ticker", "bytes32")], ["uint256", "uint256"]),
     _fn("tierOf", [("ticker", "bytes32"), ("theme", "bytes32")], ["uint8"]),
     _fn("exposureOf", [("ticker", "bytes32"), ("theme", "bytes32")], [_EXPOSURE]),

@@ -50,6 +50,11 @@ cast wallet import deployer --interactive
 # 2. Deploy the oracle, exchange and factory, then copy the printed FACTORY_ADDRESS into .env
 cd contracts
 forge script script/Deploy.s.sol --rpc-url monad --account deployer --broadcast
+# Optional: also approve team wallets to publish (public addresses, comma-separated):
+#   PUBLISHERS=0xabc...,0xdef... forge script script/Deploy.s.sol --rpc-url monad --account deployer --broadcast
+# Hand both contracts to another owner later:
+#   cast send <ORACLE_ADDRESS> "transferOwnership(address)" <NEW_OWNER> --rpc-url monad --account deployer
+#   cast send <EXCHANGE_ADDRESS> "transferOwnership(address)" <NEW_OWNER> --rpc-url monad --account deployer
 cd ..
 
 # 3. Publish the latest built fund's tiers and prices (plus XOM for the rejection demo)
