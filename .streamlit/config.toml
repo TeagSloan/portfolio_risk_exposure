@@ -1,9 +1,14 @@
-# Look of the dashboard: colours and typeface. The rest of the styling is in engine/ui_style.py.
+# Look of the dashboard, from the team's "Shared look" sheet. The rest of the styling is in engine/ui_style.py.
 [theme]
-base = "light"                          # always light, so it reads on a projector
-primaryColor = "#1F4E9E"                # ledger blue: buttons, selected choices
-backgroundColor = "#FBFCFE"             # cool white page
-secondaryBackgroundColor = "#EEF2F8"    # sidebar and input fields
-textColor = "#14213D"                   # ink navy
-# Loaded from Google Fonts. With no internet the app falls back to the system sans-serif and still works.
-font = "Schibsted Grotesk:https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap, sans-serif"
+base = "dark"
+primaryColor = "#8B7CF6"                # the one accent (purple)
+backgroundColor = "#0E0F14"
+secondaryBackgroundColor = "#171922"    # cards, sidebar, input fields
+textColor = "#F2F3F7"
+# Loaded from Google Fonts. With no internet the app falls back to system fonts and still works.
+font = "Inter:https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap, sans-serif"
+headingFont = "Space Grotesk:https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap, sans-serif"
+codeFont = "JetBrains Mono:https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap, monospace"
+
+[client]
+toolbarMode = "minimal"

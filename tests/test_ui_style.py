@@ -50,5 +50,5 @@ def test_rejection_panel():
 
 def test_chart_sets_the_typeface_and_passes_none_through():
     fig = ui_style.chart(go.Figure())
-    assert "Schibsted Grotesk" in fig.layout.font.family and fig.layout.font.color == ui_style.INK
+    assert "Inter" in fig.layout.font.family and fig.layout.font.color == ui_style.TEXT
     assert ui_style.chart(None) is None
