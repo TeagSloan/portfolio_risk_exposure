@@ -73,7 +73,7 @@ Work in phases. STOP at each checkpoint so I can check before continuing. Commit
 
 - `results/build_latest.json` (Way 2 output) changed: it now has `funnel` (list of {step, left}), `region`, `ranked_by` and
   `survivors`; there is no `points` field any more; each holding has `name`, `industry`, `want_tiers`, `avoid_tiers`
-  ({theme name: tier on the avoided theme}), `strength` ({theme name: strength score}) `t_stat`, `reference` (Tier 1 reference on that want theme) and `rank_score`. `ticker` and
+  ({theme name: tier on the avoided theme}), `strength` ({theme name: strength score}) `t_stat`, `reference` (Tier 1 reference on that want theme) and `rank_score`. `tiers` (want + avoid tiers) and `labels` (avoid notes: lower confidence / the data can't tell) are kept for app.py and engine/assistant.py. `ticker` and
   `weight_pct` are unchanged, and CASH is still a holding when there's a remainder.
 - `engine.builder.prescreen()` still returns {ticker: {theme: result}} in run_screen's shape, now read from
   `data/exposure_table.parquet` (666 stocks) instead of the old 106-name cache.

@@ -211,6 +211,11 @@ def build(prefs: dict[str, str], region: str = "all", table: pd.DataFrame | None
                 "strength": {themes[k]["name"]: nan(strength.loc[p, k]) for k in want},
                 "t_stat": {themes[k]["name"]: nan(tstat.loc[p, k]) for k in want},
                 "reference": {themes[k]["name"]: bool(is_ref.loc[p, k]) for k in want},
+                # Kept for the dashboard and assistant (app.py, engine/assistant.py): all scored tiers + notes.
+                "tiers": {themes[k]["name"]: tiers.loc[p, k] for k in want + avoid},
+                "labels": [f"{themes[k]['name']}: " + ("lower confidence" if tiers.loc[p, k] == "Limited (lower confidence)"
+                                                       else "the data can't tell")
+                           for k in avoid if tiers.loc[p, k] in ("Limited (lower confidence)", "Not determined")],
                 "rank_score": float(score[p])}
 
     return {

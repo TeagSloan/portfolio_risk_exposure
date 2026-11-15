@@ -69,6 +69,7 @@ def test_avoid_rule_passes_not_determined_but_not_flagged_or_business_linked():
                      ("Avoid Oil: not in the Oil business (safety net)", 6)]
     a4 = next(h for h in out["holdings"] if h["ticker"] == "A4")
     assert a4["avoid_tiers"] == {"Oil": ND} and a4["want_tiers"] == {"AI": H} and a4["name"] == "A4 Inc"
+    assert a4["tiers"] == {"AI": H, "Oil": ND} and a4["labels"] == ["Oil: the data can't tell"]  # for app.py
     assert out["verification"]["all_pass"]
 
 
