@@ -28,6 +28,9 @@ pip install -r requirements.txt
 # Settings: copy the template, then fill in your own values (never commit .env)
 cp .env.example .env
 
+# Dashboard (opens in your browser). The "Ask about your fund" chat needs ANTHROPIC_API_KEY in .env
+streamlit run app.py
+
 # Contracts (needs Foundry: https://getfoundry.sh)
 cd contracts
 forge build
