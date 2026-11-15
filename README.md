@@ -53,8 +53,14 @@ cd ..
 python -m chain.publish --extra XOM --dry-run     # shows what would be posted, sends nothing
 python -m chain.publish --extra XOM
 
+# 4. Launch the built fund as its own token, deposit test dollars, and show the mandate rejecting XOM
+python -m chain.launch --dry-run                  # shows the fund, basket and mandate; sends nothing
+python -m chain.launch --deposit 1000 --try-add XOM
+
 # Weekend demo: replay the last 20 trading days of real prices, one every 3 seconds
 python -m chain.publish --extra XOM --replay 20 --interval 3
 ```
+
+The launched fund's address and explorer link are saved to `results/fund_latest.json`.
 
 On testnet the stocks are simulated tokens priced from our own data feed. In production this would plug into tokenized stocks.

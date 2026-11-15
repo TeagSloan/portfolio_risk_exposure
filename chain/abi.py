@@ -26,9 +26,67 @@ def _fn(name: str, inputs: list[tuple[str, str]], outputs: list, mutability: str
     }
 
 
+_RULES = {
+    "name": "rules",
+    "type": "tuple[]",
+    "components": [
+        {"name": "theme", "type": "bytes32"},
+        {"name": "label", "type": "string"},
+        {"name": "kind", "type": "uint8"},  # 0 = Want, 1 = Avoid
+        {"name": "minWeightBps", "type": "uint16"},
+    ],
+}
+
 FACTORY_ABI = [
     _fn("exchange", [], ["address"]),
     _fn("allFunds", [], ["address[]"]),
+    {
+        "type": "function",
+        "name": "createFund",
+        "stateMutability": "nonpayable",
+        "inputs": [
+            {"name": "name", "type": "string"},
+            {"name": "symbol", "type": "string"},
+            {"name": "stocks", "type": "address[]"},
+            {"name": "weights", "type": "uint16[]"},
+            _RULES,
+        ],
+        "outputs": [{"name": "fund", "type": "address"}],
+    },
+    {
+        "type": "event",
+        "name": "FundCreated",
+        "anonymous": False,
+        "inputs": [
+            {"name": "fund", "type": "address", "indexed": True},
+            {"name": "manager", "type": "address", "indexed": True},
+            {"name": "name", "type": "string", "indexed": False},
+            {"name": "symbol", "type": "string", "indexed": False},
+        ],
+    },
+]
+
+FUND_ABI = [
+    _fn("name", [], ["string"]),
+    _fn("symbol", [], ["string"]),
+    _fn("manager", [], ["address"]),
+    _fn("totalSupply", [], ["uint256"]),
+    _fn("balanceOf", [("account", "address")], ["uint256"]),
+    _fn("nav", [], ["uint256"]),
+    _fn("navPerShare", [], ["uint256"]),
+    _fn("basket", [], ["address[]", "uint16[]"]),
+    _fn("isCompliant", [], ["bool", "string"]),
+    _fn("checkMandate", [("stocks_", "address[]"), ("weights_", "uint16[]")], ["bool", "string"]),
+    _fn("deposit", [("usdcAmount", "uint256")], ["uint256"], "nonpayable"),
+    _fn("redeem", [("shares", "uint256")], ["uint256"], "nonpayable"),
+    _fn("addHolding", [("stock", "address"), ("weightBps", "uint16")], [], "nonpayable"),
+]
+
+USDC_ABI = [
+    _fn("balanceOf", [("account", "address")], ["uint256"]),
+    _fn("allowance", [("owner", "address"), ("spender", "address")], ["uint256"]),
+    _fn("faucet", [], [], "nonpayable"),
+    _fn("approve", [("spender", "address"), ("amount", "uint256")], ["bool"], "nonpayable"),
 ]
 
 EXCHANGE_ABI = [

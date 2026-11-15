@@ -225,7 +225,8 @@ def load_account(w3: Web3, keystore: str, password: str | None = None):
 class Publisher:
     """Talks to the deployed contracts. Finds the exchange and oracle from the factory address."""
 
-    def __init__(self, w3: Web3, factory_address: str, account=None, log=print):
+    def __init__(self, w3: Web3, factory_address: str, account=None, log=print, require_owner: bool = True):
+        """require_owner=False is for actions anyone may take (launching a fund, depositing)."""
         self.w3, self.account, self.log = w3, account, log
         if not w3.is_connected():
             raise PublishError("Can't reach the chain. Check MONAD_RPC_URL in .env.")
@@ -234,15 +235,19 @@ class Publisher:
         factory_address = Web3.to_checksum_address(factory_address)
         if len(w3.eth.get_code(factory_address)) == 0:
             raise PublishError(f"Nothing is deployed at FACTORY_ADDRESS {factory_address} on this network.")
-        factory = w3.eth.contract(address=factory_address, abi=FACTORY_ABI)
+        self.factory = factory = w3.eth.contract(address=factory_address, abi=FACTORY_ABI)
         self.exchange = w3.eth.contract(address=factory.functions.exchange().call(), abi=EXCHANGE_ABI)
         self.oracle = w3.eth.contract(address=self.exchange.functions.oracle().call(), abi=ORACLE_ABI)
         if account is not None:
-            for name, contract in (("oracle", self.oracle), ("exchange", self.exchange)):
+            for name, contract in (("oracle", self.oracle), ("exchange", self.exchange)) if require_owner else ():
                 owner = contract.functions.owner().call()
                 if owner != account.address:
                     raise PublishError(f"This wallet ({account.address}) doesn't own the {name}; {owner} does.")
             self._nonce = w3.eth.get_transaction_count(account.address, "pending")
+
+    def send(self, call, label: str) -> str:
+        """Sign and send one transaction, wait for it, and return its hash."""
+        return self._send(call, label)
 
     def _send(self, call, label: str) -> str:
         if self.account is None:
@@ -303,6 +308,20 @@ class Publisher:
         )
 
 
+def connect(keystore: str, log=print, account=None, w3: Web3 | None = None, require_owner: bool = True) -> Publisher:
+    """Connect to the chain and contracts named in .env and unlock the wallet (asks for its password)."""
+    rpc, factory = os.environ.get("MONAD_RPC_URL"), os.environ.get("FACTORY_ADDRESS")
+    if w3 is None:
+        if not rpc:
+            raise PublishError("MONAD_RPC_URL isn't set in .env.")
+        w3 = Web3(Web3.HTTPProvider(rpc))
+    if not factory:
+        raise PublishError("FACTORY_ADDRESS isn't set in .env. Deploy first (contracts/script/Deploy.s.sol).")
+    if account is None:
+        account = load_account(w3, keystore)
+    return Publisher(w3, factory, account, log, require_owner)
+
+
 # ---------------------------------------------------------------------------------------------
 # Command line
 # ---------------------------------------------------------------------------------------------
@@ -346,18 +365,9 @@ def run(args, log=print, account=None, w3: Web3 | None = None) -> int:
         log("Dry run: nothing was sent.")
         return 0
 
-    rpc, factory = os.environ.get("MONAD_RPC_URL"), os.environ.get("FACTORY_ADDRESS")
-    if w3 is None:
-        if not rpc:
-            raise PublishError("MONAD_RPC_URL isn't set in .env.")
-        w3 = Web3(Web3.HTTPProvider(rpc))
-    if not factory:
-        raise PublishError("FACTORY_ADDRESS isn't set in .env. Deploy first (contracts/script/Deploy.s.sol).")
-    if account is None:
-        account = load_account(w3, args.keystore)
-
-    publisher = Publisher(w3, factory, account, log)
-    log(f"Publishing as {account.address} to oracle {publisher.oracle.address} (chain {w3.eth.chain_id})")
+    publisher = connect(args.keystore, log, account, w3)
+    w3 = publisher.w3
+    log(f"Publishing as {publisher.account.address} to oracle {publisher.oracle.address} (chain {w3.eth.chain_id})")
     publisher.list_stocks(tickers)
     posted = publisher.post_exposures(rows)
     if posted == 0:

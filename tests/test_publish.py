@@ -17,7 +17,7 @@ import pytest
 from web3 import Web3
 
 from chain import publish
-from chain.abi import EXCHANGE_ABI, FACTORY_ABI, ORACLE_ABI
+from chain.abi import EXCHANGE_ABI, FACTORY_ABI, FUND_ABI, ORACLE_ABI, USDC_ABI
 from chain.publish import PublishError
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -332,13 +332,18 @@ def chain():
 
 @needs_chain
 def test_hand_written_abis_match_the_compiled_contracts():
-    for name, abi in (("ExposureOracle", ORACLE_ABI), ("MockExchange", EXCHANGE_ABI), ("ThemeFundFactory", FACTORY_ABI)):
-        compiled = {(f["name"], tuple(i["type"] for i in f["inputs"]), tuple(o["type"] for o in f["outputs"]),
-                     f["stateMutability"]) for f in _artifact(name)["abi"] if f["type"] == "function"}
+    def signature(f):
+        if f["type"] == "event":
+            return ("event", f["name"], tuple((i["type"], i["indexed"]) for i in f["inputs"]))
+        return (f["name"], tuple(i["type"] for i in f["inputs"]), tuple(o["type"] for o in f["outputs"]),
+                f["stateMutability"])
+
+    pairs = (("ExposureOracle", ORACLE_ABI), ("MockExchange", EXCHANGE_ABI), ("ThemeFundFactory", FACTORY_ABI),
+             ("ThemeFund", FUND_ABI), ("MockUSDC", USDC_ABI))
+    for name, abi in pairs:
+        compiled = {signature(f) for f in _artifact(name)["abi"] if f["type"] in ("function", "event")}
         for f in abi:
-            sig = (f["name"], tuple(i["type"] for i in f["inputs"]), tuple(o["type"] for o in f["outputs"]),
-                   f["stateMutability"])
-            assert sig in compiled, f"{name}.{f['name']} in chain/abi.py doesn't match the contract"
+            assert signature(f) in compiled, f"{name}.{f['name']} in chain/abi.py doesn't match the contract"
 
 
 @needs_chain
