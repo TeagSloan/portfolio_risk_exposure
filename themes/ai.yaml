@@ -108,3 +108,15 @@ style_skips:
   VALUE:
     IWD: 5.05
     IWF: 27.06
+allowed_industries:
+- Semiconductors
+- Software - Infrastructure
+- Software - Application
+- Information Technology Services
+- Computer Hardware
+- Hardware, Equipment & Parts
+- Communication Equipment
+- Electrical Equipment & Parts
+- Internet Content & Information
+- Independent Power Producers
+- REIT - Specialty

@@ -85,3 +85,8 @@ controls:
 - MOM
 - LOWVOL
 style_skips: {}
+allowed_industries:
+- Oil & Gas Exploration & Production
+- Oil & Gas Integrated
+- Oil & Gas Equipment & Services
+- Oil & Gas Drilling

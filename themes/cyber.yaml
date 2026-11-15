@@ -85,3 +85,5 @@ controls:
 - MOM
 - LOWVOL
 style_skips: {}
+allowed_industries:
+- Software - Infrastructure

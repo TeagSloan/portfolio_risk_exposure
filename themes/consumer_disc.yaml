@@ -79,3 +79,20 @@ controls:
 - MOM
 - LOWVOL
 style_skips: {}
+allowed_industries:
+- Apparel - Footwear & Accessories
+- Apparel - Manufacturers
+- Apparel - Retail
+- Auto - Dealerships
+- Auto - Manufacturers
+- Auto - Parts
+- Furnishings, Fixtures & Appliances
+- Gambling, Resorts & Casinos
+- Home Improvement
+- Leisure
+- Luxury Goods
+- Residential Construction
+- Restaurants
+- Specialty Retail
+- Travel Lodging
+- Travel Services

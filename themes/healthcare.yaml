@@ -61,3 +61,15 @@ controls:
 - MOM
 - LOWVOL
 style_skips: {}
+allowed_industries:
+- Biotechnology
+- Drug Manufacturers - General
+- Drug Manufacturers - Specialty & Generic
+- Medical - Care Facilities
+- Medical - Devices
+- Medical - Diagnostics & Research
+- Medical - Distribution
+- Medical - Healthcare Plans
+- Medical - Instruments & Supplies
+- Medical - Pharmaceuticals
+- Medical - Specialties
