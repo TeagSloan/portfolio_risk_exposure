@@ -96,15 +96,34 @@ def company_info(tickers: list[str]) -> dict[str, dict]:
 
 
 def fund_facts(build: dict | None, risk_report: dict | None = None, chain: dict | None = None,
-               companies: dict[str, dict] | None = None) -> dict:
+               companies: dict[str, dict] | None = None, screen_report: dict | None = None) -> dict:
     """The facts Claude may use, trimmed to what a question could need (no raw arrays).
 
+    `build` is a "Build my ETF" result; `screen_report` a "Check my portfolio" result (give one).
     `companies` = company_info(...) output, so Claude can say what each holding does without guessing.
     """
     companies = companies or {}
-    facts: dict = {"fund_built": bool(build and build.get("holdings"))}
+    if screen_report is not None:
+        facts: dict = {"mode": "Check my portfolio (the user's own stocks, scored on every theme)",
+                       "fund_built": bool(screen_report.get("holdings"))}
+        facts["holdings"] = [
+            {"ticker": h["ticker"], **companies.get(h["ticker"], {}), "weight_pct": h["weight_pct"],
+             "tiers": None if h["ticker"] == "CASH" else {r["theme"]: r["tier"] for r in h["results"].values()}}
+            for h in screen_report.get("holdings", [])
+        ]
+        facts["cash_pct"] = screen_report.get("cash_pct")
+        facts["weights_rescaled_to_100"] = screen_report.get("weights_rescaled_to_100")
+        facts["theme_exposure"] = [{"theme": f["name"], "high_or_moderate_pct": f["high_moderate_pct"],
+                                    "sentence": f["sentence"]}
+                                   for f in (screen_report.get("fingerprint") or {}).values()]
+        build = None
+    else:
+        facts = {"mode": "Build my ETF (stocks picked from the user's theme choices)",
+                 "fund_built": bool(build and build.get("holdings"))}
     if build:
         facts["preferences"] = build.get("preferences", {})
+        facts["region"] = build.get("region")
+        facts["funnel"] = build.get("funnel")
         facts["holdings"] = [
             {"ticker": h["ticker"], **companies.get(h["ticker"], {}), "weight_pct": h["weight_pct"],
              "tiers": h.get("tiers"), "labels": h.get("labels", [])}
@@ -140,8 +159,7 @@ def fund_facts(build: dict | None, risk_report: dict | None = None, chain: dict 
         facts["mean_variance_check"] = {"available": frontier.get("available"),
                                         "sentences": frontier.get("sentences", [])}
         facts["risk_summary"] = risk_report.get("summary", [])
-    facts["on_chain"] = chain or {"launched": False,
-                                  "note": "The fund isn't launched on Monad yet (the on-chain part arrives with Phase 7)."}
+    facts["on_chain"] = chain or {"launched": False, "note": "The fund isn't launched on Monad yet."}
     return facts
 
 

@@ -44,6 +44,12 @@ KEYSTORE_DIR = Path.home() / ".foundry" / "keystores"
 CASH = "CASH"
 PRICE_DECIMALS = 8
 BATCH = 40  # exposures per transaction
+GAS_HEADROOM = 1.2  # send 20% more gas than estimated (see Publisher._send)
+# Gas estimates run against the latest block's timestamp. If the previous post was in that block, the
+# stored timestamp looks "unchanged" to the estimate (a cheap storage write) but changes when mined (a
+# full write): exactly 2,800 gas more per item. Measured on anvil: 40 re-posted prices came up 112,000
+# short. So batch posts add this much per item on top of the margin.
+GAS_PER_TIMESTAMPED_ITEM = 3_000
 
 # Must match the Tier enum in contracts/src/ExposureOracle.sol (0 = Unposted, never sent).
 TIER_CODES = {
@@ -245,14 +251,17 @@ class Publisher:
                     raise PublishError(f"This wallet ({account.address}) doesn't own the {name}; {owner} does.")
             self._nonce = w3.eth.get_transaction_count(account.address, "pending")
 
-    def send(self, call, label: str) -> str:
+    def send(self, call, label: str, extra_gas: int = 0) -> str:
         """Sign and send one transaction, wait for it, and return its hash."""
-        return self._send(call, label)
+        return self._send(call, label, extra_gas)
 
-    def _send(self, call, label: str) -> str:
+    def _send(self, call, label: str, extra_gas: int = 0) -> str:
         if self.account is None:
             raise PublishError("No wallet loaded, so nothing can be sent.")
         tx = call.build_transaction({"from": self.account.address, "nonce": self._nonce, "chainId": self.w3.eth.chain_id})
+        # Gas estimates can be short (see GAS_PER_TIMESTAMPED_ITEM), and sending with zero headroom then
+        # fails with "out of gas" and no reason. A 20% margin is standard, plus any per-item extra.
+        tx["gas"] = int(tx["gas"] * GAS_HEADROOM) + extra_gas
         signed = self.account.sign_transaction(tx)
         tx_hash = self.w3.eth.send_raw_transaction(signed.raw_transaction)
         self._nonce += 1
@@ -296,6 +305,7 @@ class Publisher:
                     [r["stats_hash"] for r in chunk],
                 ),
                 f"posted {len(chunk)} tier(s)",
+                extra_gas=GAS_PER_TIMESTAMPED_ITEM * len(chunk),
             )
         return len(todo)
 
@@ -305,6 +315,7 @@ class Publisher:
         self._send(
             self.oracle.functions.postPrices([to_bytes32(t) for t in tickers], [price_to_chain(prices[t]) for t in tickers]),
             f"posted {len(tickers)} price(s){' for ' + label if label else ''}",
+            extra_gas=GAS_PER_TIMESTAMPED_ITEM * len(tickers),
         )
 
 

@@ -4,9 +4,10 @@
 - tier_matrix + heatmap_figure: every holding x every theme, colored by tier.
 - audit_rows + group_table: the full audit trail behind one tier (method, betas, p-values, thresholds).
 - reshock: re-run a theme shock at a new size instantly, from betas already estimated.
-- mandate_check: would adding a stock break the fund's rules? (Off-chain preview of the Phase 7
-  contract check, using the same wording, e.g. "Mandate: Oil exposure too high".)
-- chain_status: whether the on-chain part (Phase 7) is available yet.
+- mandate_check: would adding a stock break the fund's rules? (Off-chain preview of the contract's
+  check, used when no chain is set up, with the same wording, e.g. "Mandate: Oil exposure too high".)
+- chain_facts: what the chat should know about the launched fund.
+- Way 1 helpers: parse typed holdings, read a run_screen report, the per-theme fingerprint rows.
 """
 
 from __future__ import annotations
@@ -172,9 +173,62 @@ def mandate_check(ticker: str, prefs: dict[str, str], tiers: dict[str, str], the
     return (not reasons), reasons
 
 
-def chain_status() -> dict:
-    """Whether the on-chain fund (Phase 7) can be used yet. Phase 7 is being built separately."""
-    return {"launched": False, "ready": False,
-            "note": "The on-chain fund (launch on Monad, deposit, contract-enforced rules) arrives with "
-                    "Phase 7, which is being built separately. Until then, the mandate check below runs "
-                    "off-chain with the same rules."}
+def chain_facts(fund: dict | None = None, deposit: dict | None = None) -> dict:
+    """What the chat (and the page) should know about the on-chain fund."""
+    if not fund:
+        return {"launched": False,
+                "note": "This fund isn't launched on-chain yet. Launch it from the 'Launch on Monad' tab."}
+    out = {"launched": True, "network": fund.get("network"), "name": fund.get("name"),
+           "symbol": fund.get("symbol"), "address": fund.get("address"),
+           "mandate": [("Want " if r["kind"] == 0 else "Avoid ") + r["label"] for r in fund.get("rules", [])]}
+    if deposit:
+        out["last_deposit"] = {"shares": deposit.get("shares"), "fund_value_usd": deposit.get("nav_usd"),
+                               "value_per_share_usd": deposit.get("nav_per_share_usd")}
+    return out
+
+
+# ---------------------------------------------------------------------------------------------
+# Way 1 ("Check my portfolio") and the builder's funnel
+# ---------------------------------------------------------------------------------------------
+
+def parse_holdings_text(text: str) -> dict[str, float]:
+    """"NVDA:30, XOM:20 cash:50" (spaces, commas or new lines) -> {"NVDA": 30.0, "XOM": 20.0, "CASH": 50.0}."""
+    from engine.screen import parse_holdings
+
+    items = [x for x in text.replace(",", " ").split() if x.strip()]
+    return parse_holdings(items)
+
+
+def results_from_screen(report: dict) -> dict[str, dict[str, dict]]:
+    """{ticker: {theme_key: result}} from a run_screen report (cash left out)."""
+    return {h["ticker"]: h["results"] for h in report.get("holdings", []) if h["ticker"] != CASH}
+
+
+def holdings_from_screen(report: dict) -> dict[str, float]:
+    return {h["ticker"]: float(h["weight_pct"]) for h in report.get("holdings", []) if h["weight_pct"] > 0}
+
+
+def fingerprint_rows(report: dict) -> list[dict]:
+    """One row per theme: share of the portfolio in High or Moderate stocks, and the plain sentence."""
+    rows = [{"Theme": f["name"], "High or Moderate": f"{f['high_moderate_pct']:.0f}%",
+             "The data can't tell": f"{f['by_tier_pct'].get(NOT_DETERMINED, 0):.0f}%",
+             "In plain English": f["sentence"], "_sort": f["high_moderate_pct"]}
+            for f in report.get("fingerprint", {}).values()]
+    rows.sort(key=lambda r: -r["_sort"])
+    return [{k: v for k, v in r.items() if k != "_sort"} for r in rows]
+
+
+def screen_errors(report: dict) -> list[str]:
+    """Stocks that couldn't be screened for some theme, with the reason (first one per stock)."""
+    out = []
+    for ticker, results in results_from_screen(report).items():
+        for r in results.values():
+            if r.get("error"):
+                out.append(f"{ticker}: {r['error']}")
+                break
+    return out
+
+
+def funnel_rows(build: dict) -> list[dict]:
+    """The builder's funnel: how many stocks are left after each rule."""
+    return [{"Step": f["step"], "Stocks left": f["left"]} for f in build.get("funnel", [])]

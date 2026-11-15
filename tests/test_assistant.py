@@ -65,6 +65,26 @@ def test_company_info_from_fmp_profiles(monkeypatch):
     assert info == {"NEM": {"name": "NEM Inc", "industry": "Gold", "sector": "Basic Materials"}}
 
 
+def test_fund_facts_for_a_checked_portfolio():
+    report = {"cash_pct": 40.0, "weights_rescaled_to_100": True,
+              "holdings": [{"ticker": "NVDA", "weight_pct": 60.0,
+                            "results": {"ai": {"theme": "AI", "tier": "High"}, "oil": {"theme": "Oil", "tier": "Limited"}}},
+                           {"ticker": "CASH", "weight_pct": 40.0, "results": "cash"}],
+              "fingerprint": {"ai": {"name": "AI", "high_moderate_pct": 60.0, "sentence": "60% AI."}}}
+    facts = assistant.fund_facts(None, RISK, companies={"NVDA": {"name": "NVIDIA"}}, screen_report=report)
+    assert facts["mode"].startswith("Check my portfolio") and facts["fund_built"] is True
+    assert facts["holdings"][0] == {"ticker": "NVDA", "name": "NVIDIA", "weight_pct": 60.0,
+                                    "tiers": {"AI": "High", "Oil": "Limited"}}
+    assert facts["holdings"][1]["tiers"] is None
+    assert facts["theme_exposure"] == [{"theme": "AI", "high_or_moderate_pct": 60.0, "sentence": "60% AI."}]
+    assert "preferences" not in facts and "monte_carlo" in facts
+
+
+def test_fund_facts_for_a_built_fund_include_region_and_funnel():
+    facts = assistant.fund_facts({**BUILD, "region": "us", "funnel": [{"step": "Universe", "left": 650}]})
+    assert facts["mode"].startswith("Build my ETF") and facts["region"] == "us" and facts["funnel"]
+
+
 def test_fund_facts_without_a_fund():
     facts = assistant.fund_facts(None)
     assert facts["fund_built"] is False and "holdings" not in facts and "monte_carlo" not in facts

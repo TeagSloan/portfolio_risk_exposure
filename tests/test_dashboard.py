@@ -103,6 +103,46 @@ def test_mandate_check(tiers, allowed, fragment):
         assert reasons == []
 
 
-def test_chain_status_until_phase_7():
-    s = dashboard.chain_status()
-    assert s["ready"] is False and s["launched"] is False and "Phase 7" in s["note"]
+def test_chain_facts_before_and_after_launch():
+    assert dashboard.chain_facts()["launched"] is False
+    fund = {"network": "Monad testnet", "name": "AI ex-Oil Fund", "symbol": "AIXO", "address": "0xF",
+            "rules": [{"kind": 0, "label": "AI"}, {"kind": 1, "label": "Oil"}]}
+    facts = dashboard.chain_facts(fund, {"shares": 1000.0, "nav_usd": 1000.0, "nav_per_share_usd": 1.0})
+    assert facts["launched"] and facts["mandate"] == ["Want AI", "Avoid Oil"]
+    assert facts["last_deposit"] == {"shares": 1000.0, "fund_value_usd": 1000.0, "value_per_share_usd": 1.0}
+    assert "last_deposit" not in dashboard.chain_facts(fund)
+
+
+def test_parse_holdings_text():
+    assert dashboard.parse_holdings_text("nvda:30, XOM:20\ncash:50") == {"NVDA": 30.0, "XOM": 20.0, "CASH": 50.0}
+    with pytest.raises(ValueError, match="TICKER:WEIGHT"):
+        dashboard.parse_holdings_text("NVDA")
+    with pytest.raises(ValueError, match="No holdings"):
+        dashboard.parse_holdings_text("  ")
+
+
+REPORT = {
+    "holdings": [{"ticker": "NVDA", "weight_pct": 60.0, "results": {"ai": {"tier": HIGH}, "oil": {
+                  "tier": NOT_DETERMINED, "error": "no data"}}},
+                 {"ticker": "CASH", "weight_pct": 40.0, "results": "cash: kept at its weight, not scored"}],
+    "fingerprint": {"ai": {"name": "AI", "high_moderate_pct": 60.0, "by_tier_pct": {NOT_DETERMINED: 0.0},
+                           "sentence": "60% AI."},
+                    "oil": {"name": "Oil", "high_moderate_pct": 0.0, "by_tier_pct": {NOT_DETERMINED: 60.0},
+                            "sentence": "No oil."}},
+}
+
+
+def test_way_1_report_helpers():
+    assert dashboard.results_from_screen(REPORT) == {"NVDA": REPORT["holdings"][0]["results"]}
+    assert dashboard.holdings_from_screen(REPORT) == {"NVDA": 60.0, "CASH": 40.0}
+    rows = dashboard.fingerprint_rows(REPORT)
+    assert [r["Theme"] for r in rows] == ["AI", "Oil"]  # most exposed first
+    assert rows[1]["The data can't tell"] == "60%" and rows[0]["In plain English"] == "60% AI."
+    assert dashboard.screen_errors(REPORT) == ["NVDA: no data"]
+
+
+def test_funnel_rows():
+    build = {"funnel": [{"step": "Universe", "left": 650}, {"step": "Want AI", "left": 40}]}
+    assert dashboard.funnel_rows(build) == [{"Step": "Universe", "Stocks left": 650},
+                                            {"Step": "Want AI", "Stocks left": 40}]
+    assert dashboard.funnel_rows({}) == []
