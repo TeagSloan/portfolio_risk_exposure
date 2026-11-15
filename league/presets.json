@@ -9,9 +9,9 @@
    "picks": [
     "TSM",
     "NVDA",
-    "MSFT",
-    "VST",
-    "AVGO"
+    "AVGO",
+    "VRT",
+    "VST"
    ],
    "picked_for": [
     "AI",
@@ -23,12 +23,12 @@
    "ranked": [
     "TSM",
     "NVDA",
-    "MSFT",
-    "VST",
     "AVGO",
     "VRT",
-    "ORCL",
-    "CRWD"
+    "VST",
+    "MSFT",
+    "MU",
+    "ORCL"
    ],
    "ranked_for": [
     "AI",
@@ -55,10 +55,10 @@
    },
    "picks": [
     "BAC",
-    "CFG",
-    "RF",
     "WFC",
-    "MTB"
+    "C",
+    "MTB",
+    "RF"
    ],
    "picked_for": [
     "Bank lending / net interest income",
@@ -69,13 +69,17 @@
    ],
    "ranked": [
     "BAC",
-    "CFG",
-    "RF",
     "WFC",
+    "C",
     "MTB",
-    "C"
+    "RF",
+    "CFG",
+    "ZION",
+    "JPM"
    ],
    "ranked_for": [
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
     "Bank lending / net interest income",
     "Bank lending / net interest income",
     "Bank lending / net interest income",
@@ -143,8 +147,8 @@
     "COST",
     "HD",
     "TJX",
-    "NKE",
-    "RCL"
+    "RCL",
+    "NKE"
    ],
    "picked_for": [
     "Consumer discretionary",
@@ -157,11 +161,15 @@
     "COST",
     "HD",
     "TJX",
-    "NKE",
     "RCL",
-    "DG"
+    "NKE",
+    "DG",
+    "LOW",
+    "MCD"
    ],
    "ranked_for": [
+    "Consumer discretionary",
+    "Consumer discretionary",
     "Consumer discretionary",
     "Consumer discretionary",
     "Consumer discretionary",
@@ -202,10 +210,12 @@
     "FTNT",
     "CSCO",
     "CHKP",
-    "MSFT",
-    "ORCL"
+    "ZS",
+    "PLTR",
+    "MSFT"
    ],
    "ranked_for": [
+    "Cybersecurity",
     "Cybersecurity",
     "Cybersecurity",
     "Cybersecurity",
@@ -230,8 +240,8 @@
    "picks": [
     "RTX",
     "GE",
-    "LMT",
     "GD",
+    "LMT",
     "BA"
    ],
    "picked_for": [
@@ -244,12 +254,16 @@
    "ranked": [
     "RTX",
     "GE",
-    "LMT",
     "GD",
+    "LMT",
     "BA",
-    "NOC"
+    "NOC",
+    "HII",
+    "HWM"
    ],
    "ranked_for": [
+    "Aerospace & defense",
+    "Aerospace & defense",
     "Aerospace & defense",
     "Aerospace & defense",
     "Aerospace & defense",
@@ -290,9 +304,13 @@
     "CDE",
     "SSRM",
     "AEM",
-    "WPM"
+    "WPM",
+    "AU",
+    "B"
    ],
    "ranked_for": [
+    "Gold & precious metals",
+    "Gold & precious metals",
     "Gold & precious metals",
     "Gold & precious metals",
     "Gold & precious metals",
@@ -333,9 +351,13 @@
     "PFE",
     "GEHC",
     "ABBV",
-    "AMGN"
+    "AMGN",
+    "NVS",
+    "JNJ"
    ],
    "ranked_for": [
+    "Healthcare",
+    "Healthcare",
     "Healthcare",
     "Healthcare",
     "Healthcare",
@@ -376,9 +398,13 @@
     "SCCO",
     "FCX",
     "SQM",
-    "VALE"
+    "VALE",
+    "ALB",
+    "TECK"
    ],
    "ranked_for": [
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
     "Industrial / EV metals (copper + lithium)",
     "Industrial / EV metals (copper + lithium)",
     "Industrial / EV metals (copper + lithium)",
@@ -401,9 +427,9 @@
    },
    "picks": [
     "CVX",
-    "PR",
     "COP",
     "EOG",
+    "SHEL",
     "FANG"
    ],
    "picked_for": [
@@ -415,13 +441,17 @@
    ],
    "ranked": [
     "CVX",
-    "PR",
     "COP",
     "EOG",
+    "SHEL",
     "FANG",
-    "SHEL"
+    "PR",
+    "XOM",
+    "BP"
    ],
    "ranked_for": [
+    "Oil",
+    "Oil",
     "Oil",
     "Oil",
     "Oil",
@@ -445,9 +475,9 @@
    },
    "picks": [
     "NVDA",
-    "VST",
     "AVGO",
     "VRT",
+    "VST",
     "MSFT"
    ],
    "picked_for": [
@@ -459,14 +489,16 @@
    ],
    "ranked": [
     "NVDA",
-    "VST",
     "AVGO",
     "VRT",
+    "VST",
     "MSFT",
+    "MU",
     "ORCL",
-    "CRWD"
+    "SAP"
    ],
    "ranked_for": [
+    "AI",
     "AI",
     "AI",
     "AI",
@@ -491,10 +523,10 @@
    },
    "picks": [
     "BAC",
-    "CFG",
-    "RF",
     "WFC",
-    "MTB"
+    "C",
+    "MTB",
+    "RF"
    ],
    "picked_for": [
     "Bank lending / net interest income",
@@ -505,13 +537,17 @@
    ],
    "ranked": [
     "BAC",
-    "CFG",
-    "RF",
     "WFC",
+    "C",
     "MTB",
-    "C"
+    "RF",
+    "CFG",
+    "ZION",
+    "JPM"
    ],
    "ranked_for": [
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
     "Bank lending / net interest income",
     "Bank lending / net interest income",
     "Bank lending / net interest income",
@@ -581,8 +617,8 @@
     "COST",
     "HD",
     "TJX",
-    "NKE",
-    "RCL"
+    "RCL",
+    "NKE"
    ],
    "picked_for": [
     "Consumer discretionary",
@@ -595,11 +631,15 @@
     "COST",
     "HD",
     "TJX",
-    "NKE",
     "RCL",
-    "DG"
+    "NKE",
+    "DG",
+    "LOW",
+    "MCD"
    ],
    "ranked_for": [
+    "Consumer discretionary",
+    "Consumer discretionary",
     "Consumer discretionary",
     "Consumer discretionary",
     "Consumer discretionary",
@@ -641,10 +681,12 @@
     "FTNT",
     "CSCO",
     "CHKP",
-    "MSFT",
-    "ORCL"
+    "ZS",
+    "PLTR",
+    "MSFT"
    ],
    "ranked_for": [
+    "Cybersecurity",
     "Cybersecurity",
     "Cybersecurity",
     "Cybersecurity",
@@ -670,8 +712,8 @@
    "picks": [
     "RTX",
     "GE",
-    "LMT",
     "GD",
+    "LMT",
     "BA"
    ],
    "picked_for": [
@@ -684,12 +726,16 @@
    "ranked": [
     "RTX",
     "GE",
-    "LMT",
     "GD",
+    "LMT",
     "BA",
-    "NOC"
+    "NOC",
+    "HII",
+    "HWM"
    ],
    "ranked_for": [
+    "Aerospace & defense",
+    "Aerospace & defense",
     "Aerospace & defense",
     "Aerospace & defense",
     "Aerospace & defense",
@@ -731,9 +777,13 @@
     "CDE",
     "SSRM",
     "AEM",
-    "WPM"
+    "WPM",
+    "AU",
+    "B"
    ],
    "ranked_for": [
+    "Gold & precious metals",
+    "Gold & precious metals",
     "Gold & precious metals",
     "Gold & precious metals",
     "Gold & precious metals",
@@ -775,9 +825,13 @@
     "PFE",
     "GEHC",
     "ABBV",
-    "AMGN"
+    "AMGN",
+    "NVS",
+    "JNJ"
    ],
    "ranked_for": [
+    "Healthcare",
+    "Healthcare",
     "Healthcare",
     "Healthcare",
     "Healthcare",
@@ -802,10 +856,12 @@
    "picks": [
     "BHP",
     "RIO",
+    "VALE",
     "SQM",
-    "VALE"
+    "TECK"
    ],
    "picked_for": [
+    "Industrial / EV metals (copper + lithium)",
     "Industrial / EV metals (copper + lithium)",
     "Industrial / EV metals (copper + lithium)",
     "Industrial / EV metals (copper + lithium)",
@@ -815,19 +871,24 @@
     "BHP",
     "RIO",
     "SQM",
-    "VALE"
+    "VALE",
+    "HBM",
+    "TECK"
    ],
    "ranked_for": [
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
     "Industrial / EV metals (copper + lithium)",
     "Industrial / EV metals (copper + lithium)",
     "Industrial / EV metals (copper + lithium)",
     "Industrial / EV metals (copper + lithium)"
    ],
    "weights_bps": [
-    2500,
-    2500,
-    2500,
-    2500
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
    ]
   },
   {
@@ -838,10 +899,10 @@
    },
    "picks": [
     "BAC",
-    "CFG",
-    "RF",
     "WFC",
-    "MTB"
+    "C",
+    "MTB",
+    "RF"
    ],
    "picked_for": [
     "Bank lending / net interest income",
@@ -852,13 +913,17 @@
    ],
    "ranked": [
     "BAC",
-    "CFG",
-    "RF",
     "WFC",
+    "C",
     "MTB",
-    "C"
+    "RF",
+    "CFG",
+    "ZION",
+    "UBS"
    ],
    "ranked_for": [
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
     "Bank lending / net interest income",
     "Bank lending / net interest income",
     "Bank lending / net interest income",
@@ -928,8 +993,8 @@
     "COST",
     "HD",
     "TJX",
-    "NKE",
-    "RCL"
+    "RCL",
+    "NKE"
    ],
    "picked_for": [
     "Consumer discretionary",
@@ -942,11 +1007,15 @@
     "COST",
     "HD",
     "TJX",
-    "NKE",
     "RCL",
-    "DG"
+    "NKE",
+    "DG",
+    "LOW",
+    "MCD"
    ],
    "ranked_for": [
+    "Consumer discretionary",
+    "Consumer discretionary",
     "Consumer discretionary",
     "Consumer discretionary",
     "Consumer discretionary",
@@ -1000,9 +1069,13 @@
     "LMT",
     "GD",
     "BA",
-    "NOC"
+    "NOC",
+    "HWM",
+    "LHX"
    ],
    "ranked_for": [
+    "Aerospace & defense",
+    "Aerospace & defense",
     "Aerospace & defense",
     "Aerospace & defense",
     "Aerospace & defense",
@@ -1044,9 +1117,13 @@
     "CDE",
     "SSRM",
     "AEM",
-    "WPM"
+    "WPM",
+    "AU",
+    "B"
    ],
    "ranked_for": [
+    "Gold & precious metals",
+    "Gold & precious metals",
     "Gold & precious metals",
     "Gold & precious metals",
     "Gold & precious metals",
@@ -1088,9 +1165,13 @@
     "PFE",
     "GEHC",
     "ABBV",
-    "AMGN"
+    "AMGN",
+    "NVS",
+    "JNJ"
    ],
    "ranked_for": [
+    "Healthcare",
+    "Healthcare",
     "Healthcare",
     "Healthcare",
     "Healthcare",
@@ -1132,9 +1213,13 @@
     "SCCO",
     "FCX",
     "SQM",
-    "VALE"
+    "VALE",
+    "ALB",
+    "TECK"
    ],
    "ranked_for": [
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
     "Industrial / EV metals (copper + lithium)",
     "Industrial / EV metals (copper + lithium)",
     "Industrial / EV metals (copper + lithium)",
@@ -1158,11 +1243,13 @@
    },
    "picks": [
     "CVX",
+    "SHEL",
     "EOG",
     "FANG",
-    "SHEL"
+    "XOM"
    ],
    "picked_for": [
+    "Oil",
     "Oil",
     "Oil",
     "Oil",
@@ -1170,21 +1257,30 @@
    ],
    "ranked": [
     "CVX",
+    "SHEL",
     "EOG",
     "FANG",
-    "SHEL"
+    "XOM",
+    "BP",
+    "DVN",
+    "TTE"
    ],
    "ranked_for": [
+    "Oil",
+    "Oil",
+    "Oil",
+    "Oil",
     "Oil",
     "Oil",
     "Oil",
     "Oil"
    ],
    "weights_bps": [
-    2500,
-    2500,
-    2500,
-    2500
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
    ]
   },
   {
@@ -1196,9 +1292,9 @@
    "picks": [
     "TSM",
     "NVDA",
-    "MSFT",
+    "AVGO",
     "BAC",
-    "CFG"
+    "WFC"
    ],
    "picked_for": [
     "AI",
@@ -1210,12 +1306,12 @@
    "ranked": [
     "TSM",
     "NVDA",
-    "MSFT",
-    "VST",
+    "AVGO",
+    "VRT",
     "BAC",
-    "CFG",
-    "RF",
-    "WFC"
+    "WFC",
+    "C",
+    "MTB"
    ],
    "ranked_for": [
     "AI",
@@ -1244,7 +1340,7 @@
    "picks": [
     "TSM",
     "NVDA",
-    "MSFT",
+    "AVGO",
     "FSLR",
     "RUN"
    ],
@@ -1258,8 +1354,8 @@
    "ranked": [
     "TSM",
     "NVDA",
-    "MSFT",
-    "VST",
+    "AVGO",
+    "VRT",
     "FSLR",
     "RUN",
     "NEE",
@@ -1292,7 +1388,7 @@
    "picks": [
     "TSM",
     "NVDA",
-    "MSFT",
+    "AVGO",
     "COST",
     "HD"
    ],
@@ -1306,12 +1402,12 @@
    "ranked": [
     "TSM",
     "NVDA",
-    "MSFT",
-    "VST",
+    "AVGO",
+    "VRT",
     "COST",
     "HD",
     "TJX",
-    "NKE"
+    "RCL"
    ],
    "ranked_for": [
     "AI",
@@ -1340,7 +1436,7 @@
    "picks": [
     "TSM",
     "NVDA",
-    "MSFT",
+    "AVGO",
     "PANW",
     "CRWD"
    ],
@@ -1354,8 +1450,8 @@
    "ranked": [
     "TSM",
     "NVDA",
-    "MSFT",
-    "VST",
+    "AVGO",
+    "VRT",
     "PANW",
     "CRWD",
     "FTNT",
@@ -1388,7 +1484,7 @@
    "picks": [
     "TSM",
     "NVDA",
-    "MSFT",
+    "AVGO",
     "RTX",
     "GE"
    ],
@@ -1402,12 +1498,12 @@
    "ranked": [
     "TSM",
     "NVDA",
-    "MSFT",
-    "VST",
+    "AVGO",
+    "VRT",
     "RTX",
     "GE",
-    "LMT",
-    "GD"
+    "GD",
+    "LMT"
    ],
    "ranked_for": [
     "AI",
@@ -1436,7 +1532,7 @@
    "picks": [
     "TSM",
     "NVDA",
-    "MSFT",
+    "AVGO",
     "NEM",
     "PAAS"
    ],
@@ -1450,8 +1546,8 @@
    "ranked": [
     "TSM",
     "NVDA",
-    "MSFT",
-    "VST",
+    "AVGO",
+    "VRT",
     "NEM",
     "PAAS",
     "CDE",
@@ -1484,7 +1580,7 @@
    "picks": [
     "TSM",
     "NVDA",
-    "MSFT",
+    "AVGO",
     "MRK",
     "LLY"
    ],
@@ -1498,8 +1594,8 @@
    "ranked": [
     "TSM",
     "NVDA",
-    "MSFT",
-    "VST",
+    "AVGO",
+    "VRT",
     "MRK",
     "LLY",
     "PFE",
@@ -1532,7 +1628,7 @@
    "picks": [
     "TSM",
     "NVDA",
-    "MSFT",
+    "AVGO",
     "BHP",
     "RIO"
    ],
@@ -1546,8 +1642,8 @@
    "ranked": [
     "TSM",
     "NVDA",
-    "MSFT",
-    "VST",
+    "AVGO",
+    "VRT",
     "BHP",
     "RIO",
     "SCCO",
@@ -1580,9 +1676,9 @@
    "picks": [
     "TSM",
     "NVDA",
-    "MSFT",
+    "AVGO",
     "CVX",
-    "PR"
+    "COP"
    ],
    "picked_for": [
     "AI",
@@ -1594,12 +1690,12 @@
    "ranked": [
     "TSM",
     "NVDA",
-    "MSFT",
-    "VST",
+    "AVGO",
+    "VRT",
     "CVX",
-    "PR",
     "COP",
-    "EOG"
+    "EOG",
+    "SHEL"
    ],
    "ranked_for": [
     "AI",
@@ -1627,8 +1723,8 @@
    },
    "picks": [
     "BAC",
-    "CFG",
-    "RF",
+    "WFC",
+    "C",
     "FSLR",
     "RUN"
    ],
@@ -1641,9 +1737,9 @@
    ],
    "ranked": [
     "BAC",
-    "CFG",
-    "RF",
     "WFC",
+    "C",
+    "MTB",
     "FSLR",
     "RUN",
     "NEE",
@@ -1675,8 +1771,8 @@
    },
    "picks": [
     "BAC",
-    "CFG",
-    "RF",
+    "WFC",
+    "C",
     "COST",
     "HD"
    ],
@@ -1689,13 +1785,13 @@
    ],
    "ranked": [
     "BAC",
-    "CFG",
-    "RF",
     "WFC",
+    "C",
+    "MTB",
     "COST",
     "HD",
     "TJX",
-    "NKE"
+    "RCL"
    ],
    "ranked_for": [
     "Bank lending / net interest income",
@@ -1723,8 +1819,8 @@
    },
    "picks": [
     "BAC",
-    "CFG",
-    "RF",
+    "WFC",
+    "C",
     "PANW",
     "CRWD"
    ],
@@ -1737,9 +1833,9 @@
    ],
    "ranked": [
     "BAC",
-    "CFG",
-    "RF",
     "WFC",
+    "C",
+    "MTB",
     "PANW",
     "CRWD",
     "FTNT",
@@ -1771,8 +1867,8 @@
    },
    "picks": [
     "BAC",
-    "CFG",
-    "RF",
+    "WFC",
+    "C",
     "RTX",
     "GE"
    ],
@@ -1785,13 +1881,13 @@
    ],
    "ranked": [
     "BAC",
-    "CFG",
-    "RF",
     "WFC",
+    "C",
+    "MTB",
     "RTX",
     "GE",
-    "LMT",
-    "GD"
+    "GD",
+    "LMT"
    ],
    "ranked_for": [
     "Bank lending / net interest income",
@@ -1819,8 +1915,8 @@
    },
    "picks": [
     "BAC",
-    "CFG",
-    "RF",
+    "WFC",
+    "C",
     "NEM",
     "PAAS"
    ],
@@ -1833,9 +1929,9 @@
    ],
    "ranked": [
     "BAC",
-    "CFG",
-    "RF",
     "WFC",
+    "C",
+    "MTB",
     "NEM",
     "PAAS",
     "CDE",
@@ -1867,8 +1963,8 @@
    },
    "picks": [
     "BAC",
-    "CFG",
-    "RF",
+    "WFC",
+    "C",
     "MRK",
     "LLY"
    ],
@@ -1881,9 +1977,9 @@
    ],
    "ranked": [
     "BAC",
-    "CFG",
-    "RF",
     "WFC",
+    "C",
+    "MTB",
     "MRK",
     "LLY",
     "PFE",
@@ -1915,8 +2011,8 @@
    },
    "picks": [
     "BAC",
-    "CFG",
-    "RF",
+    "WFC",
+    "C",
     "BHP",
     "RIO"
    ],
@@ -1929,9 +2025,9 @@
    ],
    "ranked": [
     "BAC",
-    "CFG",
-    "RF",
     "WFC",
+    "C",
+    "MTB",
     "BHP",
     "RIO",
     "SCCO",
@@ -1963,10 +2059,10 @@
    },
    "picks": [
     "BAC",
-    "CFG",
-    "RF",
+    "WFC",
+    "C",
     "CVX",
-    "PR"
+    "COP"
    ],
    "picked_for": [
     "Bank lending / net interest income",
@@ -1977,13 +2073,13 @@
    ],
    "ranked": [
     "BAC",
-    "CFG",
-    "RF",
     "WFC",
+    "C",
+    "MTB",
     "CVX",
-    "PR",
     "COP",
-    "EOG"
+    "EOG",
+    "SHEL"
    ],
    "ranked_for": [
     "Bank lending / net interest income",
@@ -2031,7 +2127,7 @@
     "COST",
     "HD",
     "TJX",
-    "NKE"
+    "RCL"
    ],
    "ranked_for": [
     "Clean energy (solar & renewables)",
@@ -2126,8 +2222,8 @@
     "SEDG",
     "RTX",
     "GE",
-    "LMT",
-    "GD"
+    "GD",
+    "LMT"
    ],
    "ranked_for": [
     "Clean energy (solar & renewables)",
@@ -2302,7 +2398,7 @@
     "RUN",
     "NEE",
     "CVX",
-    "PR"
+    "COP"
    ],
    "picked_for": [
     "Clean energy (solar & renewables)",
@@ -2317,9 +2413,9 @@
     "NEE",
     "SEDG",
     "CVX",
-    "PR",
     "COP",
-    "EOG"
+    "EOG",
+    "SHEL"
    ],
    "ranked_for": [
     "Clean energy (solar & renewables)",
@@ -2363,7 +2459,7 @@
     "COST",
     "HD",
     "TJX",
-    "NKE",
+    "RCL",
     "PANW",
     "CRWD",
     "FTNT",
@@ -2411,11 +2507,11 @@
     "COST",
     "HD",
     "TJX",
-    "NKE",
+    "RCL",
     "RTX",
     "GE",
-    "LMT",
-    "GD"
+    "GD",
+    "LMT"
    ],
    "ranked_for": [
     "Consumer discretionary",
@@ -2459,7 +2555,7 @@
     "COST",
     "HD",
     "TJX",
-    "NKE",
+    "RCL",
     "NEM",
     "PAAS",
     "CDE",
@@ -2507,7 +2603,7 @@
     "COST",
     "HD",
     "TJX",
-    "NKE",
+    "RCL",
     "MRK",
     "LLY",
     "PFE",
@@ -2555,7 +2651,7 @@
     "COST",
     "HD",
     "TJX",
-    "NKE",
+    "RCL",
     "BHP",
     "RIO",
     "SCCO",
@@ -2590,7 +2686,7 @@
     "HD",
     "TJX",
     "CVX",
-    "PR"
+    "COP"
    ],
    "picked_for": [
     "Consumer discretionary",
@@ -2603,11 +2699,11 @@
     "COST",
     "HD",
     "TJX",
-    "NKE",
+    "RCL",
     "CVX",
-    "PR",
     "COP",
-    "EOG"
+    "EOG",
+    "SHEL"
    ],
    "ranked_for": [
     "Consumer discretionary",
@@ -2654,8 +2750,8 @@
     "CSCO",
     "RTX",
     "GE",
-    "LMT",
-    "GD"
+    "GD",
+    "LMT"
    ],
    "ranked_for": [
     "Cybersecurity",
@@ -2830,7 +2926,7 @@
     "CRWD",
     "FTNT",
     "CVX",
-    "PR"
+    "COP"
    ],
    "picked_for": [
     "Cybersecurity",
@@ -2845,9 +2941,9 @@
     "FTNT",
     "CSCO",
     "CVX",
-    "PR",
     "COP",
-    "EOG"
+    "EOG",
+    "SHEL"
    ],
    "ranked_for": [
     "Cybersecurity",
@@ -2876,7 +2972,7 @@
    "picks": [
     "RTX",
     "GE",
-    "LMT",
+    "GD",
     "NEM",
     "PAAS"
    ],
@@ -2890,8 +2986,8 @@
    "ranked": [
     "RTX",
     "GE",
-    "LMT",
     "GD",
+    "LMT",
     "NEM",
     "PAAS",
     "CDE",
@@ -2924,7 +3020,7 @@
    "picks": [
     "RTX",
     "GE",
-    "LMT",
+    "GD",
     "MRK",
     "LLY"
    ],
@@ -2938,8 +3034,8 @@
    "ranked": [
     "RTX",
     "GE",
-    "LMT",
     "GD",
+    "LMT",
     "MRK",
     "LLY",
     "PFE",
@@ -2972,7 +3068,7 @@
    "picks": [
     "RTX",
     "GE",
-    "LMT",
+    "GD",
     "BHP",
     "RIO"
    ],
@@ -2986,8 +3082,8 @@
    "ranked": [
     "RTX",
     "GE",
-    "LMT",
     "GD",
+    "LMT",
     "BHP",
     "RIO",
     "SCCO",
@@ -3020,9 +3116,9 @@
    "picks": [
     "RTX",
     "GE",
-    "LMT",
+    "GD",
     "CVX",
-    "PR"
+    "COP"
    ],
    "picked_for": [
     "Aerospace & defense",
@@ -3034,12 +3130,12 @@
    "ranked": [
     "RTX",
     "GE",
-    "LMT",
     "GD",
+    "LMT",
     "CVX",
-    "PR",
     "COP",
-    "EOG"
+    "EOG",
+    "SHEL"
    ],
    "ranked_for": [
     "Aerospace & defense",
@@ -3166,7 +3262,7 @@
     "PAAS",
     "CDE",
     "CVX",
-    "PR"
+    "COP"
    ],
    "picked_for": [
     "Gold & precious metals",
@@ -3181,9 +3277,9 @@
     "CDE",
     "SSRM",
     "CVX",
-    "PR",
     "COP",
-    "EOG"
+    "EOG",
+    "SHEL"
    ],
    "ranked_for": [
     "Gold & precious metals",
@@ -3262,7 +3358,7 @@
     "LLY",
     "PFE",
     "CVX",
-    "PR"
+    "COP"
    ],
    "picked_for": [
     "Healthcare",
@@ -3277,9 +3373,9 @@
     "PFE",
     "GEHC",
     "CVX",
-    "PR",
     "COP",
-    "EOG"
+    "EOG",
+    "SHEL"
    ],
    "ranked_for": [
     "Healthcare",
@@ -3310,7 +3406,7 @@
     "RIO",
     "SCCO",
     "CVX",
-    "PR"
+    "COP"
    ],
    "picked_for": [
     "Industrial / EV metals (copper + lithium)",
@@ -3325,9 +3421,9 @@
     "SCCO",
     "FCX",
     "CVX",
-    "PR",
     "COP",
-    "EOG"
+    "EOG",
+    "SHEL"
    ],
    "ranked_for": [
     "Industrial / EV metals (copper + lithium)",

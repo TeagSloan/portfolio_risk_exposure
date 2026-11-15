@@ -157,14 +157,14 @@ const MONAD = { chainId: "0x279f", chainName: "Monad Testnet", nativeCurrency: {
                 rpcUrls: ["https://testnet-rpc.monad.xyz"], blockExplorerUrls: ["https://testnet.monadexplorer.com"] };
 const LEAGUE_ABI = [
   "function roundCount() view returns (uint256)",
-  "function getRound(uint256) view returns (tuple(bytes32[] pool,uint256 entryStake,uint256 deadline,uint256 roundDuration,uint256 startedAt,uint256 targetBlock,uint256 windowCount,uint256 windowIndex,bytes32 dataHash,bytes32 seed,uint8 phase,uint256 entryCount,uint256 winnerCount,int256 bestScore,uint256 pot))",
+  "function getRound(uint256) view returns (tuple(bytes32[] used,uint256 entryStake,uint256 deadline,uint256 roundDuration,uint256 startedAt,uint256 targetBlock,uint256 windowCount,uint256 windowIndex,bytes32 dataHash,bytes32 seed,uint8 phase,uint256 entryCount,uint256 winnerCount,int256 bestScore,uint256 pot,bytes32 poolRoot,uint256 poolSize))",
   "function getEntry(uint256,uint256) view returns (address owner, string name, bytes32[] tickers, uint16[] weightsBps, int256 score)",
   "function liveScores(uint256) view returns (int256[])",
   "function entryOf(uint256,address) view returns (uint256)",
   "function claimable(uint256,address) view returns (uint256)",
   "function claimed(uint256,address) view returns (bool)",
   "function oracle() view returns (address)",
-  "function enter(uint256 roundId, string name, bytes32[] tickers, uint16[] weightsBps) payable",
+  "function enter(uint256 roundId, string name, bytes32[] tickers, uint16[] weightsBps, bytes32[][] proofs) payable",
   "function claim(uint256 roundId)",
 ];
 const ORACLE_ABI = ["function priceOf(bytes32) view returns (uint256 price, uint256 timestamp)"];
@@ -182,6 +182,33 @@ function pctTxt(x) { return (x >= 0 ? "+" : "") + (100 * x).toFixed(2) + "%"; }
 function esc(s) { return String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
 function short(a) { return a.slice(0, 6) + "…" + a.slice(-4); }
 function dec32(b) { return ethers.decodeBytes32String(b); }
+// Merkle proof that a ticker is in the round's pool. Same tree as chain/league.py and FundLeague._inPool:
+// leaf = keccak256(32-byte ticker), each pair hashed in sorted order, an odd node at the end of a level moves up.
+let merkleLevels = null;
+function merkleUp(level) {
+  const out = [];
+  for (let i = 0; i < level.length; i += 2) {
+    if (i + 1 === level.length) { out.push(level[i]); continue; }
+    const [a, b] = level[i] < level[i + 1] ? [level[i], level[i + 1]] : [level[i + 1], level[i]];
+    out.push(ethers.keccak256(ethers.concat([a, b])));
+  }
+  return out;
+}
+function merkleProof(ticker) {
+  const list = cfg.pool || [];
+  if (!merkleLevels) {
+    merkleLevels = [list.map((t) => ethers.keccak256(ethers.encodeBytes32String(t)))];
+    while (merkleLevels[merkleLevels.length - 1].length > 1) merkleLevels.push(merkleUp(merkleLevels[merkleLevels.length - 1]));
+  }
+  let idx = list.indexOf(ticker);
+  if (idx < 0) throw new Error(ticker + " is not in this round's pool");
+  const proof = [];
+  for (const level of merkleLevels.slice(0, -1)) {
+    if ((idx ^ 1) < level.length) proof.push(level[idx ^ 1]);
+    idx = Math.floor(idx / 2);
+  }
+  return proof;
+}
 const byTicker = () => Object.fromEntries(pool.stocks.map((s) => [s.ticker, s]));
 
 // ───────────── builder (same rules as the engine's Way 2 builder, applied to the pool) ─────────────
@@ -381,11 +408,11 @@ async function refresh() {
 }
 
 async function raceDay() {
-  // Which replay day is on-chain now: match the first pool stock's price to the replay file.
-  if (!replay) return null;
-  const t = dec32(round.pool[0]), col = replay.tickers.indexOf(t), w = Number(round.windowIndex);
+  // Which replay day is on-chain now: match the first used stock's price to the replay file.
+  if (!replay || !round.used.length) return null;
+  const t = dec32(round.used[0]), col = replay.tickers.indexOf(t), w = Number(round.windowIndex);
   if (col < 0) return null;
-  const [p] = await oracle.priceOf(round.pool[0]);
+  const [p] = await oracle.priceOf(round.used[0]);
   const now = Number(p) / 1e8;
   let best = 0, err = Infinity;
   for (let d = 0; d <= replay.race_days; d++) {
@@ -506,7 +533,8 @@ async function enter() {
   const name = $("etfname").value.trim();
   try {
     msg("Confirm in MetaMask…", "ok");
-    const tx = await send("enter", [roundId, name, picks.map((p) => ethers.encodeBytes32String(p.ticker)), picks.map((p) => p.pct * 100)], round.entryStake);
+    const proofs = picks.map((p) => merkleProof(p.ticker));  // one proof per stock: "it's in the pool"
+    const tx = await send("enter", [roundId, name, picks.map((p) => ethers.encodeBytes32String(p.ticker)), picks.map((p) => p.pct * 100), proofs], round.entryStake);
     msg("Sending… waiting for the block.", "ok");
     await tx.wait();
     msg(`You're in: "${esc(name)}" entered.`, "ok");

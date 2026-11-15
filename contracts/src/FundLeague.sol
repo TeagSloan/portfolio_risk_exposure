@@ -11,19 +11,22 @@ interface IPriceOracle {
 ///         of stocks, stake the entry fee and race each other over a random window of real past prices.
 ///
 ///         A round, step by step:
-///         1. openRound  (operator) sets the stock pool, the entry stake, the entry deadline, how long the race
+///         1. openRound  (operator) sets the stock pool as a Merkle root (one storage slot, so a round with the
+///                       full ~666-stock universe costs the same to open as one with 10), the entry stake, the entry deadline, how long the race
 ///                       lasts, the hash of the replay price file (fixed BEFORE anyone enters, so it can't be
 ///                       swapped later) and how many replay windows that file contains.
-///         2. enter      anyone, before the deadline, once per wallet: a name, 3-8 tickers from the pool (no
-///                       duplicates) and weights in basis points (each >= 5%, adding up to exactly 100%), paying
+///         2. enter      anyone, before the deadline, once per wallet: a name, 3-8 tickers from the pool, each
+///                       with a Merkle proof that it is in the pool (no duplicates) and weights in basis points (each >= 5%, adding up to exactly 100%), paying
 ///                       exactly the entry stake. Stored on-chain; there are no fund tokens and no trading.
 ///         3. lock       anyone, after the deadline: records a target block LOCK_DELAY blocks in the future.
 ///                       With fewer than 2 entries there's no race: the round is cancelled and stakes refunded.
 ///         4. start      anyone, after the target block: that block's hash picks the replay window (nobody could
-///                       know it while entries were open) and the pool's starting prices are recorded from the
-///                       League's oracle. The off-chain replayer then posts that window's prices day by day.
-///         5. settle     anyone, once the race time is over: each entry's return is the weighted average of its
-///                       stocks' price returns (end vs start). The highest return wins; ties split the pot.
+///                       know it while entries were open) and starting prices are recorded from the League's
+///                       oracle ONLY for the tickers some entry uses (deduplicated as entries come in). Pool stocks
+///                       nobody picked never need a price. The off-chain replayer then posts that window's prices
+///                       day by day for the used tickers only.
+///         5. settle     anyone, once the race time is over: end prices for the same used tickers; each entry's
+///                       return is the weighted average of its stocks' price returns (end vs start). The highest return wins; ties split the pot.
 ///         6. claim      the winner(s) pull the whole pot (split evenly on a tie). In a cancelled round
 ///                       (single entrant, no race, or stalled) everyone pulls their own stake back.
 ///
@@ -45,13 +48,15 @@ contract FundLeague {
     struct Entry {
         address owner;
         string name;
-        uint8[] stocks; // indexes into the round's stock pool
+        uint16[] stocks; // indexes into the round's used-ticker list
         uint16[] weightsBps;
         int256 score; // return x 1e18 after settle (0.05e18 = +5%)
     }
 
     struct Round {
-        bytes32[] pool;
+        bytes32 poolRoot; // Merkle root of the pool's tickers
+        uint32 poolSize;
+        bytes32[] used; // tickers used by at least one entry, in first-use order (deduplicated)
         uint256 entryStake;
         uint64 deadline;
         uint64 roundDuration;
@@ -70,9 +75,10 @@ contract FundLeague {
         Entry[] entries;
     }
 
-    /// Everything about a round except the per-stock prices and the entries.
+    /// Everything about a round except the per-stock prices and the entries. `used` = tickers some entry uses
+    /// (the only ones that get prices); the pool itself is the Merkle root at the end.
     struct RoundInfo {
-        bytes32[] pool;
+        bytes32[] used;
         uint256 entryStake;
         uint256 deadline;
         uint256 roundDuration;
@@ -87,11 +93,13 @@ contract FundLeague {
         uint256 winnerCount;
         int256 bestScore;
         uint256 pot;
+        bytes32 poolRoot;
+        uint256 poolSize;
     }
 
     uint256 public constant LOCK_DELAY = 3;
     uint256 public constant STALL_TIMEOUT = 1 days;
-    uint256 public constant MAX_POOL = 100;
+    uint256 public constant MAX_PROOF = 32; // Merkle proof length limit (a 2^32-stock pool)
     uint256 public constant MAX_ENTRIES = 200;
     uint256 public constant MIN_STOCKS = 3;
     uint256 public constant MAX_STOCKS = 8;
@@ -104,13 +112,13 @@ contract FundLeague {
     uint256 public roundCount;
 
     mapping(uint256 => Round) private _rounds;
-    mapping(uint256 => mapping(bytes32 => uint256)) private _poolIndexPlus1; // round => ticker => index + 1
+    mapping(uint256 => mapping(bytes32 => uint256)) private _usedIndexPlus1; // round => ticker => used index + 1
     mapping(uint256 => mapping(address => uint256)) public entryOf; // round => wallet => entry index + 1
     mapping(uint256 => mapping(address => bool)) public claimed;
 
     uint256 private _lock = 1;
 
-    event RoundOpened(uint256 indexed roundId, bytes32[] pool, uint256 entryStake, uint256 deadline,
+    event RoundOpened(uint256 indexed roundId, bytes32 poolRoot, uint256 poolSize, uint256 entryStake, uint256 deadline,
         uint256 roundDuration, bytes32 dataHash, uint256 windowCount);
     event Entered(uint256 indexed roundId, address indexed owner, uint256 indexed entryIndex, string name,
         bytes32[] tickers, uint16[] weightsBps);
@@ -140,15 +148,18 @@ contract FundLeague {
 
     // ───────────── round lifecycle ─────────────
 
+    /// poolRoot: Merkle root of the pool (leaf = keccak256(abi.encodePacked(ticker)), pairs hashed in sorted order).
     function openRound(
-        bytes32[] calldata stockPool,
+        bytes32 poolRoot,
+        uint256 poolSize,
         uint256 entryStake,
         uint256 deadline,
         uint256 roundDuration,
         bytes32 dataHash,
         uint256 windowCount
     ) external onlyOperator returns (uint256 roundId) {
-        require(stockPool.length >= MIN_STOCKS && stockPool.length <= MAX_POOL, "League: pool must have 3 to 100 stocks");
+        require(poolRoot != bytes32(0), "League: missing pool root");
+        require(poolSize >= MIN_STOCKS && poolSize <= type(uint32).max, "League: pool must have at least 3 stocks");
         require(entryStake > 0, "League: entry stake must be > 0");
         require(deadline > block.timestamp, "League: deadline must be in the future");
         require(roundDuration > 0, "League: round duration must be > 0");
@@ -156,23 +167,26 @@ contract FundLeague {
         require(windowCount > 0 && windowCount <= type(uint32).max, "League: need at least one replay window");
         roundId = ++roundCount;
         Round storage r = _rounds[roundId];
-        for (uint256 i = 0; i < stockPool.length; i++) {
-            require(stockPool[i] != bytes32(0), "League: empty ticker in pool");
-            require(_poolIndexPlus1[roundId][stockPool[i]] == 0, "League: duplicate ticker in pool");
-            _poolIndexPlus1[roundId][stockPool[i]] = i + 1;
-        }
-        r.pool = stockPool;
+        r.poolRoot = poolRoot;
+        r.poolSize = uint32(poolSize);
         r.entryStake = entryStake;
         r.deadline = uint64(deadline);
         r.roundDuration = uint64(roundDuration);
         r.dataHash = dataHash;
         r.windowCount = uint32(windowCount);
         r.phase = Phase.Open;
-        emit RoundOpened(roundId, stockPool, entryStake, deadline, roundDuration, dataHash, windowCount);
+        emit RoundOpened(roundId, poolRoot, poolSize, entryStake, deadline, roundDuration, dataHash, windowCount);
     }
 
-    /// Enter your own ETF: 3-8 tickers from the pool, weights in basis points (each >= 500, total 10,000).
-    function enter(uint256 roundId, string calldata name, bytes32[] calldata tickers, uint16[] calldata weightsBps)
+    /// Enter your own ETF: 3-8 tickers from the pool, weights in basis points (each >= 500, total 10,000), and
+    /// one Merkle proof per ticker showing it's in the pool.
+    function enter(
+        uint256 roundId,
+        string calldata name,
+        bytes32[] calldata tickers,
+        uint16[] calldata weightsBps,
+        bytes32[][] calldata proofs
+    )
         external
         payable
         nonReentrant
@@ -183,29 +197,18 @@ contract FundLeague {
         require(msg.value == r.entryStake, "League: send exactly the entry stake");
         require(entryOf[roundId][msg.sender] == 0, "League: this wallet already entered");
         require(r.entries.length < MAX_ENTRIES, "League: round is full");
-        uint256 nameLen = bytes(name).length;
-        require(nameLen > 0 && nameLen <= 32, "League: name must be 1 to 32 bytes");
-        uint256 n = tickers.length;
-        require(n >= MIN_STOCKS && n <= MAX_STOCKS, "League: pick 3 to 8 stocks");
-        require(weightsBps.length == n, "League: one weight per stock");
-
-        uint8[] memory idx = new uint8[](n);
-        uint256 total;
-        for (uint256 i = 0; i < n; i++) {
-            uint256 p = _poolIndexPlus1[roundId][tickers[i]];
-            require(p != 0, "League: stock is not in the pool");
-            for (uint256 j = 0; j < i; j++) require(tickers[j] != tickers[i], "League: duplicate stock");
-            require(weightsBps[i] >= MIN_WEIGHT_BPS, "League: each weight must be at least 5%");
-            idx[i] = uint8(p - 1);
-            total += weightsBps[i];
+        require(bytes(name).length > 0 && bytes(name).length <= 32, "League: name must be 1 to 32 bytes");
+        require(tickers.length >= MIN_STOCKS && tickers.length <= MAX_STOCKS, "League: pick 3 to 8 stocks");
+        require(weightsBps.length == tickers.length && proofs.length == tickers.length,
+            "League: one weight and one proof per stock");
+        {
+            uint16[] memory idx = _checkStocks(roundId, r, tickers, weightsBps, proofs);
+            Entry storage e = r.entries.push();
+            e.owner = msg.sender;
+            e.name = name;
+            e.stocks = idx;
+            e.weightsBps = weightsBps;
         }
-        require(total == BPS, "League: weights must add up to 100%");
-
-        Entry storage e = r.entries.push();
-        e.owner = msg.sender;
-        e.name = name;
-        e.stocks = idx;
-        e.weightsBps = weightsBps;
         entryOf[roundId][msg.sender] = r.entries.length;
         r.pot += msg.value;
         emit Entered(roundId, msg.sender, r.entries.length - 1, name, tickers, weightsBps);
@@ -226,7 +229,7 @@ contract FundLeague {
         emit Locked(roundId, r.targetBlock);
     }
 
-    /// After the target block: pick the window and record the pool's starting prices.
+    /// After the target block: pick the window and record starting prices for the used tickers only.
     function start(uint256 roundId) external {
         Round storage r = _rounds[roundId];
         require(r.phase == Phase.Locked, "League: round is not locked");
@@ -236,7 +239,7 @@ contract FundLeague {
         if (h == bytes32(0)) h = bytes32(block.prevrandao);
         r.seed = keccak256(abi.encode(h, roundId, r.dataHash));
         r.windowIndex = uint32(uint256(r.seed) % r.windowCount);
-        r.startPrice = _pricesNow(r.pool);
+        r.startPrice = _pricesNow(r.used);
         r.startedAt = uint64(block.timestamp);
         r.phase = Phase.Started;
         emit Started(roundId, r.windowIndex, r.seed);
@@ -247,7 +250,7 @@ contract FundLeague {
         Round storage r = _rounds[roundId];
         require(r.phase == Phase.Started, "League: round has not started");
         require(block.timestamp >= uint256(r.startedAt) + r.roundDuration, "League: race is not over yet");
-        r.endPrice = _pricesNow(r.pool);
+        r.endPrice = _pricesNow(r.used);
         int256 best = type(int256).min;
         uint256 n = r.entries.length;
         for (uint256 i = 0; i < n; i++) {
@@ -298,7 +301,7 @@ contract FundLeague {
 
     function getRound(uint256 roundId) external view returns (RoundInfo memory info) {
         Round storage r = _rounds[roundId];
-        info.pool = r.pool;
+        info.used = r.used;
         info.entryStake = r.entryStake;
         info.deadline = r.deadline;
         info.roundDuration = r.roundDuration;
@@ -313,6 +316,8 @@ contract FundLeague {
         info.winnerCount = r.winnerCount;
         info.bestScore = r.bestScore;
         info.pot = r.pot;
+        info.poolRoot = r.poolRoot;
+        info.poolSize = r.poolSize;
     }
 
     function getEntry(uint256 roundId, uint256 index)
@@ -323,7 +328,7 @@ contract FundLeague {
         Round storage r = _rounds[roundId];
         Entry storage e = r.entries[index];
         tickers = new bytes32[](e.stocks.length);
-        for (uint256 i = 0; i < e.stocks.length; i++) tickers[i] = r.pool[e.stocks[i]];
+        for (uint256 i = 0; i < e.stocks.length; i++) tickers[i] = r.used[e.stocks[i]];
         return (e.owner, e.name, tickers, e.weightsBps, e.score);
     }
 
@@ -331,23 +336,70 @@ contract FundLeague {
         return (_rounds[roundId].startPrice, _rounds[roundId].endPrice);
     }
 
+    /// Is this ticker in the round's pool? (Same check enter() makes.)
+    function inPool(uint256 roundId, bytes32 ticker, bytes32[] calldata proof) external view returns (bool) {
+        return _inPool(_rounds[roundId].poolRoot, ticker, proof);
+    }
+
     /// Every entry's return right now (x 1e18) from the oracle's current prices: the live leaderboard.
     function liveScores(uint256 roundId) external view returns (int256[] memory scores) {
         Round storage r = _rounds[roundId];
         require(r.phase == Phase.Started || r.phase == Phase.Settled, "League: race has not started");
-        uint256[] memory nowPrice = r.phase == Phase.Settled ? r.endPrice : _pricesNow(r.pool);
+        uint256[] memory nowPrice = r.phase == Phase.Settled ? r.endPrice : _pricesNow(r.used);
         scores = new int256[](r.entries.length);
         for (uint256 i = 0; i < r.entries.length; i++) scores[i] = _score(r.entries[i], r.startPrice, nowPrice);
     }
 
     // ───────────── internals ─────────────
 
-    function _pricesNow(bytes32[] storage pool) private view returns (uint256[] memory out) {
-        out = new uint256[](pool.length);
-        for (uint256 i = 0; i < pool.length; i++) {
-            (uint256 p, uint256 ts) = oracle.priceOf(pool[i]);
-            require(p > 0, "League: a pool stock has no price");
-            require(block.timestamp - ts <= MAX_PRICE_AGE, "League: a pool price is stale");
+    /// Checks each stock (in the pool, no duplicates, weight >= 5%, total 100%) and adds new ones to the used list.
+    function _checkStocks(
+        uint256 roundId,
+        Round storage r,
+        bytes32[] calldata tickers,
+        uint16[] calldata weightsBps,
+        bytes32[][] calldata proofs
+    ) private returns (uint16[] memory idx) {
+        idx = new uint16[](tickers.length);
+        uint256 total;
+        for (uint256 i = 0; i < tickers.length; i++) {
+            require(_inPool(r.poolRoot, tickers[i], proofs[i]), "League: stock is not in the pool");
+            for (uint256 j = 0; j < i; j++) require(tickers[j] != tickers[i], "League: duplicate stock");
+            require(weightsBps[i] >= MIN_WEIGHT_BPS, "League: each weight must be at least 5%");
+            idx[i] = _use(roundId, r, tickers[i]);
+            total += weightsBps[i];
+        }
+        require(total == BPS, "League: weights must add up to 100%");
+    }
+
+    /// The ticker's place in the used list; the first entry to use a ticker adds it (it now needs prices).
+    function _use(uint256 roundId, Round storage r, bytes32 t) private returns (uint16) {
+        uint256 u = _usedIndexPlus1[roundId][t];
+        if (u == 0) {
+            r.used.push(t);
+            u = r.used.length;
+            _usedIndexPlus1[roundId][t] = u;
+        }
+        return uint16(u - 1);
+    }
+
+    /// Merkle check: leaf = keccak256(ticker); each step hashes the pair in sorted order (no left/right flags).
+    function _inPool(bytes32 root, bytes32 ticker, bytes32[] calldata proof) private pure returns (bool) {
+        if (ticker == bytes32(0) || proof.length > MAX_PROOF) return false;
+        bytes32 h = keccak256(abi.encodePacked(ticker));
+        for (uint256 i = 0; i < proof.length; i++) {
+            bytes32 s = proof[i];
+            h = h < s ? keccak256(abi.encodePacked(h, s)) : keccak256(abi.encodePacked(s, h));
+        }
+        return h == root;
+    }
+
+    function _pricesNow(bytes32[] storage tickers) private view returns (uint256[] memory out) {
+        out = new uint256[](tickers.length);
+        for (uint256 i = 0; i < tickers.length; i++) {
+            (uint256 p, uint256 ts) = oracle.priceOf(tickers[i]);
+            require(p > 0, "League: a picked stock has no price");
+            require(block.timestamp - ts <= MAX_PRICE_AGE, "League: a picked stock's price is stale");
             out[i] = p;
         }
     }

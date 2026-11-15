@@ -25,7 +25,12 @@ Replay (markets are closed, so it's replay only):
   recorded on-chain in openRound, before anyone enters.
 - Prices posted on-chain are normalized: $100 on the window's first day, $100 x close[d] / close[0] on day d.
   Returns are the real historical ones; only the price level is rescaled.
-- One postPrices transaction per replayed day for the pool, every DAY_SECONDS, including the last day before settle.
+- The pool is the full universe (every stock in the exposure table with enough price history). On-chain it is just a
+  Merkle root (merkle_root below; the page and the tests build the same tree), so opening a round costs the same
+  for 666 stocks as for 10. Each entry sends a proof per stock.
+- Prices are posted ONLY for the tickers some entry uses (the contract's deduplicated `used` list, read after
+  entries close): $100 right before start, then one postPrices transaction per replayed day, every DAY_SECONDS,
+  including the last day before settle. Pool stocks nobody picked never get a price.
 
 Gas: every transaction asks for the estimate x 1.15 (Monad charges the gas limit, not the gas used).
 Wallets: Anvil uses the node's own unlocked dev accounts (no keys). Monad testnet uses the League's own operator
@@ -217,6 +222,41 @@ def league_section(network: str) -> dict:
 # Pool, page data and replay file
 # ---------------------------------------------------------------------------------------------
 
+# ---------------------------------------------------------------------------------------------
+# Merkle tree of the pool (must match FundLeague._inPool, contracts/test/FundLeague.t.sol and league/index.html)
+# leaf = keccak256(32-byte ticker); a pair is hashed in sorted order; an odd node at the end of a level moves up.
+# ---------------------------------------------------------------------------------------------
+
+def _merkle_up(level: list[bytes]) -> list[bytes]:
+    out = []
+    for i in range(0, len(level), 2):
+        if i + 1 == len(level):
+            out.append(level[i])
+        else:
+            a, b = sorted((level[i], level[i + 1]))
+            out.append(Web3.keccak(a + b))
+    return out
+
+
+def merkle_root(tickers: list[str]) -> bytes:
+    level = [Web3.keccak(to_bytes32(t)) for t in tickers]
+    while len(level) > 1:
+        level = _merkle_up(level)
+    return level[0]
+
+
+def merkle_proof(tickers: list[str], ticker: str) -> list[bytes]:
+    idx = tickers.index(ticker)
+    level = [Web3.keccak(to_bytes32(t)) for t in tickers]
+    proof = []
+    while len(level) > 1:
+        sib = idx ^ 1
+        if sib < len(level):
+            proof.append(level[sib])
+        level, idx = _merkle_up(level), idx // 2
+    return proof
+
+
 def equal_weights(n: int) -> list[int]:
     """n weights in basis points adding up to exactly 10,000 (any remainder goes to the first ones)."""
     base, rem = divmod(10_000, n)
@@ -240,29 +280,9 @@ def build_pool() -> tuple[list[str], dict, list]:
         except Exception:  # noqa: BLE001 - no prices -> not in the pool
             return False
 
-    # Each theme's ranked qualifiers (same tests and ranking as the builder, without the per-ETF industry limit,
-    # so single-industry themes like Gold still get enough pool stocks).
-    baskets = {k: builder.theme_candidates(table, k, n=builder.TOP_N)[:builder.TOP_N] for k in keys}
-    counts = Counter(t for b in baskets.values() for t in b)
-    ok: dict[str, bool] = {}
-    pool: list[str] = []
-    for k in keys:  # each theme's top picks first
-        taken = 0
-        for t in baskets[k]:
-            if taken == PER_THEME:
-                break
-            if t not in pool and ok.setdefault(t, history_ok(t)):
-                pool.append(t)
-                taken += 1
-            elif t in pool:
-                taken += 1
-    rank = {t: min(b.index(t) for b in baskets.values() if t in b) for t in counts}
-    for t in sorted(counts, key=lambda x: (-counts[x], rank[x], x)):
-        if len(pool) >= POOL_SIZE:
-            break
-        if t not in pool and ok.setdefault(t, history_ok(t)):
-            pool.append(t)
-
+    # The pool is the whole universe: every stock with enough price history for a race window, biggest first.
+    caps = table.groupby("ticker")["market_cap"].first().astype(float).fillna(0.0)
+    pool = [t for t in sorted(caps.index, key=lambda x: (-caps[x], x)) if history_ok(t)]
     rows = table[table["ticker"].isin(pool)]
     info = rows.groupby("ticker")[["name", "industry", "country", "market_cap"]].first()
     stocks = []
@@ -276,7 +296,8 @@ def build_pool() -> tuple[list[str], dict, list]:
                                       "linked": bool(r.loc[k, "business_linked"]),
                                       "t": None if r.loc[k, "strength_t"] != r.loc[k, "strength_t"] else round(float(r.loc[k, "strength_t"]), 2),
                                       "ref": bool(r.loc[k, "reference"])} for k in keys}})
-    pool_data = {"about": "Stock pool for the Fantasy Funds League, with each stock's engine result per theme.",
+    pool_data = {"about": "Stock pool for the Fantasy Funds League (the full universe), with each stock's engine "
+                          "result per theme.",
                  "themes": [{"key": k, "name": themes[k]["name"],
                              "industries": themes[k].get("allowed_industries", [])} for k in keys],
                  "rules": {"min_stocks": 3, "max_stocks": 8, "min_weight_pct": 5, "default_picks": DEFAULT_PICKS,
@@ -337,13 +358,22 @@ def write_live(state: dict):
 # Steps
 # ---------------------------------------------------------------------------------------------
 
-def deploy(chain: Chain) -> dict:
+def deploy(chain: Chain, reuse_oracle: bool = False) -> dict:
+    """Deploy the League's own oracle + FundLeague. reuse_oracle: keep the League oracle already in the deployment
+    file and deploy only a new FundLeague (the previous FundLeague address is kept as previousFundLeague)."""
     chain.phase = "deploy"
+    old = league_section(chain.network) if reuse_oracle else {}
+    if reuse_oracle and not old.get("oracle"):
+        raise LeagueError("No League oracle in the deployment file to reuse. Run deploy without --reuse-oracle.")
     chain.log("Deploying the League's own contracts (separate from the main demo):")
-    oracle = chain.deploy("ExposureOracle")
+    oracle = old["oracle"] if reuse_oracle else chain.deploy("ExposureOracle")
+    if reuse_oracle:
+        chain.log(f"  reusing the League's ExposureOracle at {oracle}")
     league = chain.deploy("FundLeague", oracle)
     lg = {"oracle": oracle, "fundLeague": league, "operator": chain.address,
           "deployedAt": datetime.now(UTC).isoformat(timespec="seconds")}
+    if old.get("fundLeague"):
+        lg["previousFundLeague"] = old["fundLeague"]
     write_league_section(chain.network, lg)
     return lg
 
@@ -371,22 +401,23 @@ def open_round(chain: Chain, entry_seconds: int, stake_mon: float) -> int:
     data_hash, windows, data = write_replay_file(lg["pool"])
     league = chain.contract("FundLeague", lg["fundLeague"])
     oracle = chain.contract("ExposureOracle", lg["oracle"])
-    # Pool prices must exist (and be fresh) before start; $100 is also day 0 of every window.
-    post_prices(chain, oracle, dict.fromkeys(data["tickers"], BASE_PRICE), "pool at $100")
+    # No prices at open: only the tickers entries actually use get prices, right before start (see run_round).
+    root = merkle_root(data["tickers"])
     now = chain.w3.eth.get_block("latest").timestamp
     deadline = max(now, int(time.time())) + entry_seconds
     stake = Web3.to_wei(stake_mon, "ether")
-    r = chain.send(league.functions.openRound([to_bytes32(t) for t in data["tickers"]], stake, deadline,
+    r = chain.send(league.functions.openRound(root, len(data["tickers"]), stake, deadline,
                                               RACE_DAYS * DAY_SECONDS, data_hash, windows), "opened round")
     round_id = league.events.RoundOpened().process_receipt(r)[0]["args"]["roundId"]
     lg.update({"currentRound": round_id, "entryStake": str(stake), "pool": data["tickers"],
+               "poolRoot": Web3.to_hex(root),
                "replay": {"file": "league/replay_prices.json", "dataHash": Web3.to_hex(data_hash), "windows": windows,
                           "raceDays": RACE_DAYS, "daySeconds": DAY_SECONDS, "firstDate": data["dates"][0],
                           "lastDate": data["dates"][-1]}})
     write_league_section(chain.network, lg)
     write_live({"round": round_id, "phase": "entries", "deadline": deadline})
     chain.log(f"Round {round_id} open: entry {stake_mon} {NETWORKS[chain.network]['currency']}, entries close in "
-              f"{entry_seconds}s. Replay hash {Web3.to_hex(data_hash)}, {windows} windows "
+              f"{entry_seconds}s. Pool: {len(data['tickers'])} stocks (Merkle root). Replay hash {Web3.to_hex(data_hash)}, {windows} windows "
               f"({data['dates'][0]} to {data['dates'][-1]}).")
     return round_id
 
@@ -397,7 +428,7 @@ def expected_window(block_hash: bytes, round_id: int, data_hash: bytes, windows:
 
 
 def run_round(chain: Chain, round_id: int | None = None) -> dict:
-    """lock -> start -> replay (one price batch per day for the pool) -> settle. Waits for the deadline first."""
+    """lock -> start -> replay (one price batch per day for the used tickers) -> settle. Waits for the deadline."""
     lg = league_section(chain.network)
     round_id = round_id or lg["currentRound"]
     league = chain.contract("FundLeague", lg["fundLeague"])
@@ -419,7 +450,10 @@ def run_round(chain: Chain, round_id: int | None = None) -> dict:
         return results(chain, round_id)
     target = league.events.Locked().process_receipt(r)[0]["args"]["targetBlock"]
     write_live({"round": round_id, "phase": "locked", "targetBlock": target})
-    post_prices(chain, oracle, dict.fromkeys(replay["tickers"], BASE_PRICE), "race start ($100 each)")
+    used = [bytes(t).rstrip(b"\0").decode() for t in league.functions.getRound(round_id).call()[0]]
+    chain.log(f"{len(used)} distinct stocks used by entries (of {len(replay['tickers'])} in the pool): "
+              "only these get prices.")
+    post_prices(chain, oracle, dict.fromkeys(used, BASE_PRICE), "race start ($100 each)")
     chain.mine_until(target)
     r = chain.send(league.functions.start(round_id), "start")
     w = league.events.Started().process_receipt(r)[0]["args"]["windowIndex"]
@@ -429,10 +463,10 @@ def run_round(chain: Chain, round_id: int | None = None) -> dict:
               f"{dates[0]} to {dates[-1]}")
 
     chain.phase = "replay"
-    closes, tickers = replay["closes"], replay["tickers"]
+    closes, col = replay["closes"], {t: i for i, t in enumerate(replay["tickers"])}
     for d in range(1, RACE_DAYS + 1):
         t0 = time.time()
-        post_prices(chain, oracle, {t: BASE_PRICE * closes[w + d][i] / closes[w][i] for i, t in enumerate(tickers)},
+        post_prices(chain, oracle, {t: BASE_PRICE * closes[w + d][col[t]] / closes[w][col[t]] for t in used},
                     f"day {d}/{RACE_DAYS} ({dates[d]})")
         scores = league.functions.liveScores(round_id).call()
         write_live({"round": round_id, "phase": "racing", "day": d, "days": RACE_DAYS, "date": dates[d], "window": w,
@@ -518,11 +552,12 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--round", type=int, help="round id (default: the latest)")
     ap.add_argument("--entry-seconds", type=int, default=300, help="how long entries stay open")
     ap.add_argument("--stake", type=float, default=1.0, help="entry stake in MON (default 1)")
+    ap.add_argument("--reuse-oracle", action="store_true", help="deploy: only a new FundLeague, keep the League oracle")
     args = ap.parse_args(argv)
     try:
         chain = Chain(args.network, rpc=args.rpc, keystore=args.keystore)
         if args.command in ("deploy", "demo"):
-            deploy(chain)
+            deploy(chain, reuse_oracle=args.reuse_oracle)
         if args.command in ("pool", "demo"):
             make_pool(chain)
         if args.command in ("open", "demo"):

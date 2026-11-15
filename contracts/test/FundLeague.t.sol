@@ -15,9 +15,12 @@ contract GreedyPlayer {
         league = l;
     }
 
-    function play(uint256 id, bytes32[] calldata tickers, uint16[] calldata weights) external payable {
+    function play(uint256 id, bytes32[] calldata tickers, uint16[] calldata weights, bytes32[][] calldata proofs)
+        external
+        payable
+    {
         roundId = id;
-        league.enter{value: msg.value}(id, "Greedy", tickers, weights);
+        league.enter{ value: msg.value }(id, "Greedy", tickers, weights, proofs);
     }
 
     function grab() external {
@@ -71,8 +74,59 @@ contract FundLeagueTest is Test {
         oracle.postPrice(bytes32(bytes(t)), price);
     }
 
+    // Merkle tree over `pool`, built the same way as chain/league.py and the page: leaf = keccak256(ticker),
+    // pairs hashed in sorted order, an odd node at the end of a level moves up unchanged.
+    function _leaves(bytes32[] memory tickers) internal pure returns (bytes32[] memory l) {
+        l = new bytes32[](tickers.length);
+        for (uint256 i = 0; i < tickers.length; i++) l[i] = keccak256(abi.encodePacked(tickers[i]));
+    }
+
+    function _up(bytes32[] memory level) internal pure returns (bytes32[] memory next) {
+        next = new bytes32[]((level.length + 1) / 2);
+        for (uint256 i = 0; i < next.length; i++) {
+            if (2 * i + 1 == level.length) {
+                next[i] = level[2 * i];
+            } else {
+                (bytes32 a, bytes32 b) = (level[2 * i], level[2 * i + 1]);
+                next[i] = a < b ? keccak256(abi.encodePacked(a, b)) : keccak256(abi.encodePacked(b, a));
+            }
+        }
+    }
+
+    function _rootOf(bytes32[] memory tickers) internal pure returns (bytes32) {
+        bytes32[] memory level = _leaves(tickers);
+        while (level.length > 1) level = _up(level);
+        return level[0];
+    }
+
+    function _proofIn(bytes32[] memory tickers, bytes32 t) internal pure returns (bytes32[] memory proof) {
+        uint256 idx = type(uint256).max;
+        for (uint256 i = 0; i < tickers.length; i++) if (tickers[i] == t) idx = i;
+        if (idx == type(uint256).max) return new bytes32[](0); // not in the pool: an empty proof fails
+        bytes32[] memory level = _leaves(tickers);
+        bytes32[] memory tmp = new bytes32[](40);
+        uint256 n;
+        while (level.length > 1) {
+            uint256 sib = idx ^ 1;
+            if (sib < level.length) tmp[n++] = level[sib];
+            level = _up(level);
+            idx /= 2;
+        }
+        proof = new bytes32[](n);
+        for (uint256 i = 0; i < n; i++) proof[i] = tmp[i];
+    }
+
+    function _proofs(bytes32[] memory t) internal view returns (bytes32[][] memory pr) {
+        pr = new bytes32[][](t.length);
+        for (uint256 i = 0; i < t.length; i++) pr[i] = _proofIn(pool, t[i]);
+    }
+
+    function _enterV(uint256 v, uint256 id, string memory name, bytes32[] memory t, uint16[] memory w) internal {
+        league.enter{ value: v }(id, name, t, w, _proofs(t));
+    }
+
     function _open() internal returns (uint256 id) {
-        id = league.openRound(pool, STAKE, block.timestamp + 60, DURATION, DATA, WINDOWS);
+        id = league.openRound(_rootOf(pool), pool.length, STAKE, block.timestamp + 60, DURATION, DATA, WINDOWS);
     }
 
     function _t3(string memory a, string memory b, string memory c) internal pure returns (bytes32[] memory t) {
@@ -86,8 +140,9 @@ contract FundLeagueTest is Test {
     }
 
     function _enter(address who, uint256 id, string memory name, bytes32[] memory t, uint16[] memory w) internal {
+        bytes32[][] memory pr = _proofs(t);
         vm.prank(who);
-        league.enter{value: STAKE}(id, name, t, w);
+        league.enter{ value: STAKE }(id, name, t, w, pr);
     }
 
     function _enterAiGoldHealth(uint256 id) internal {
@@ -142,19 +197,19 @@ contract FundLeagueTest is Test {
         uint256 id = _open();
         vm.startPrank(alice);
         vm.expectRevert("League: weights must add up to 100%");
-        league.enter{value: STAKE}(id, "x", _t3("NVDA", "AVGO", "LLY"), _w3(5000, 3000, 1999));
+        _enterV(STAKE, id, "x", _t3("NVDA", "AVGO", "LLY"), _w3(5000, 3000, 1999));
         vm.expectRevert("League: each weight must be at least 5%");
-        league.enter{value: STAKE}(id, "x", _t3("NVDA", "AVGO", "LLY"), _w3(9100, 499, 401));
+        _enterV(STAKE, id, "x", _t3("NVDA", "AVGO", "LLY"), _w3(9100, 499, 401));
         vm.expectRevert("League: stock is not in the pool");
-        league.enter{value: STAKE}(id, "x", _t3("NVDA", "AVGO", "TSLA"), _w3(5000, 3000, 2000));
+        _enterV(STAKE, id, "x", _t3("NVDA", "AVGO", "TSLA"), _w3(5000, 3000, 2000));
         vm.expectRevert("League: duplicate stock");
-        league.enter{value: STAKE}(id, "x", _t3("NVDA", "AVGO", "NVDA"), _w3(5000, 3000, 2000));
-        vm.expectRevert("League: one weight per stock");
-        league.enter{value: STAKE}(id, "x", _t3("NVDA", "AVGO", "LLY"), new uint16[](2));
+        _enterV(STAKE, id, "x", _t3("NVDA", "AVGO", "NVDA"), _w3(5000, 3000, 2000));
+        vm.expectRevert("League: one weight and one proof per stock");
+        _enterV(STAKE, id, "x", _t3("NVDA", "AVGO", "LLY"), new uint16[](2));
         vm.expectRevert("League: name must be 1 to 32 bytes");
-        league.enter{value: STAKE}(id, "", _t3("NVDA", "AVGO", "LLY"), _w3(5000, 3000, 2000));
+        _enterV(STAKE, id, "", _t3("NVDA", "AVGO", "LLY"), _w3(5000, 3000, 2000));
         vm.expectRevert("League: name must be 1 to 32 bytes");
-        league.enter{value: STAKE}(id, "this name is far too long for a fund name", _t3("NVDA", "AVGO", "LLY"),
+        _enterV(STAKE, id, "this name is far too long for a fund name", _t3("NVDA", "AVGO", "LLY"),
             _w3(5000, 3000, 2000));
 
         bytes32[] memory two = new bytes32[](2);
@@ -162,14 +217,14 @@ contract FundLeagueTest is Test {
         uint16[] memory w2 = new uint16[](2);
         (w2[0], w2[1]) = (5000, 5000);
         vm.expectRevert("League: pick 3 to 8 stocks");
-        league.enter{value: STAKE}(id, "x", two, w2);
+        _enterV(STAKE, id, "x", two, w2);
 
         bytes32[] memory nine = new bytes32[](9);
         uint16[] memory w9 = new uint16[](9);
         for (uint256 i = 0; i < 8; i++) (nine[i], w9[i]) = (pool[i], 1000);
         (nine[8], w9[8]) = (bytes32("TSLA"), 2000);
         vm.expectRevert("League: pick 3 to 8 stocks");
-        league.enter{value: STAKE}(id, "x", nine, w9);
+        _enterV(STAKE, id, "x", nine, w9);
         vm.stopPrank();
     }
 
@@ -179,7 +234,7 @@ contract FundLeagueTest is Test {
         for (uint256 i = 0; i < 7; i++) w[i] = 500; // 7 x 5% = 35%
         w[7] = 6500;
         vm.prank(alice);
-        league.enter{value: STAKE}(id, "Eight", pool, w);
+        _enterV(STAKE, id, "Eight", pool, w);
         assertEq(league.entryOf(id, alice), 1);
     }
 
@@ -187,11 +242,11 @@ contract FundLeagueTest is Test {
         uint256 id = _open();
         vm.startPrank(alice);
         vm.expectRevert("League: send exactly the entry stake");
-        league.enter{value: 0.5 ether}(id, "x", _t3("NVDA", "AVGO", "LLY"), _w3(5000, 3000, 2000));
+        _enterV(0.5 ether, id, "x", _t3("NVDA", "AVGO", "LLY"), _w3(5000, 3000, 2000));
         vm.expectRevert("League: send exactly the entry stake");
-        league.enter{value: 2 ether}(id, "x", _t3("NVDA", "AVGO", "LLY"), _w3(5000, 3000, 2000));
+        _enterV(2 ether, id, "x", _t3("NVDA", "AVGO", "LLY"), _w3(5000, 3000, 2000));
         vm.expectRevert("League: send exactly the entry stake");
-        league.enter{value: 0}(id, "x", _t3("NVDA", "AVGO", "LLY"), _w3(5000, 3000, 2000));
+        _enterV(0, id, "x", _t3("NVDA", "AVGO", "LLY"), _w3(5000, 3000, 2000));
         vm.stopPrank();
     }
 
@@ -200,7 +255,7 @@ contract FundLeagueTest is Test {
         _enter(alice, id, "First", _t3("NVDA", "AVGO", "LLY"), _w3(5000, 3000, 2000));
         vm.prank(alice);
         vm.expectRevert("League: this wallet already entered");
-        league.enter{value: STAKE}(id, "Second", _t3("NEM", "GOLD", "MRK"), _w3(5000, 3000, 2000));
+        _enterV(STAKE, id, "Second", _t3("NEM", "GOLD", "MRK"), _w3(5000, 3000, 2000));
     }
 
     function test_entry_after_deadline_refused() public {
@@ -208,7 +263,7 @@ contract FundLeagueTest is Test {
         vm.warp(block.timestamp + 60); // exactly at the deadline
         vm.prank(alice);
         vm.expectRevert("League: entries are closed");
-        league.enter{value: STAKE}(id, "Late", _t3("NVDA", "AVGO", "LLY"), _w3(5000, 3000, 2000));
+        _enterV(STAKE, id, "Late", _t3("NVDA", "AVGO", "LLY"), _w3(5000, 3000, 2000));
     }
 
     // ───────────── scoring and payouts ─────────────
@@ -306,7 +361,7 @@ contract FundLeagueTest is Test {
     function test_reentrancy_guard_blocks_a_second_payout() public {
         uint256 id = _open();
         GreedyPlayer g = new GreedyPlayer(league);
-        g.play{value: STAKE}(id, _t3("NVDA", "AVGO", "LLY"), _w3(5000, 3000, 2000));
+        g.play{value: STAKE}(id, _t3("NVDA", "AVGO", "LLY"), _w3(5000, 3000, 2000), _proofs(_t3("NVDA", "AVGO", "LLY")));
         _enter(bob, id, "Gold bug", _t3("NEM", "GOLD", "MRK"), _w3(4000, 4000, 2000));
         _lockAndStart(id);
         _post("NVDA", 150e8);
@@ -340,12 +395,12 @@ contract FundLeagueTest is Test {
         league.lock(id);
         vm.roll(block.number + 4);
         vm.warp(block.timestamp + 2 days); // prices posted 2 days ago
-        vm.expectRevert("League: a pool price is stale");
+        vm.expectRevert("League: a picked stock's price is stale");
         league.start(id);
         _postAll(100e8);
         league.start(id);
         vm.warp(block.timestamp + 2 days); // replay stopped posting
-        vm.expectRevert("League: a pool price is stale");
+        vm.expectRevert("League: a picked stock's price is stale");
         league.settle(id);
     }
 
@@ -408,32 +463,34 @@ contract FundLeagueTest is Test {
     function test_only_operator_opens_rounds_and_inputs_are_checked() public {
         vm.prank(alice);
         vm.expectRevert("League: only the operator");
-        league.openRound(pool, STAKE, block.timestamp + 60, DURATION, DATA, WINDOWS);
-        bytes32[] memory dup = new bytes32[](3);
-        (dup[0], dup[1], dup[2]) = (bytes32("NVDA"), bytes32("AVGO"), bytes32("NVDA"));
-        vm.expectRevert("League: duplicate ticker in pool");
-        league.openRound(dup, STAKE, block.timestamp + 60, DURATION, DATA, WINDOWS);
+        league.openRound(_rootOf(pool), pool.length, STAKE, block.timestamp + 60, DURATION, DATA, WINDOWS);
+        vm.expectRevert("League: missing pool root");
+        league.openRound(bytes32(0), pool.length, STAKE, block.timestamp + 60, DURATION, DATA, WINDOWS);
+        vm.expectRevert("League: pool must have at least 3 stocks");
+        league.openRound(_rootOf(pool), 2, STAKE, block.timestamp + 60, DURATION, DATA, WINDOWS);
         vm.expectRevert("League: entry stake must be > 0");
-        league.openRound(pool, 0, block.timestamp + 60, DURATION, DATA, WINDOWS);
+        league.openRound(_rootOf(pool), pool.length, 0, block.timestamp + 60, DURATION, DATA, WINDOWS);
         vm.expectRevert("League: deadline must be in the future");
-        league.openRound(pool, STAKE, block.timestamp, DURATION, DATA, WINDOWS);
+        league.openRound(_rootOf(pool), pool.length, STAKE, block.timestamp, DURATION, DATA, WINDOWS);
         vm.expectRevert("League: missing replay data hash");
-        league.openRound(pool, STAKE, block.timestamp + 60, DURATION, bytes32(0), WINDOWS);
+        league.openRound(_rootOf(pool), pool.length, STAKE, block.timestamp + 60, DURATION, bytes32(0), WINDOWS);
         vm.expectRevert("League: need at least one replay window");
-        league.openRound(pool, STAKE, block.timestamp + 60, DURATION, DATA, 0);
+        league.openRound(_rootOf(pool), pool.length, STAKE, block.timestamp + 60, DURATION, DATA, 0);
     }
 
     function test_data_hash_and_pool_are_recorded_before_entries() public {
         uint256 id = _open();
         FundLeague.RoundInfo memory info = league.getRound(id);
         assertEq(info.dataHash, DATA);
-        assertEq(info.pool.length, pool.length);
+        assertEq(info.poolSize, pool.length);
+        assertEq(info.poolRoot, _rootOf(pool));
+        assertEq(info.used.length, 0); // nothing needs a price until someone enters
         assertEq(uint256(info.phase), uint256(FundLeague.Phase.Open));
     }
 
     function test_events_are_emitted() public {
         vm.expectEmit(true, false, false, false);
-        emit FundLeague.RoundOpened(1, pool, 0, 0, 0, bytes32(0), 0);
+        emit FundLeague.RoundOpened(1, bytes32(0), 0, 0, 0, 0, bytes32(0), 0);
         uint256 id = _open();
         vm.expectEmit(true, true, true, true);
         emit FundLeague.Entered(id, alice, 0, "AI rocket", _t3("NVDA", "AVGO", "LLY"), _w3(5000, 3000, 2000));
@@ -454,5 +511,85 @@ contract FundLeagueTest is Test {
         emit FundLeague.Claimed(id, alice, 2 ether, false);
         vm.prank(alice);
         league.claim(id);
+    }
+    // ───────────── full-universe pool: prices only for picked stocks ─────────────
+
+    function _bigPool(uint256 n) internal pure returns (bytes32[] memory big) {
+        big = new bytes32[](n);
+        for (uint256 i = 0; i < n; i++) big[i] = keccak256(abi.encode("ticker", i)) >> 8; // 666 distinct "tickers"
+    }
+
+    function test_666_stock_pool_needs_prices_only_for_picked_stocks() public {
+        bytes32[] memory big = _bigPool(666);
+        delete pool;
+        for (uint256 i = 0; i < big.length; i++) pool.push(big[i]); // _proofs() builds proofs from `pool`
+        bytes32 root = _rootOf(pool);
+        uint256 g0 = gasleft();
+        uint256 id = league.openRound(root, pool.length, STAKE, block.timestamp + 60, DURATION, DATA, WINDOWS);
+        uint256 openGas = g0 - gasleft();
+        emit log_named_uint("openRound gas with a 666-stock pool", openGas);
+        assertLt(openGas, 250_000); // one root, not 666 storage writes
+
+        // Two entries, 3 stocks each, sharing one: only 5 distinct tickers are used.
+        bytes32[] memory a = new bytes32[](3);
+        (a[0], a[1], a[2]) = (big[0], big[100], big[665]);
+        bytes32[] memory b = new bytes32[](3);
+        (b[0], b[1], b[2]) = (big[100], big[333], big[500]);
+        _enter(alice, id, "Few A", a, _w3(5000, 3000, 2000));
+        _enter(bob, id, "Few B", b, _w3(4000, 4000, 2000));
+        FundLeague.RoundInfo memory info = league.getRound(id);
+        assertEq(info.used.length, 5);
+        assertEq(info.poolSize, 666);
+
+        // Prices are posted ONLY for the 5 used tickers; the other 661 pool stocks never get one.
+        bytes32[] memory used = info.used;
+        uint256[] memory p = new uint256[](used.length);
+        for (uint256 i = 0; i < p.length; i++) p[i] = 100e8;
+        vm.warp(block.timestamp + 61);
+        oracle.postPrices(used, p);
+        league.lock(id);
+        vm.roll(block.number + league.LOCK_DELAY() + 1);
+        league.start(id);
+        oracle.postPrice(big[665], 200e8); // alice's 20% stock doubles: +20%
+        vm.warp(block.timestamp + DURATION);
+        league.settle(id);
+        (,,,, int256 sa) = league.getEntry(id, 0);
+        (,,,, int256 sb) = league.getEntry(id, 1);
+        assertEq(sa, 0.2e18);
+        assertEq(sb, 0);
+        (uint256 unusedPrice,) = oracle.priceOf(big[1]);
+        assertEq(unusedPrice, 0); // an unused pool ticker never needed a price
+        (uint256[] memory sp, uint256[] memory ep) = league.getPrices(id);
+        assertEq(sp.length, 5);
+        assertEq(ep.length, 5);
+        assertEq(_claim(alice, id), 2 ether);
+    }
+
+    function test_a_picked_stock_without_a_price_blocks_start() public {
+        bytes32[] memory big = _bigPool(50);
+        delete pool;
+        for (uint256 i = 0; i < big.length; i++) pool.push(big[i]);
+        uint256 id = league.openRound(_rootOf(pool), pool.length, STAKE, block.timestamp + 60, DURATION, DATA, WINDOWS);
+        bytes32[] memory a = new bytes32[](3);
+        (a[0], a[1], a[2]) = (big[1], big[2], big[3]);
+        _enter(alice, id, "A", a, _w3(5000, 3000, 2000));
+        _enter(bob, id, "B", a, _w3(4000, 4000, 2000));
+        vm.warp(block.timestamp + 61);
+        league.lock(id);
+        vm.roll(block.number + league.LOCK_DELAY() + 1);
+        vm.expectRevert("League: a picked stock has no price");
+        league.start(id);
+    }
+
+    function test_proof_for_another_ticker_or_another_pool_is_refused() public {
+        uint256 id = _open();
+        bytes32[] memory t = _t3("NVDA", "AVGO", "LLY");
+        bytes32[][] memory pr = _proofs(t);
+        pr[2] = _proofIn(pool, bytes32("NEM")); // NEM's proof doesn't prove LLY
+        vm.prank(alice);
+        vm.expectRevert("League: stock is not in the pool");
+        league.enter{ value: STAKE }(id, "x", t, _w3(5000, 3000, 2000), pr);
+        assertTrue(league.inPool(id, bytes32("NVDA"), _proofIn(pool, bytes32("NVDA"))));
+        assertFalse(league.inPool(id, bytes32("TSLA"), _proofIn(pool, bytes32("NVDA"))));
     }
 }

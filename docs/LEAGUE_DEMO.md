@@ -10,16 +10,22 @@ split it). With fewer than 2 entries, or if the round stalls, everyone gets thei
 | Piece | What it does |
 |---|---|
 | `contracts/src/FundLeague.sol` | Entries (validated ETFs + stake), lock, random window, start/end prices, scoring, claims |
-| `chain/league.py` | Operator: deploys the League's **own** oracle + FundLeague, picks the 60-stock pool, opens a round, runs lock → start → replay → settle |
+| `chain/league.py` | Operator: deploys the League's **own** oracle + FundLeague, builds the pool (the full universe), opens a round, runs lock → start → replay → settle |
 | `chain/league_bets.py` | Backup: enters 3–4 sample ETFs from test wallets, and claims for them |
 | `league/index.html` | The page: Build your ETF, entries list, countdown, live leaderboard, winner, Claim |
-| `league/pool.json` | The 60 pool stocks with each stock's engine result per theme (powers "Build your ETF") |
+| `league/pool.json` | The pool: the full universe (652 of the 666 stocks; 14 lack the 400+ days of history a race window needs) with names, industries and each stock's engine result per theme (powers "Build your ETF": any pool stock can be picked) |
 | `league/presets.json` | The engine builder's suggestions for common Want/Avoid combos, restricted to the pool |
-| `league/replay_prices.json` | Real past closes for the pool; its hash is fixed on-chain before anyone enters |
+| `league/replay_prices.json` | Real past closes for the whole pool; its hash is fixed on-chain before anyone enters |
 | `deployments/<network>-league.json` | League addresses, in their **own** file (`deployments/<network>.json` belongs to the main deploy) |
 
 The League never uses the main demo's contracts (it has its own oracle), so replaying old prices can't change
 the dashboard or the "try adding XOM" demo.
+
+**Pool on-chain = one Merkle root.** The contract stores only the root of a Merkle tree of the pool's tickers, so
+opening a round costs the same for 652 stocks as for 10 (about 0.2M gas). Each entry sends one short proof per stock
+(at most 10 hashes) that it is in the pool; the page and `league_bets` build the proofs from the pool list in the
+deployment file. As entries come in, the contract keeps a deduplicated list of the tickers they use; **only those get
+prices** ($100 right before start, then one price batch per replayed day). Pool stocks nobody picked never need a price.
 
 **ETF rules** (checked by the contract and by the page): 3–8 stocks from the pool, no duplicates, each weight at
 least 5%, weights adding up to exactly 100%, one entry per wallet per round, exactly the entry stake, and a name of
@@ -67,6 +73,7 @@ All in one go for a rehearsal: `python -m chain.league demo --network anvil --en
 # Override with LEAGUE_KEYSTORE / LEAGUE_KEYSTORE_PASSWORD_FILE. Fund it with 20 MON first.
 
 python -m chain.league deploy --network monad-testnet      # -> deployments/monad-testnet-league.json
+#   (add --reuse-oracle to deploy only a new FundLeague and keep the League's oracle)
 python -m chain.league pool   --network monad-testnet
 python -m chain.league open   --network monad-testnet --entry-seconds 300 --stake 1
 python -m chain.league run    --network monad-testnet      # start right away and leave it running (see "Timing")
@@ -95,19 +102,23 @@ local only.
 
 ## Testnet MON budget
 
-Measured on Anvil (one setup and one round with 4 entries), priced at Monad testnet's 102 gwei. Monad charges
-the gas **limit** a transaction asks for; every transaction asks for the estimate × 1.15.
+Measured on Anvil (one round with 4 entries using 20 distinct stocks, 652-stock pool), priced at Monad testnet's
+102 gwei. Monad charges the gas **limit** a transaction asks for; every transaction asks for the estimate × 1.15.
 
 | Who / step | Transactions | Gas limit | MON |
 |---|---|---|---|
-| Operator: deploy oracle + FundLeague (once) | 2 | 4.19 M | 0.43 |
-| Operator: open (pool at $100 + openRound) | 2 | 6.76 M | 0.69 |
-| Operator: lock, $100 reset, start | 3 | 3.07 M | 0.31 |
-| Operator: 20-day replay (60 prices per day) | 20 | 17.59 M | 1.79 |
-| Operator: settle (4 entries; ~+0.004 MON per extra entry) | 1 | 2.56 M | 0.26 |
-| **Operator: one round** | 26 | 30.0 M | **3.06** |
-| Player: one entry | 1 | 0.28 M | 0.028 + the 1 MON stake |
+| Operator: deploy oracle + FundLeague (once) | 2 | 4.40 M | 0.45 |
+| Operator: open (Merkle root only, no prices) | 1 | 0.23 M | 0.024 |
+| Operator: lock, $100 reset for the used stocks, start | 3 | 1.99 M | 0.20 |
+| Operator: 20-day replay (20 used stocks per day) | 20 | 6.28 M | 0.64 |
+| Operator: settle (4 entries) | 1 | 1.04 M | 0.11 |
+| **Operator: one round** | 25 | 9.54 M | **0.97** |
+| Player: one entry (proofs + new stocks added to the used list) | 1 | ~0.59 M | 0.060 + the 1 MON stake |
 | Player: one claim | 1 | 0.09 M | 0.009 |
+
+The replay and start/settle costs grow with the number of **distinct stocks entries use** (about 0.3M gas per used
+stock per round), not with the pool size. Before this change (60-stock pool, prices for every pool stock) a round
+cost the operator 3.06 MON.
 
 **Operator wallet: put in 20 MON.** Setup plus 3 rounds is about 9.6 MON. That covers a rehearsal, the live round
 and a spare, with roughly 2× margin for gas-price spikes and bigger rounds.

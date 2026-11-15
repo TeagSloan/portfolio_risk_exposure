@@ -27,13 +27,13 @@ from pathlib import Path
 from eth_account import Account
 from web3 import Web3
 
-from chain.league import NETWORKS, PRESETS_FILE, Chain, LeagueError, league_section
+from chain.league import merkle_proof, NETWORKS, PRESETS_FILE, Chain, LeagueError, league_section
 from chain.publish import to_bytes32
 
 ROOT = Path(__file__).resolve().parent.parent
 WALLETS = ROOT / "data" / "cache" / "league_wallets.json"
 TOPUP_WAIT_S = 6
-GAS_BUFFER_MON = 0.15  # stake + gas; Monad checks balance against gas limit x max fee (about 2x the gas price)
+GAS_BUFFER_MON = 0.25  # stake + gas; Monad checks balance against gas limit x max fee (about 2x the gas price); an entry is ~0.59M gas
 
 # The sample ETFs: (name, preset key, weights tilt). Weights are in basis points and add up to 10,000.
 SAMPLES = [
@@ -88,14 +88,16 @@ def enter(chain: Chain, count: int, round_id: int | None = None, log=print) -> l
                 time.sleep(TOPUP_WAIT_S)  # Monad checks balances a few blocks behind; let the top-up show first
         league = player.contract("FundLeague", lg["fundLeague"])
         player.phase = "player entry"
+        proofs = [merkle_proof(lg["pool"], t) for t in etf["tickers"]]  # one Merkle proof per stock
         try:
             league.functions.enter(rid, etf["name"], [to_bytes32(t) for t in etf["tickers"]],
-                                   etf["weights_bps"]).call({"from": player.address, "value": stake})
+                                   etf["weights_bps"], proofs).call({"from": player.address, "value": stake})
         except Exception as e:  # noqa: BLE001 - re-runs skip wallets that already entered
             if "already entered" in str(e):
                 log(f"  {player.address[:8]}… already entered, skipped")
                 continue
-        player.send(league.functions.enter(rid, etf["name"], [to_bytes32(t) for t in etf["tickers"]], etf["weights_bps"]),
+        player.send(league.functions.enter(rid, etf["name"], [to_bytes32(t) for t in etf["tickers"]], etf["weights_bps"],
+                                           proofs),
                     f"enter {etf['name']}", value=stake)
         log(f"  {player.address[:8]}… entered '{etf['name']}': " +
             ", ".join(f"{t} {w / 100:g}%" for t, w in zip(etf["tickers"], etf["weights_bps"], strict=True)))
