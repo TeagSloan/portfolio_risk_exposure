@@ -4,8 +4,8 @@
 cd "$(dirname "$0")"
 exec streamlit run demo_app.py \
   --theme.base dark \
-  --theme.primaryColor "#6E5CE6" \
-  --theme.backgroundColor "#0E0F14" \
-  --theme.secondaryBackgroundColor "#171922" \
-  --theme.textColor "#F2F3F7" \
+  --theme.primaryColor "#C2456F" \
+  --theme.backgroundColor "#0B0A0B" \
+  --theme.secondaryBackgroundColor "#171315" \
+  --theme.textColor "#F5EEF1" \
   "$@"

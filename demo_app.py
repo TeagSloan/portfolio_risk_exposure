@@ -153,7 +153,7 @@ def heatmap_and_audit(table: dict[str, dict[str, dict]], weights: dict[str, floa
         if matrix.empty:
             st.info("Only cash: nothing to score.")
             return
-        st.caption("Violet = High or Moderate, green = Limited (doesn't rise with the theme), "
+        st.caption("Pink = High or Moderate, green = Limited (doesn't rise with the theme), "
                    "brown ? = the data can't tell, which is not the same as zero.")
         fig = style.recolor_heatmap(dashboard.heatmap_figure(matrix, weights), dashboard.TIER_ORDER)
         st.plotly_chart(fig, width="stretch")
@@ -238,12 +238,12 @@ def fan_figure(fan: dict) -> go.Figure:
     fig.add_trace(go.Scatter(x=days, y=[v * k for v in p["95"]], line={"width": 0}, hoverinfo="skip",
                              showlegend=False))
     fig.add_trace(go.Scatter(x=days, y=[v * k for v in p["5"]], fill="tonexty", line={"width": 0},
-                             fillcolor="rgba(139,124,246,0.16)", name="9 in 10 years land here"))
+                             fillcolor="rgba(244,166,191,0.14)", name="9 in 10 years land here"))
     fig.add_trace(go.Scatter(x=days, y=[v * k for v in p["75"]], line={"width": 0}, hoverinfo="skip",
                              showlegend=False))
     fig.add_trace(go.Scatter(x=days, y=[v * k for v in p["25"]], fill="tonexty", line={"width": 0},
-                             fillcolor="rgba(139,124,246,0.32)", name="Half of years land here"))
-    fig.add_trace(go.Scatter(x=days, y=[v * k for v in p["50"]], line={"color": style.VIOLET, "width": 3},
+                             fillcolor="rgba(244,166,191,0.30)", name="Half of years land here"))
+    fig.add_trace(go.Scatter(x=days, y=[v * k for v in p["50"]], line={"color": style.BLUSH, "width": 3},
                              name="Your fund, typical year"))
     fig.add_trace(go.Scatter(x=days, y=[v * k for v in b["50"]], line={"color": style.MUTED, "width": 2,
                                                                          "dash": "dot"},

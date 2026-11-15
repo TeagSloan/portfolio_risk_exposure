@@ -2,8 +2,9 @@
 
 Nothing here computes a number. Every function takes values the engine already produced and
 returns HTML (or restyles a Plotly figure) so the dashboard looks like one product with the
-League page: dark background, one violet accent, orange for "avoid", green/red only for gains
-and losses (always with a + or - sign).
+League page: black background, rose for buttons and "want", champagne gold for "avoid", mint and
+coral only for gains and losses (always with a + or - sign). Headings and big numbers use a serif
+(Fraunces) so it reads like a private bank, body text a clean sans (Manrope).
 """
 
 from __future__ import annotations
@@ -14,68 +15,68 @@ from html import escape
 # Palette and type (shared with the League page design)
 # ---------------------------------------------------------------------------------------------
 
-INK = "#0E0F14"          # page background
-CARD = "#171922"         # panels
-RAISED = "#1F2230"       # inputs, hover
-LINE = "#262A38"         # borders
-TEXT = "#F2F3F7"
-MUTED = "#9AA1B5"
-VIOLET = "#8B7CF6"       # the one accent: "want", buttons, the fund itself
-VIOLET_SOFT = "#2A2350"
-BUTTON = "#6E5CE6"       # violet dark enough for white button text (4.5:1)
-AMBER = "#FF9F5A"        # "avoid"
-AMBER_SOFT = "#3A2417"
-GAIN = "#3ECF8E"
-LOSS = "#F2555A"
+INK = "#0B0A0B"          # page background (black)
+CARD = "#171315"         # panels
+RAISED = "#211B1E"       # inputs, hover
+LINE = "#2E2529"         # borders
+TEXT = "#F5EEF1"
+MUTED = "#B8A9B0"
+ROSE = "#C2456F"         # buttons and "want" fills (white text reads on it)
+ROSE_HOVER = "#AD3A61"
+BLUSH = "#F4A6BF"        # highlights: the fund line, numbers you want to see
+BLUSH_TEXT = "#F9C9D8"   # text on rose-tinted chips
+ROSE_SOFT = "#3A1A27"    # rose-tinted chip background
+CHAMPAGNE = "#E8C98F"    # "avoid"
+CHAMPAGNE_SOFT = "#2E2516"
+GAIN = "#6FD6AE"
+LOSS = "#FF8A7A"
+NEUTRAL_BAR = "#3A3034"  # themes that aren't part of your choices
 
-TIER_STYLE = {  # (background, text) per tier, readable on dark
-    "High": ("#2A2350", "#DCD6FF"),
-    "Moderate": ("#232042", "#B9B0F7"),
-    "Limited": ("#1C2A24", "#7FD9AE"),
-    "Limited (lower confidence)": ("#1C2622", "#9CCFB6"),
-    "Not determined": ("#2C2618", "#E5C07B"),
-    "Not screened": ("#1E222B", MUTED),
+TIER_STYLE = {  # (background, text) per tier, readable on black
+    "High": (ROSE_SOFT, BLUSH_TEXT),
+    "Moderate": ("#2C1A22", "#E9A9BF"),
+    "Limited": ("#16261F", "#8FDDBD"),
+    "Limited (lower confidence)": ("#17221D", "#A4CFBB"),
+    "Not determined": (CHAMPAGNE_SOFT, CHAMPAGNE),
+    "Not screened": ("#1E191B", MUTED),
 }
 
-FONTS = ("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700"
-         "&family=Space+Grotesk:wght@500;600;700&display=swap")
+FONTS = ("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700"
+         "&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&display=swap")
+SERIF = "Fraunces, Georgia, serif"
+SANS = "Manrope, system-ui, sans-serif"
 
 CSS = f"""
 <style>
 @import url('{FONTS}');
-html, body, .stApp, .stMarkdown, p, label, input, textarea, button {{ font-family: Inter, system-ui, sans-serif; }}
+html, body, .stApp, .stMarkdown, p, label, input, textarea, button {{ font-family: {SANS}; }}
 .stApp {{ background: {INK}; color: {TEXT}; }}
 [data-testid="stHeader"] {{ background: transparent; }}
 [data-testid="stToolbar"], [data-testid="stDecoration"], footer {{ display: none; }}
 .block-container {{ max-width: 1240px; padding-top: 2.2rem; padding-bottom: 6rem; }}
-h1, h2, h3 {{ font-family: 'Space Grotesk', Inter, sans-serif !important; letter-spacing: -0.02em; color: {TEXT}; }}
+h1, h2, h3 {{ font-family: {SERIF} !important; font-weight: 500 !important; letter-spacing: -0.01em; color: {TEXT}; }}
 p, li, label, .stMarkdown {{ color: {TEXT}; }}
 [data-testid="stCaptionContainer"], .stCaption {{ color: {MUTED} !important; }}
 [data-testid="stWidgetLabel"] p {{ color: {TEXT}; font-weight: 600; }}
 .stButton > button, .stLinkButton > a {{ border-radius: 10px; min-height: 44px; font-weight: 600; }}
-[data-testid="stBaseButton-primary"], .stButton button[kind="primary"] {{ background: {BUTTON}; border: 0; color: #fff; }}
-[data-testid="stBaseButton-primary"]:hover, .stButton button[kind="primary"]:hover {{ background: #5F4CD9; color: #fff; }}
+[data-testid="stBaseButton-primary"], .stButton button[kind="primary"] {{ background: {ROSE}; border: 0; color: #fff; }}
+[data-testid="stBaseButton-primary"]:hover, .stButton button[kind="primary"]:hover {{ background: {ROSE_HOVER}; color: #fff; }}
 [data-testid="stBaseButton-primary"] p, .stButton button[kind="primary"] p {{ color: #fff; font-weight: 600; }}
 [data-testid="stBaseButton-secondary"] {{ background: {RAISED}; border: 1px solid {LINE}; color: {TEXT}; }}
 [data-testid="stExpander"] {{ background: {CARD}; border: 1px solid {LINE}; border-radius: 14px; }}
-[data-testid="stMetricValue"] {{ font-family: 'Space Grotesk', sans-serif; }}
+[data-testid="stMetricValue"] {{ font-family: {SERIF}; }}
+[data-testid="stTabs"] button p {{ font-size: 16px; font-weight: 600; }}
+[data-testid="stTabs"] [aria-selected="true"] p {{ color: {BLUSH}; }}
 div[data-baseweb="select"] > div, input, textarea {{ background: {RAISED} !important; color: {TEXT} !important; }}
-:focus-visible {{ outline: 2px solid {VIOLET} !important; outline-offset: 2px; }}
+:focus-visible {{ outline: 2px solid {BLUSH} !important; outline-offset: 2px; }}
 
-.tf-hero {{ display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 24px;
-  padding-bottom: 28px; border-bottom: 1px solid {LINE}; margin-bottom: 8px; }}
-.tf-hero h1 {{ font-size: 64px; line-height: 0.95; margin: 0; font-weight: 700; }}
-.tf-hero p {{ margin: 12px 0 0; color: {MUTED}; font-size: 18px; max-width: 620px; line-height: 1.5; }}
-.tf-steps {{ display: flex; gap: 8px; flex-wrap: wrap; }}
-.tf-steps span {{ font-size: 14px; color: {MUTED}; border: 1px solid {LINE}; border-radius: 999px; padding: 6px 12px; }}
-.tf-steps span.on {{ color: {TEXT}; border-color: {VIOLET}; background: {VIOLET_SOFT}; }}
+.tf-hero {{ padding: 8px 0 32px; border-bottom: 1px solid {LINE}; margin-bottom: 8px; }}
+.tf-hero h1 {{ font-size: 76px; line-height: 0.95; margin: 0; font-weight: 500 !important; letter-spacing: -0.025em; }}
+.tf-hero p {{ margin: 16px 0 0; color: {MUTED}; font-size: 19px; max-width: 640px; line-height: 1.55; }}
 
-.tf-step {{ display: flex; gap: 18px; align-items: baseline; margin: 56px 0 18px; }}
-.tf-step .n {{ font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700; color: {INK};
-  background: {VIOLET}; width: 40px; height: 40px; border-radius: 50%; display: inline-flex; align-items: center;
-  justify-content: center; flex: none; transform: translateY(6px); }}
-.tf-step h2 {{ font-size: 36px; margin: 0; line-height: 1.1; }}
-.tf-step p {{ margin: 6px 0 0; color: {MUTED}; font-size: 16px; max-width: 720px; line-height: 1.5; }}
+.tf-step {{ margin: 64px 0 20px; padding-top: 28px; border-top: 1px solid {LINE}; }}
+.tf-step h2 {{ font-size: 40px; margin: 0; line-height: 1.1; }}
+.tf-step p {{ margin: 8px 0 0; color: {MUTED}; font-size: 16px; max-width: 720px; line-height: 1.55; }}
 
 .tf-fp {{ background: {CARD}; border: 1px solid {LINE}; border-radius: 18px; padding: 28px 28px 18px; }}
 .tf-fp-cols {{ display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 12px; align-items: end;
@@ -84,7 +85,7 @@ div[data-baseweb="select"] > div, input, textarea {{ background: {RAISED} !impor
   align-items: stretch; }}
 .tf-fp-bar {{ border-radius: 8px 8px 2px 2px; min-height: 3px; transform-origin: bottom;
   animation: tf-grow 900ms cubic-bezier(.2,.8,.2,1) both; animation-delay: var(--d); }}
-.tf-fp-val {{ font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 22px; margin-bottom: 6px;
+.tf-fp-val {{ font-family: {SERIF}; font-weight: 500; font-size: 22px; margin-bottom: 6px;
   text-align: center; font-variant-numeric: tabular-nums; }}
 .tf-fp-names {{ display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 12px; padding-top: 10px; }}
 .tf-fp-names div {{ font-size: 13px; line-height: 1.3; color: {MUTED}; text-align: center; }}
@@ -99,15 +100,15 @@ div[data-baseweb="select"] > div, input, textarea {{ background: {RAISED} !impor
 .tf-funnel .row {{ display: grid; grid-template-columns: minmax(0, 1fr) 64px; column-gap: 12px; align-items: end; }}
 .tf-funnel .lbl {{ font-size: 14px; color: {TEXT}; line-height: 1.35; margin-bottom: 6px; }}
 .tf-funnel .bar {{ background: {RAISED}; border-radius: 6px; height: 10px; overflow: hidden; }}
-.tf-funnel .bar span {{ display: block; height: 100%; background: {VIOLET}; border-radius: 6px; }}
-.tf-funnel .num {{ font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 22px; text-align: right;
+.tf-funnel .bar span {{ display: block; height: 100%; background: {ROSE}; border-radius: 6px; }}
+.tf-funnel .num {{ font-family: {SERIF}; font-weight: 500; font-size: 24px; text-align: right;
   font-variant-numeric: tabular-nums; line-height: 1; }}
 
 .tf-hold {{ display: flex; flex-direction: column; }}
 .tf-hold .row {{ display: grid; grid-template-columns: 76px minmax(0, 1fr) auto 64px; gap: 14px; align-items: center;
   padding: 12px 4px; border-top: 1px solid {LINE}; }}
 .tf-hold .row:first-child {{ border-top: 0; }}
-.tf-hold .tk {{ font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 18px; }}
+.tf-hold .tk {{ font-family: {SANS}; font-weight: 700; font-size: 16px; letter-spacing: 0.02em; }}
 .tf-hold .nm {{ font-size: 14px; color: {TEXT}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
 .tf-hold .ind {{ font-size: 13px; color: {MUTED}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
 .tf-hold .w {{ text-align: right; font-variant-numeric: tabular-nums; color: {MUTED}; }}
@@ -119,11 +120,11 @@ div[data-baseweb="select"] > div, input, textarea {{ background: {RAISED} !impor
   .tf-hero h1 {{ font-size: 44px; }} .tf-fp-cols {{ height: 200px; }} }}
 .tf-tile {{ background: {CARD}; border: 1px solid {LINE}; border-radius: 14px; padding: 16px 18px; }}
 .tf-tile .k {{ font-size: 13px; color: {MUTED}; }}
-.tf-tile .v {{ font-family: 'Space Grotesk', sans-serif; font-size: 34px; font-weight: 700; margin-top: 4px;
+.tf-tile .v {{ font-family: {SERIF}; font-size: 36px; font-weight: 500; margin-top: 4px;
   font-variant-numeric: tabular-nums; }}
 .tf-tile .b {{ font-size: 13px; color: {MUTED}; margin-top: 2px; }}
 
-.tf-big {{ font-family: 'Space Grotesk', sans-serif; font-size: 88px; font-weight: 700; line-height: 1;
+.tf-big {{ font-family: {SERIF}; font-size: 96px; font-weight: 500; line-height: 1;
   font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }}
 .tf-sentence {{ font-size: 17px; line-height: 1.55; color: {TEXT}; max-width: 680px; }}
 .tf-checks {{ display: flex; flex-direction: column; gap: 8px; }}
@@ -135,8 +136,8 @@ div[data-baseweb="select"] > div, input, textarea {{ background: {RAISED} !impor
 .tf-rule {{ display: flex; gap: 12px; align-items: center; background: {CARD}; border: 1px solid {LINE};
   border-radius: 12px; padding: 12px 14px; font-size: 15px; }}
 .tf-banner {{ border-radius: 14px; padding: 18px 20px; font-size: 18px; font-weight: 600; line-height: 1.45; }}
-.tf-banner.bad {{ background: #2A1518; border: 1px solid #6A2A30; color: #FFB3AE; }}
-.tf-banner.good {{ background: #14281F; border: 1px solid #2A5A44; color: #9EEBC6; }}
+.tf-banner.bad {{ background: #2B1513; border: 1px solid #7A3530; color: #FFB8AC; }}
+.tf-banner.good {{ background: #13261E; border: 1px solid #2B5A46; color: #A6EBCF; }}
 .tf-banner small {{ display: block; font-size: 14px; font-weight: 500; color: {MUTED}; margin-top: 6px; }}
 .tf-addr {{ font-family: ui-monospace, Menlo, monospace; font-size: 14px; color: {MUTED}; word-break: break-all; }}
 </style>
@@ -146,27 +147,24 @@ div[data-baseweb="select"] > div, input, textarea {{ background: {RAISED} !impor
 def chip(text: str, kind: str) -> str:
     """A small rounded label. kind: want, avoid, or a tier name."""
     if kind == "want":
-        bg, fg = VIOLET_SOFT, "#DCD6FF"
+        bg, fg = ROSE_SOFT, BLUSH_TEXT
     elif kind == "avoid":
-        bg, fg = AMBER_SOFT, "#FFC9A3"
+        bg, fg = CHAMPAGNE_SOFT, CHAMPAGNE
     else:
         bg, fg = TIER_STYLE.get(kind, TIER_STYLE["Not screened"])
     return f'<span class="tf-chip" style="background:{bg};color:{fg}">{escape(text)}</span>'
 
 
-def hero(active_step: int) -> str:
-    steps = ["Choose themes", "See what you own", "Stress test", "Launch on Monad"]
-    pills = "".join(f'<span class="{"on" if i + 1 <= active_step else ""}">{i + 1}. {s}</span>'
-                    for i, s in enumerate(steps))
-    return ('<div class="tf-hero"><div><h1>Theme Funds</h1>'
-            '<p>Tell us the themes you want and the ones you want to avoid. We pick stocks by what they '
-            'actually move with, not their labels, then launch the fund on Monad with rules nobody can break.</p>'
-            f'</div><div class="tf-steps">{pills}</div></div>')
+def hero(active_step: int = 0) -> str:
+    """The page title. active_step is kept for older callers; the step pills are gone."""
+    return ('<div class="tf-hero"><h1>Theme Funds</h1>'
+            '<p>Invest in what you believe in. Tell us the themes you want and the ones to avoid. We pick '
+            'stocks by what they actually move with, not their labels, then lock your rules on Monad.</p></div>')
 
 
 def step(n: int, title: str, sentence: str) -> str:
-    return (f'<div class="tf-step"><span class="n" aria-hidden="true">{n}</span><div>'
-            f'<h2>{escape(title)}</h2><p>{escape(sentence)}</p></div></div>')
+    """A section heading. n is kept for older callers but no longer shown."""
+    return f'<div class="tf-step"><h2>{escape(title)}</h2><p>{escape(sentence)}</p></div>'
 
 
 def fingerprint(columns: list[dict]) -> str:
@@ -179,19 +177,19 @@ def fingerprint(columns: list[dict]) -> str:
     for i, c in enumerate(columns):
         pct = max(0.0, min(100.0, float(c["pct"])))
         if c["role"] == "want":
-            fill, val_color = VIOLET, "#DCD6FF"
+            fill, val_color = ROSE, BLUSH
         elif c["role"] == "avoid":
-            fill, val_color = (LOSS if pct > 0 else AMBER), "#FFC9A3"
+            fill, val_color = (LOSS if pct > 0 else CHAMPAGNE), CHAMPAGNE
         else:
-            fill, val_color = "#3A3F52", MUTED
+            fill, val_color = NEUTRAL_BAR, MUTED
         cols.append(f'<div class="tf-fp-col"><div class="tf-fp-val" style="color:{val_color}">{pct:.0f}%</div>'
                     f'<div class="tf-fp-bar" style="height:{max(pct, 1.2):.1f}%;background:{fill};'
                     f'--d:{i * 60}ms"></div></div>')
         role = {"want": "Want", "avoid": "Avoid"}.get(c["role"], "")
         names.append(f'<div><b>{escape(c["name"])}</b>{role}</div>')
-    legend = (f'<div class="tf-fp-legend"><span><i style="background:{VIOLET}"></i>A theme you want</span>'
-              f'<span><i style="background:{AMBER}"></i>A theme you avoid (should stay near 0%)</span>'
-              f'<span><i style="background:#3A3F52"></i>Not part of your choices</span></div>')
+    legend = (f'<div class="tf-fp-legend"><span><i style="background:{ROSE}"></i>A theme you want</span>'
+              f'<span><i style="background:{CHAMPAGNE}"></i>A theme you avoid (should stay near 0%)</span>'
+              f'<span><i style="background:{NEUTRAL_BAR}"></i>Not part of your choices</span></div>')
     return (f'<div class="tf-fp" role="img" aria-label="Share of the fund in High or Moderate stocks for each theme">'
             f'<div class="tf-fp-cols" style="--n:{n}">{"".join(cols)}</div>'
             f'<div class="tf-fp-names" style="--n:{n}">{"".join(names)}</div>{legend}</div>')
@@ -233,7 +231,7 @@ def tiles(items: list[tuple[str, str, str]]) -> str:
 def checks(items: list[tuple[bool, str]]) -> str:
     rows = []
     for ok, text in items:
-        bg, fg, mark = ("#14281F", GAIN, "✓") if ok else ("#2A1518", LOSS, "!")
+        bg, fg, mark = ("#13261E", GAIN, "✓") if ok else ("#2B1513", LOSS, "!")
         rows.append(f'<div class="tf-check"><span class="ic" style="background:{bg};color:{fg}" '
                     f'aria-label="{"passes" if ok else "does not pass"}">{mark}</span><span>{text}</span></div>')
     return f'<div class="tf-checks">{"".join(rows)}</div>'
@@ -262,8 +260,8 @@ def big_number(value: float, suffix: str = "%") -> str:
 # ---------------------------------------------------------------------------------------------
 
 HEATMAP_COLORS = {  # tier -> cell color for the dark heatmap (same order as engine.dashboard.TIER_ORDER)
-    "High": "#6E5CE6", "Moderate": "#3E3580", "Limited": "#1C3A2E", "Limited (lower confidence)": "#1A2A24",
-    "Not determined": "#3A3020", "Not screened": "#1E222B",
+    "High": ROSE, "Moderate": "#5E2840", "Limited": "#173A2D", "Limited (lower confidence)": "#182A22",
+    "Not determined": "#3A3020", "Not screened": "#1E191B",
 }
 
 
@@ -272,7 +270,7 @@ def recolor_heatmap(fig, tier_order: list[str]):
     n = len(tier_order)
     scale = []
     for i, tier in enumerate(tier_order):
-        color = HEATMAP_COLORS.get(tier, "#1E222B")
+        color = HEATMAP_COLORS.get(tier, "#1E191B")
         scale += [[i / n, color], [(i + 1) / n, color]]
     fig.update_traces(colorscale=scale, textfont={"color": TEXT, "size": 13}, xgap=3, ygap=3)
     return plotly_dark(fig, height=fig.layout.height)
@@ -282,7 +280,7 @@ def plotly_dark(fig, height: int | None = None):
     """Restyle any Plotly figure to match the page."""
     fig.update_layout(
         template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
-        font={"family": "Inter, system-ui, sans-serif", "color": TEXT, "size": 14},
+        font={"family": SANS, "color": TEXT, "size": 14},
         margin={"t": 30, "l": 10, "r": 10, "b": 10}, hoverlabel={"bgcolor": CARD, "bordercolor": LINE},
         legend={"bgcolor": "rgba(0,0,0,0)"},
     )
