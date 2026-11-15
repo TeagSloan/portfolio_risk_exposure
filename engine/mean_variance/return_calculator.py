@@ -62,6 +62,13 @@ def _window_table(returns_by_ticker):
     return pd.DataFrame(rows).T[["start", "end", "months"]]
 
 
+def _shortest_history(monthly_returns):
+    """Name the stock that limits the shared window, e.g. 'CRWV has only 19 months of prices.'"""
+    counts = monthly_returns.notna().sum()
+    ticker = counts.idxmin()
+    return f"{ticker} has only {int(counts[ticker])} months of prices."
+
+
 def estimate_inputs(monthly_returns, window_mode="shared"):
     """Annual expected returns and covariance matrix from monthly returns."""
     if window_mode not in WINDOW_MODES:
@@ -73,7 +80,8 @@ def estimate_inputs(monthly_returns, window_mode="shared"):
     if len(shared) < MIN_SHARED_MONTHS:
         raise InsufficientDataError(
             f"The stocks only share {len(shared)} months of history; at least "
-            f"{MIN_SHARED_MONTHS} are needed for a reliable estimate."
+            f"{MIN_SHARED_MONTHS} are needed for a reliable estimate. "
+            f"{_shortest_history(monthly_returns)}"
         )
 
     if window_mode == "shared":

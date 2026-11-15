@@ -41,7 +41,8 @@ window moves. The chart shows how the portfolio *did*; it is not a forecast.
 
 Part of the Theme Funds project. Install the project's requirements from the repo root
 (see the main README). The FMP key is read from the project's `.env` file
-(`FMP_API_KEY=...`); never put the key in the code or commit it to git.
+(`FMP_API_KEY=...`) by the project's FMP client (`engine/fmp.py`), which also caches every
+answer in `data/cache/fmp/`. Never put the key in the code or commit it to git.
 
 ## Run from the command line
 

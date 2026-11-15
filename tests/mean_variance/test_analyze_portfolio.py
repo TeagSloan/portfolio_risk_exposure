@@ -131,7 +131,7 @@ def test_evaluate_missing_prices(prices_three):
 
 def test_evaluate_not_enough_overlap():
     prices = make_prices(["AAA", "NEW"], start_after={"NEW": "2025-06-01"})
-    with pytest.raises(InsufficientDataError, match="only share"):
+    with pytest.raises(InsufficientDataError, match="only share .* NEW has only 16 months of prices"):
         ap.evaluate({"AAA": 0.5, "NEW": 0.5}, prices, 0.04)
 
 
@@ -141,12 +141,12 @@ def test_evaluate_not_enough_overlap():
 def fake_fmp(monkeypatch, prices_three):
     calls = {}
 
-    def fake_prices(tickers, start, end, api_key=None):
-        calls["prices"] = (tickers, start, end, api_key)
+    def fake_prices(tickers, start, end):
+        calls["prices"] = (tickers, start, end)
         return prices_three[tickers]
 
-    def fake_yield(api_key=None, today=None):
-        calls["yield"] = (api_key, today)
+    def fake_yield(today=None):
+        calls["yield"] = today
         return 0.0515
 
     monkeypatch.setattr(ap.data_fetcher, "fetch_adjusted_prices", fake_prices)
@@ -156,10 +156,10 @@ def fake_fmp(monkeypatch, prices_three):
 
 def test_analyze_portfolio_requests_right_dates_and_saves_chart(fake_fmp, tmp_path):
     out = tmp_path / "chart.html"
-    result = ap.analyze_portfolio({"aaa": 0.5, "BBB": 0.5}, api_key="k",
+    result = ap.analyze_portfolio({"aaa": 0.5, "BBB": 0.5},
                                   today=dt.date(2026, 11, 15), output_path=str(out))
-    tickers, start, end, key = fake_fmp["prices"]
-    assert tickers == ["AAA", "BBB"] and key == "k"
+    tickers, start, end = fake_fmp["prices"]
+    assert tickers == ["AAA", "BBB"]
     assert end == dt.date(2026, 10, 31)
     assert start == dt.date(2016, 9, 30)
     assert result.risk_free_rate == 0.0515

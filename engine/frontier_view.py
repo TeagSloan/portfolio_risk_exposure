@@ -9,7 +9,8 @@ with the lowest-risk mix and the best risk-adjusted (tangency) mix?"
 How it works, in plain terms:
 - Uses engine/mean_variance (efficient frontier, capital market line, minimum-variance and tangency
   portfolios, long-only).
-- Data: up to 10 years of MONTHLY dividend-adjusted returns from FMP, and the current 10-year Treasury
+- Data: up to 10 years of MONTHLY dividend-adjusted returns from FMP (through engine/fmp.py, so
+  cached like everything else), and the current 10-year Treasury
   yield as the risk-free rate. That's a longer, different window from the 2 years of daily data used for
   classification and the Monte Carlo, and it's labeled as such.
 - Each stock uses its own history (up to 10 years); how stocks move together comes from the period they
@@ -19,14 +20,9 @@ How it works, in plain terms:
 
 from __future__ import annotations
 
-from pathlib import Path
-
-from dotenv import load_dotenv
-
 from engine.mean_variance.analyze_portfolio import analyze_portfolio
 from engine.mean_variance.errors import PortfolioToolError
 
-ROOT = Path(__file__).resolve().parent.parent
 CASH = "CASH"
 WINDOW_MODE = "max_available"
 
@@ -67,16 +63,15 @@ def sentences(summary, cash: float) -> list[str]:
     return out
 
 
-def frontier_view(holdings: dict[str, float], api_key: str | None = None, today=None):
+def frontier_view(holdings: dict[str, float], today=None):
     """Return (JSON-ready dict, plotly figure or None). Never raises for data problems: they're reported."""
-    load_dotenv(ROOT / ".env")  # FMP_API_KEY for the mean-variance tool's own data fetcher
     invested, cash = _invested_weights({t.upper(): float(w) for t, w in holdings.items()})
     if len(invested) < 2:
         return ({"available": False, "cash_pct": round(cash * 100, 2),
                  "sentences": [("The mean-variance check needs at least two stocks, so it's skipped "
                                "for this portfolio.")]}, None)
     try:
-        analysis = analyze_portfolio(invested, window_mode=WINDOW_MODE, api_key=api_key, today=today)
+        analysis = analyze_portfolio(invested, window_mode=WINDOW_MODE, today=today)
     except PortfolioToolError as exc:
         return ({"available": False, "cash_pct": round(cash * 100, 2),
                  "sentences": [f"The mean-variance check couldn't run: {exc}"]}, None)

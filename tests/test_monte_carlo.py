@@ -186,6 +186,14 @@ def test_sentences_handle_a_portfolio_that_gains_even_in_bad_years():
     assert res.p_beat_benchmark == 1.0
 
 
+def test_all_cash_reads_as_break_even_not_a_gain():
+    res = mc.simulate_from_returns({"CASH": 1.0}, returns_table(), n_paths=200)
+    assert res.portfolio.var_5 == 0 and res.portfolio.p_loss_over_10 == 0
+    assert "you'd roughly break even" in res.sentences[3]
+    assert "roughly break-even" in res.sentences[4]
+    assert "still gain" not in " ".join(res.sentences)
+
+
 def test_simulation_input_errors():
     with pytest.raises(SimulationError, match="benchmark SPY"):
         mc.simulate_from_returns({"AAA": 1.0}, returns_table().drop(columns="SPY"))

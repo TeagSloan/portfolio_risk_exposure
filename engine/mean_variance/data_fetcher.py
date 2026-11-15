@@ -1,86 +1,49 @@
-"""Pulls data from Financial Modeling Prep (FMP).
+"""Pulls data from Financial Modeling Prep (FMP) through the project's FMP client (engine/fmp.py).
 
 Two things come from FMP:
 1. Daily closing prices adjusted for dividends and splits, so returns include
    dividends paid, not just price changes.
 2. The current 10-year Treasury yield, used as the risk-free rate.
 
-The API key is read from the FMP_API_KEY environment variable and sent in a
-request header, so it never appears in a URL or in the code.
+Going through engine/fmp.py means the key is read from the project's .env file and never
+appears in a URL, log or error, and every answer is cached in data/cache/fmp/. The Treasury
+request is keyed by today's date, so the yield refreshes once a day and is reused within the day.
 """
 
 import datetime as dt
 import math
-import os
 
 import pandas as pd
-import requests
+
+from engine import fmp
 
 from .errors import DataFetchError
 
-BASE_URL = "https://financialmodelingprep.com/stable"
-REQUEST_TIMEOUT_SECONDS = 30
 # How far back to look for the latest Treasury reading (covers long weekends).
 TREASURY_LOOKBACK_DAYS = 14
 
 
-def get_api_key(api_key=None):
-    """Return the API key passed in, or the one in the FMP_API_KEY setting."""
-    key = api_key or os.environ.get("FMP_API_KEY", "")
-    key = key.strip()
-    if not key:
-        raise DataFetchError(
-            "No FMP API key found. Set the FMP_API_KEY environment variable "
-            "or pass api_key=... to the tool."
-        )
-    return key
-
-
-def _get_json(path, params, api_key):
-    """Call one FMP endpoint and return the parsed JSON, or raise a clear error."""
-    url = f"{BASE_URL}/{path}"
+def _get(endpoint, params):
+    """One cached FMP call; FMP problems become this tool's DataFetchError."""
     try:
-        response = requests.get(
-            url,
-            params=params,
-            headers={"apikey": api_key},
-            timeout=REQUEST_TIMEOUT_SECONDS,
-        )
-    except requests.RequestException as exc:
-        raise DataFetchError(f"Could not reach FMP ({exc.__class__.__name__}).") from exc
-
-    if response.status_code in (401, 403):
-        raise DataFetchError(
-            "FMP rejected the API key, or your plan does not include this data."
-        )
-    if response.status_code == 429:
-        raise DataFetchError("FMP rate limit reached. Wait a minute and try again.")
-    if response.status_code != 200:
-        raise DataFetchError(f"FMP returned an error (HTTP {response.status_code}).")
-
-    try:
-        data = response.json()
-    except ValueError as exc:
-        raise DataFetchError("FMP sent back data that could not be read.") from exc
-
-    if isinstance(data, dict) and "Error Message" in data:
-        raise DataFetchError(f"FMP error: {data['Error Message']}")
-    return data
+        return fmp.get(endpoint, params)
+    except fmp.FMPPlanError as exc:
+        raise DataFetchError(f"Your FMP plan doesn't include this data: {exc}") from exc
+    except fmp.FMPError as exc:
+        raise DataFetchError(f"Could not get data from FMP: {exc}") from exc
 
 
-def fetch_adjusted_prices(tickers, start, end, api_key=None):
+def fetch_adjusted_prices(tickers, start, end):
     """Daily dividend-adjusted closing prices, one column per ticker.
 
     Dates where a stock did not trade yet (e.g. before its IPO) are left blank,
     so the next step can see how much history each stock really has.
     """
-    key = get_api_key(api_key)
     columns = {}
     for ticker in tickers:
-        rows = _get_json(
+        rows = _get(
             "historical-price-eod/dividend-adjusted",
             {"symbol": ticker, "from": start.isoformat(), "to": end.isoformat()},
-            key,
         )
         if not isinstance(rows, list) or not rows:
             raise DataFetchError(
@@ -101,17 +64,15 @@ def fetch_adjusted_prices(tickers, start, end, api_key=None):
     return pd.DataFrame(columns).sort_index()
 
 
-def fetch_ten_year_yield(api_key=None, today=None):
+def fetch_ten_year_yield(today=None):
     """Latest 10-year Treasury yield as a decimal (5.15% is returned as 0.0515)."""
-    key = get_api_key(api_key)
     today = today or dt.date.today()
-    rows = _get_json(
+    rows = _get(
         "treasury-rates",
         {
             "from": (today - dt.timedelta(days=TREASURY_LOOKBACK_DAYS)).isoformat(),
             "to": today.isoformat(),
         },
-        key,
     )
     if not isinstance(rows, list):
         raise DataFetchError("FMP sent back Treasury data in an unexpected format.")

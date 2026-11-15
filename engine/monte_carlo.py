@@ -41,6 +41,7 @@ LOSS_THRESHOLD = -0.10      # "lose more than 10%"
 TAIL = 0.05                 # 5% VaR / CVaR
 FAN_PERCENTILES = (5, 25, 50, 75, 95)
 START_VALUE = 10_000        # charts and sentences talk about a $10,000 investment
+FLAT = 0.0005               # moves smaller than 0.05% are described as "break even"
 
 
 class SimulationError(ValueError):
@@ -170,8 +171,19 @@ def _money(x: float) -> str:
 def sentences(port: OutcomeStats, bench: OutcomeStats, p_beat: float, n_paths: int,
               history_start: str, history_end: str) -> list[str]:
     med_word = "gain" if port.median >= 0 else "loss"
-    var_word = "lose" if port.var_5 > 0 else "still gain"
-    cvar_word = "loss" if port.cvar_5 > 0 else "gain"
+    if port.var_5 > FLAT:
+        bad_year = (f"you'd lose at least {_pct(port.var_5)}, about {_money(START_VALUE * port.var_5)} "
+                    f"on {_money(START_VALUE)}")
+    elif port.var_5 < -FLAT:
+        bad_year = f"you'd still gain at least {_pct(port.var_5)}"
+    else:
+        bad_year = "you'd roughly break even"
+    if port.cvar_5 > FLAT:
+        worst = f"a {_pct(port.cvar_5)} loss"
+    elif port.cvar_5 < -FLAT:
+        worst = f"a {_pct(port.cvar_5)} gain"
+    else:
+        worst = "roughly break-even"
     return [
         (f"We replayed the market's real daily moves from {history_start} to {history_end} in random "
         f"5-day chunks to simulate {n_paths:,} possible years. This shows a range of outcomes, not a forecast."),
@@ -180,10 +192,9 @@ def sentences(port: OutcomeStats, bench: OutcomeStats, p_beat: float, n_paths: i
         f"{_pct(bench.median)}."),
         (f"Chance of losing more than 10% in a year: {_pct(port.p_loss_over_10)} "
         f"(SPY: {_pct(bench.p_loss_over_10)})."),
-        (f"Bad year (5% VaR): in the worst 1 of every 20 simulated years you'd {var_word} at least "
-        f"{_pct(port.var_5)}, about {_money(START_VALUE * abs(port.var_5))} on {_money(START_VALUE)} "
+        (f"Bad year (5% VaR): in the worst 1 of every 20 simulated years {bad_year} "
         f"(SPY: {_pct(bench.var_5)})."),
-        f"Average of those worst years (5% CVaR): a {_pct(port.cvar_5)} {cvar_word} (SPY: {_pct(bench.cvar_5)}).",
+        f"Average of those worst years (5% CVaR): {worst} (SPY: {_pct(bench.cvar_5)}).",
         f"Your portfolio beat SPY in {_pct(p_beat)} of the simulated years.",
     ]
 

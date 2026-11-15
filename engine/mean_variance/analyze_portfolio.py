@@ -21,15 +21,12 @@ import math
 import numbers
 import sys
 from dataclasses import dataclass
-from pathlib import Path
 
 import pandas as pd
-from dotenv import load_dotenv
 
 from . import chart_builder, data_fetcher, optimizer, return_calculator
 from .errors import PortfolioInputError, PortfolioToolError
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
 LOOKBACK_YEARS = 10
 # Weights may add up to anywhere from 99% to 101%; they are then rescaled to 100%.
 WEIGHT_SUM_TOLERANCE = 0.01
@@ -160,14 +157,12 @@ def _window_note(windows, window_mode):
     return "Data: each stock's own history, up to 10 years (" + ", ".join(parts) + ")"
 
 
-def analyze_portfolio(weights, window_mode="shared", api_key=None, today=None,
-                      output_path=None):
+def analyze_portfolio(weights, window_mode="shared", today=None, output_path=None):
     """Evaluate a portfolio using live FMP data.
 
     weights:     e.g. {"AAPL": 0.4, "MSFT": 0.35, "XOM": 0.25}
     window_mode: "shared" (all stocks over the same period) or
                  "max_available" (each stock uses its own history, up to 10 years)
-    api_key:     FMP key; if left out, the FMP_API_KEY environment variable is used
     output_path: if given, the chart is saved there as an HTML file
     """
     weights = validate_weights(weights)
@@ -180,8 +175,8 @@ def analyze_portfolio(weights, window_mode="shared", api_key=None, today=None,
     # One extra month at the start gives a full 120 monthly returns.
     start = (pd.Timestamp(end) - pd.DateOffset(years=LOOKBACK_YEARS, months=1)).date()
 
-    prices = data_fetcher.fetch_adjusted_prices(list(weights), start, end, api_key)
-    risk_free_rate = data_fetcher.fetch_ten_year_yield(api_key, today)
+    prices = data_fetcher.fetch_adjusted_prices(list(weights), start, end)
+    risk_free_rate = data_fetcher.fetch_ten_year_yield(today)
     analysis = evaluate(weights, prices, risk_free_rate, window_mode)
     if output_path:
         analysis.figure.write_html(output_path, include_plotlyjs=True)
@@ -212,7 +207,6 @@ def format_summary(summary):
 
 
 def main(argv=None):
-    load_dotenv(PROJECT_ROOT / ".env")  # picks up FMP_API_KEY from the project's .env file
     parser = argparse.ArgumentParser(description="Mean-variance analysis of a stock portfolio.")
     parser.add_argument("holdings", nargs="+", help="TICKER=WEIGHT pairs, e.g. AAPL=0.4 MSFT=0.6")
     parser.add_argument("--window", choices=return_calculator.WINDOW_MODES, default="shared",

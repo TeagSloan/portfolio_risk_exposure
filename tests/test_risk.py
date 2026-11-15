@@ -140,7 +140,7 @@ def test_frontier_data_problem_is_reported(monkeypatch):
 def _fake_analyze(rf):
     prices = make_prices(["AAA", "BBB", "CCC"])
 
-    def fake(weights, window_mode, api_key=None, today=None):
+    def fake(weights, window_mode, today=None):
         return mv.evaluate(weights, prices, rf, window_mode)
 
     return fake
