@@ -61,6 +61,16 @@ def test_report_defaults_to_every_theme_at_plus_30(offline):
     json.dumps(report)  # the whole report is JSON-ready
 
 
+def test_summary_leads_with_the_history_warning(offline):
+    report, _ = risk.run_risk({"HOLD": 100}, {"oil": 0.3}, include_frontier=False)
+    base = risk.summary_sentences(monte_carlo.MonteCarloResult(**{
+        **report["monte_carlo"], "portfolio": monte_carlo.OutcomeStats(**report["monte_carlo"]["portfolio"]),
+        "benchmark": monte_carlo.OutcomeStats(**report["monte_carlo"]["benchmark"]),
+        "history_note": "Heads-up: short window."}), report["shocks"])
+    assert base[0] == "Heads-up: short window."
+    assert base[1].startswith("Chance of losing more than 10%") and base[2].startswith("Bad year (5% VaR)")
+
+
 def test_report_with_chosen_shocks_and_no_frontier(offline):
     report, figures = risk.run_risk({"HOLD": 100}, {"oil": -0.2}, include_frontier=False)
     assert [(s["theme"], s["shock"]) for s in report["shocks"]] == [("oil", -0.2)]

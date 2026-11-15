@@ -36,7 +36,9 @@ def test_fund_facts_carry_what_questions_need_and_drop_raw_arrays():
     assert facts["holdings"][0] == {"ticker": "NVDA", "weight_pct": 60.0,
                                     "tiers": {"AI": "High", "Oil": "Limited"}, "labels": []}
     assert facts["rescreen"]["all_goals_met"] is True
-    assert facts["monte_carlo"]["portfolio"]["var_5"] == 0.1235
+    # VaR/CVaR are stored as positive = loss; the chat gets plain returns (negative = loss)
+    assert facts["monte_carlo"]["portfolio"]["bad_year_return_5pct_var"] == -0.1235
+    assert "gain" in facts["monte_carlo"]["units"] and "var_5" not in json.dumps(facts)
     assert "fan" not in json.dumps(facts) and "253" not in json.dumps(facts)
     assert facts["theme_shocks_plus_30pct"][0]["theme"] == "Oil"
     assert facts["on_chain"]["launched"] is False
@@ -83,6 +85,21 @@ def test_fund_facts_for_a_checked_portfolio():
 def test_fund_facts_for_a_built_fund_include_region_and_funnel():
     facts = assistant.fund_facts({**BUILD, "region": "us", "funnel": [{"step": "Universe", "left": 650}]})
     assert facts["mode"].startswith("Build my ETF") and facts["region"] == "us" and facts["funnel"]
+
+
+def test_small_gain_in_a_bad_year_keeps_its_sign():
+    risk = {**RISK, "monte_carlo": {**RISK["monte_carlo"], "history_note": "Heads-up: short.",
+                                    "portfolio": {"median": 0.98, "mean": 1.1, "p_loss_over_10": 0.03,
+                                                  "var_5": -0.0047, "cvar_5": 0.144, "best_5": 2.8}}}
+    p = assistant.fund_facts(BUILD, risk)["monte_carlo"]
+    assert p["portfolio"]["bad_year_return_5pct_var"] == 0.0047        # a small GAIN, not a loss
+    assert p["portfolio"]["average_return_of_worst_5pct_years_cvar"] == -0.144
+    assert p["history_warning"] == "Heads-up: short." and p["spy"] == {"bad_year_return_5pct_var": -0.1,
+                                                                        "average_return_of_worst_5pct_years_cvar": None,
+                                                                        "average_year_return": None,
+                                                                        "chance_of_losing_more_than_10pct": None,
+                                                                        "good_year_return_95th_pct": None,
+                                                                        "typical_year_return_median": None}
 
 
 def test_fund_facts_without_a_fund():

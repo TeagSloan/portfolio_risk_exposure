@@ -231,6 +231,8 @@ def risk_tab(report: dict | None, figures: dict | None) -> None:
         return f"-{x:.0%}" if x > 0 else "no loss"
 
     st.subheader("A range of possible years")
+    if mc.get("history_note"):
+        st.warning(mc["history_note"])
     m1, m2, m3, m4 = st.columns(4)
     m1.metric("Chance of losing >10%", f"{p['p_loss_over_10']:.0%}")
     m1.caption(f"SPY (the market): {b['p_loss_over_10']:.0%}")
@@ -241,7 +243,8 @@ def risk_tab(report: dict | None, figures: dict | None) -> None:
     m4.metric("Beat SPY", f"{mc['p_beat_benchmark']:.0%} of years")
     st.plotly_chart(figures["fan_chart"], width="stretch")
     for s in mc["sentences"]:
-        st.markdown(f"- {s}")
+        if s != mc.get("history_note"):  # already shown above as a warning
+            st.markdown(f"- {s}")
 
     st.subheader("Theme shocks")
     st.caption(f"What if one theme's stocks moved more than the overall market? ({SHOCK_LABEL}.)")

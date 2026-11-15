@@ -29,7 +29,7 @@ from dataclasses import asdict, dataclass
 import numpy as np
 import pandas as pd
 
-from engine.data import DEFAULT_END, DEFAULT_START, get_returns
+from engine.data import DEFAULT_END, DEFAULT_START, DataError, get_returns
 
 N_PATHS = 5_000
 HORIZON_DAYS = 252          # one trading year
@@ -41,7 +41,8 @@ LOSS_THRESHOLD = -0.10      # "lose more than 10%"
 TAIL = 0.05                 # 5% VaR / CVaR
 FAN_PERCENTILES = (5, 25, 50, 75, 95)
 START_VALUE = 10_000        # charts and sentences talk about a $10,000 investment
-FLAT = 0.0005               # moves smaller than 0.05% are described as "break even"
+FLAT = 0.005                # moves smaller than 0.5% are described as "break even" (they'd show as 0%)
+FULL_WINDOW_DAYS = 450      # ~2 years is ~500 trading days; fewer shared days than this gets a warning
 
 
 class SimulationError(ValueError):
@@ -74,6 +75,7 @@ class MonteCarloResult:
     p_beat_benchmark: float
     fan: dict                        # {"days": [...], "portfolio": {pct: [...]}, "benchmark": {pct: [...]}}
     sentences: list[str]
+    history_note: str | None = None  # set when a young holding shortens the shared history
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -169,7 +171,7 @@ def _money(x: float) -> str:
 
 
 def sentences(port: OutcomeStats, bench: OutcomeStats, p_beat: float, n_paths: int,
-              history_start: str, history_end: str) -> list[str]:
+              history_start: str, history_end: str, history_note: str | None = None) -> list[str]:
     med_word = "gain" if port.median >= 0 else "loss"
     if port.var_5 > FLAT:
         bad_year = (f"you'd lose at least {_pct(port.var_5)}, about {_money(START_VALUE * port.var_5)} "
@@ -184,19 +186,23 @@ def sentences(port: OutcomeStats, bench: OutcomeStats, p_beat: float, n_paths: i
         worst = f"a {_pct(port.cvar_5)} gain"
     else:
         worst = "roughly break-even"
-    return [
+    out = [
         (f"We replayed the market's real daily moves from {history_start} to {history_end} in random "
-        f"5-day chunks to simulate {n_paths:,} possible years. This shows a range of outcomes, not a forecast."),
+         f"5-day chunks to simulate {n_paths:,} possible years. This shows a range of outcomes, not a forecast."),
+    ]
+    if history_note:
+        out.append(history_note)
+    out += [
         (f"Typical year: a {_pct(port.median)} {med_word} (a {_money(START_VALUE)} investment ends near "
-        f"{_money(START_VALUE * (1 + port.median))}). For SPY, the market, it's {'+' if bench.median >= 0 else '-'}"
-        f"{_pct(bench.median)}."),
+         f"{_money(START_VALUE * (1 + port.median))}). For SPY, the market, it's "
+         f"{'+' if bench.median >= 0 else '-'}{_pct(bench.median)}."),
         (f"Chance of losing more than 10% in a year: {_pct(port.p_loss_over_10)} "
-        f"(SPY: {_pct(bench.p_loss_over_10)})."),
-        (f"Bad year (5% VaR): in the worst 1 of every 20 simulated years {bad_year} "
-        f"(SPY: {_pct(bench.var_5)})."),
+         f"(SPY: {_pct(bench.p_loss_over_10)})."),
+        f"Bad year (5% VaR): in the worst 1 of every 20 simulated years {bad_year} (SPY: {_pct(bench.var_5)}).",
         f"Average of those worst years (5% CVaR): {worst} (SPY: {_pct(bench.cvar_5)}).",
         f"Your portfolio beat SPY in {_pct(p_beat)} of the simulated years.",
     ]
+    return out
 
 
 # ---------------------------------------------------------------------------------------------
@@ -205,7 +211,7 @@ def sentences(port: OutcomeStats, bench: OutcomeStats, p_beat: float, n_paths: i
 
 def simulate_from_returns(weights: dict[str, float], returns: pd.DataFrame, n_paths: int = N_PATHS,
                           horizon: int = HORIZON_DAYS, block: int = BLOCK_DAYS,
-                          seed: int = SEED) -> MonteCarloResult:
+                          seed: int = SEED, history_note: str | None = None) -> MonteCarloResult:
     """Run the simulation on returns already in hand (no internet needed; used by the tests)."""
     if BENCHMARK not in returns.columns:
         raise SimulationError(f"Returns must include the benchmark {BENCHMARK}.")
@@ -228,7 +234,8 @@ def simulate_from_returns(weights: dict[str, float], returns: pd.DataFrame, n_pa
         history_end=f"{returns.index[-1]:%Y-%m-%d}",
         portfolio=port_stats, benchmark=bench_stats, p_beat_benchmark=p_beat,
         fan={"days": list(range(horizon + 1)), "portfolio": _fan(port_paths), "benchmark": _fan(bench_paths)},
-        sentences=sentences(port_stats, bench_stats, p_beat, n_paths, start, end),
+        sentences=sentences(port_stats, bench_stats, p_beat, n_paths, start, end, history_note),
+        history_note=history_note,
     )
 
 
@@ -238,7 +245,33 @@ def simulate(holdings: dict[str, float], start: str = DEFAULT_START, end: str = 
     weights = to_weights(holdings)
     tickers = [t for t in weights if t != CASH]
     returns = get_returns(list(dict.fromkeys(tickers + [BENCHMARK])), start, end)
-    return simulate_from_returns(weights, returns, **kwargs)
+    note = shortened_history_note(tickers, returns, start, end)
+    return simulate_from_returns(weights, returns, history_note=note, **kwargs)
+
+
+def shortened_history_note(tickers: list[str], returns: pd.DataFrame, start: str, end: str) -> str | None:
+    """A plain warning when a young holding cuts the shared history well below ~2 years, naming it.
+
+    The simulation can only use days every holding traded, so one recent listing shortens the window for
+    the whole fund. That window may be unusually good or bad, which the numbers would silently inherit.
+    """
+    if len(returns) >= FULL_WINDOW_DAYS or not tickers:
+        return None
+    starts = {}
+    for t in tickers:
+        try:
+            starts[t] = get_returns([t], start, end).index[0]
+        except DataError:
+            continue
+    window = f"{returns.index[0]:%b %Y} to {returns.index[-1]:%b %Y}"
+    months = round(len(returns) / 21)
+    if starts:
+        young = max(starts, key=starts.get)
+        cause = f"{young} only has prices from {starts[young]:%b %Y}"
+    else:
+        cause = "some holdings have short price histories"
+    return (f"Heads-up: {cause}, so every simulated year is built from {window} alone (about {months} months), "
+            "not the usual two years. These numbers reflect that period only; treat them with extra caution.")
 
 
 # ---------------------------------------------------------------------------------------------

@@ -39,6 +39,32 @@ forge test
 
 Network: Monad testnet, chain ID 10143, RPC `https://testnet-rpc.monad.xyz`.
 
+## Live deployment (Monad testnet, deployed Nov 15 2026)
+
+Already deployed; you don't need to deploy again. Put these in your `.env` to use them:
+
+```
+MONAD_RPC_URL=https://testnet-rpc.monad.xyz
+FACTORY_ADDRESS=0x62cd00e1e5123d511201878679d3aCB62Dd62E5a
+ORACLE_ADDRESS=0x55AbD9CBEc8beB920EB4C8aA408088522e8A4df0
+DEPLOYER_KEYSTORE=<your Foundry keystore name>
+```
+
+| Contract | Address |
+|---|---|
+| ThemeFundFactory | `0x62cd00e1e5123d511201878679d3aCB62Dd62E5a` |
+| ExposureOracle | `0x55AbD9CBEc8beB920EB4C8aA408088522e8A4df0` |
+| MockExchange | `0x46baB6E7ba190930A82367e1C0822da541FD0577` |
+| MockUSDC (test dollars) | `0x318BFe1eADA7afe56Ce7FB8795cF5BDb25492bA3` |
+
+- Owner of the oracle and the exchange: `0xE0175dd6faBb0aB0479633aE73fD6AcDBAEfd03f`.
+- Approved publishers (can post tiers/prices and list stocks): `0x72592CBdfbA9022672a79EA6143231caafda1aE2`,
+  `0x4D4Bc40fb40AB34fcA22519D3cb968D2323d0FE9`, `0xBc94d2839840fe8e4BaF351B3F2BA678CD1e4E19` (plus the owner).
+- Anyone can launch a fund and deposit; publishing needs the owner or an approved publisher. The owner adds a
+  publisher with `cast send <ORACLE_ADDRESS> "setPublisher(address,bool)" <WALLET> true` and the same on the
+  exchange address.
+- Look any address up at https://testnet.monadexplorer.com.
+
 ## Putting it on Monad testnet (Phase 7)
 
 The contracts live in `contracts/src/` and the Python that talks to them in `chain/`.

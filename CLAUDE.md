@@ -92,6 +92,7 @@ Work in phases. STOP at each checkpoint so I can check before continuing. Commit
 - Monad testnet, chain ID `10143`
 - RPC: `https://testnet-rpc.monad.xyz` (set as `MONAD_RPC_URL` in `.env`)
 - Foundry endpoint name: `monad` (e.g. `forge script ... --rpc-url monad`), or `FOUNDRY_PROFILE=monad`
+- Live deployment (Nov 15 2026): factory `0x62cd00e1e5123d511201878679d3aCB62Dd62E5a`, oracle `0x55AbD9CBEc8beB920EB4C8aA408088522e8A4df0`, exchange `0x46baB6E7ba190930A82367e1C0822da541FD0577`. Owner `0xE0175dd6faBb0aB0479633aE73fD6AcDBAEfd03f`; three team wallets are approved publishers (see README). Don't redeploy unless asked.
 
 ## Workflow rules
 

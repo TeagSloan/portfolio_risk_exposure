@@ -95,6 +95,21 @@ def company_info(tickers: list[str]) -> dict[str, dict]:
     return out
 
 
+def _plain_outcomes(stats: dict) -> dict:
+    """Monte Carlo stats as plain returns with unambiguous names (VaR/CVaR are stored as positive = loss,
+    which reads backwards out of context, so they're flipped into returns here)."""
+    if not stats:
+        return {}
+    return {
+        "typical_year_return_median": _round(stats.get("median")),
+        "average_year_return": _round(stats.get("mean")),
+        "chance_of_losing_more_than_10pct": _round(stats.get("p_loss_over_10")),
+        "bad_year_return_5pct_var": _round(-stats["var_5"]) if "var_5" in stats else None,
+        "average_return_of_worst_5pct_years_cvar": _round(-stats["cvar_5"]) if "cvar_5" in stats else None,
+        "good_year_return_95th_pct": _round(stats.get("best_5")),
+    }
+
+
 def fund_facts(build: dict | None, risk_report: dict | None = None, chain: dict | None = None,
                companies: dict[str, dict] | None = None, screen_report: dict | None = None) -> dict:
     """The facts Claude may use, trimmed to what a question could need (no raw arrays).
@@ -145,9 +160,11 @@ def fund_facts(build: dict | None, risk_report: dict | None = None, chain: dict 
             "method": f"{mc.get('n_paths')} simulated one-year paths built from real "
                       f"{mc.get('block_days')}-day stretches between {mc.get('history_start')} and "
                       f"{mc.get('history_end')}; fixed seed {mc.get('seed')}; cash earns 0; vs SPY",
-            "portfolio": {k: _round(v) for k, v in (mc.get("portfolio") or {}).items()},
-            "spy": {k: _round(v) for k, v in (mc.get("benchmark") or {}).items()},
+            "units": "one-year returns as decimals: +0.10 = a 10% gain, -0.10 = a 10% loss",
+            "portfolio": _plain_outcomes(mc.get("portfolio") or {}),
+            "spy": _plain_outcomes(mc.get("benchmark") or {}),
             "chance_beat_spy": _round(mc.get("p_beat_benchmark")),
+            "history_warning": mc.get("history_note"),
             "sentences": mc.get("sentences", []),
         }
         facts["theme_shocks_plus_30pct"] = [
