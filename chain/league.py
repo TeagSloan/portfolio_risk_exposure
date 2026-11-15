@@ -134,6 +134,8 @@ class Chain:
         tx["from"] = self.address
         tx["chainId"] = self.w3.eth.chain_id
         tx["nonce"] = self.w3.eth.get_transaction_count(self.address, "pending")
+        if "gasPrice" not in tx and "maxFeePerGas" not in tx:  # plain transfers (top-ups) don't get fees filled in
+            tx["gasPrice"] = self.w3.eth.gas_price
         tx["gas"] = int(self.w3.eth.estimate_gas(tx) * GAS_HEADROOM) + extra_gas
         if self.account is None:
             h = self.w3.eth.send_transaction(tx)
