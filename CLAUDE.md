@@ -11,9 +11,17 @@ I prefer concise, direct communication without unnecessary jargon.
 
 Every output should feel like advice from an experienced practitioner rather than a consultant or academic.
 
-## Project overview: Theme Funds
+## TOP-LEVEL GOAL (read first; everything else serves this)
 
-Users choose which themes they want exposure to (e.g. Want AI, Avoid Oil). A Python engine classifies stocks by how closely their prices move with reference companies that have disclosed exposure to each theme. We build a portfolio from the user's choices, run a Monte Carlo risk simulation, then launch it as an on-chain fund token on Monad testnet whose rules can't be broken. Users aren't finance experts, so every result needs a plain-English sentence.
+**Theme Funds: two ways in, one regression engine.** Users aren't finance experts, so every result needs a plain-English sentence.
+
+**Way 1: "Check my portfolio" (stocks → exposure).** The user enters any NYSE/NASDAQ stocks + weights. Each stock is run through the regression for every theme (AI, Oil, Gold, Defense, Healthcare, Copper+lithium, Clean energy, Consumer discretionary, Cybersecurity, Bank lending). Show the % of the portfolio exposed to each theme, each stock's tier, a plain-English sentence and the audit trail. Stocks not already scored are pulled live from FMP.
+
+**Way 2: "Build my ETF" (preferences → stocks).** The user picks Want / Don't care / Avoid per theme (e.g. high AI, low Oil) + region. We pick individual stocks only (no ETFs, funds or bonds) from a universe of NYSE + NASDAQ stocks (top ~500 US + ~150 international ADRs, market cap >= $2B) that were ALL run through the regression ahead of time and saved in an exposure table. Equal weight, 15% cap. Show the funnel (how many stocks survive each rule), then re-check the result with Way 1.
+
+**The regression (the core, current focus).** Each theme is its own regression of a stock on SPY, TLT, style controls, the theme's control company and its reference companies (disclosed exposure from filings). Tier rules as in the Methodology section. It must score ANY stock on EVERY theme, quickly and at scale (vectorized), and match run_screen exactly.
+
+**After either way (later).** Monte Carlo risk view, then launch the portfolio on Monad as a fund token whose preferences become on-chain rules.
 
 Built at Monad Blitz Oregon (Nov 15, 2026). The methodology comes from my prior capstone research.
 
