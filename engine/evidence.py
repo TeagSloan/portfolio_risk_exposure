@@ -75,3 +75,27 @@ def show_segments(ticker: str) -> str:
     total = sum(data.values()) or 1
     parts = ", ".join(f"{k} {100 * v / total:.0f}%" for k, v in sorted(data.items(), key=lambda kv: -kv[1]))
     return f"{ticker} FY{row['fiscalYear']}: {parts}"
+
+
+def nii_share(ticker: str, fiscal_year: int | None = None) -> dict:
+    """Bank lending share: net interest income / (net interest income + non-interest income).
+
+    FMP's income statement has no non-interest-income line. For banks, FMP's `revenue` is interest income
+    plus non-interest income, so non-interest income = revenue - interestIncome.
+    """
+    row = _latest(fmp.income_statement(ticker), fiscal_year)
+    if row is None:
+        raise ValueError(f"{ticker}: no income-statement data from FMP for that year")
+    nii, rev, ii = row.get("netInterestIncome"), row.get("revenue"), row.get("interestIncome")
+    if not all(isinstance(v, (int, float)) for v in (nii, rev, ii)):
+        raise ValueError(f"{ticker} FY{row['fiscalYear']}: missing netInterestIncome / revenue / interestIncome")
+    non_ii = rev - ii
+    if non_ii < 0 or nii + non_ii <= 0:
+        raise ValueError(f"{ticker} FY{row['fiscalYear']}: can't compute NII share ({nii}, {rev}, {ii})")
+    return {
+        "ticker": ticker,
+        "evidence_pct": round(100 * nii / (nii + non_ii), 1),
+        "fiscal_year": int(row["fiscalYear"]),
+        "source": (f"FMP income-statement FY{row['fiscalYear']}: netInterestIncome / (netInterestIncome + "
+                   "(revenue - interestIncome))"),
+    }

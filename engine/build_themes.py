@@ -20,11 +20,13 @@ from pathlib import Path
 import yaml
 
 from engine import fmp
-from engine.evidence import segment_share, statement_ratio
+from engine.controls import sector_skips, style_controls
+from engine.evidence import nii_share, segment_share, statement_ratio
 
 ROOT = Path(__file__).resolve().parent.parent
 THEMES_DIR = ROOT / "themes"
 ALL = "ALL"  # every reported segment counts toward the theme
+USE_SECTOR_CONTROL = False  # method version B chosen: style controls, no sector control (see results/method_comparison.md)
 
 
 # ---------------------------------------------------------------------------------------------
@@ -36,7 +38,6 @@ AI = {
     "key": "ai",
     "name": "AI",
     "measures": "AI share of revenue",
-    "controls": ["SPY", "TLT"],  # no VALUE: the growth index (IWF) is mostly AI stocks
     "ground_truth": None,
     "references": {
         "High": [
@@ -93,17 +94,17 @@ THEMES = [
         "key": "bank_lending", "name": "Bank lending / net interest income", "ground_truth": None,
         "plain": "banks that earn mostly from lending",
         "notes": "Validated by group consistency only (like AI). TLT was dropped as ground truth: over this window banks did not move opposite to long-term bonds beyond the market.",
-        "measures": "Net interest income as a share of revenue",
+        "measures": "Net interest income / (net interest income + non-interest income)",
         "High": [
-            ("MTB", ("ratio", "netInterestIncome"), "Regional bank; most revenue is lending spread, which widens as rates rise."),
-            ("ZION", ("ratio", "netInterestIncome"), "Regional bank; over half of revenue is net interest income."),
-            ("CFG", ("ratio", "netInterestIncome"), "Regional bank; over half of revenue is net interest income."),
-            ("RF", ("ratio", "netInterestIncome"), "Regional bank; over half of revenue is net interest income."),
+            ("MTB", ("nii_share",), "Regional bank; most income is lending spread."),
+            ("ZION", ("nii_share",), "Regional bank; most income is lending spread."),
+            ("CFG", ("nii_share",), "Regional bank; most income is lending spread."),
+            ("RF", ("nii_share",), "Regional bank; most income is lending spread."),
         ],
         "Moderate": [
-            ("WFC", ("ratio", "netInterestIncome"), "Large bank; lending spread is over a third of revenue, rest is fees."),
-            ("C", ("ratio", "netInterestIncome"), "Global bank; about a third lending spread, rest is fees and trading."),
-            ("BAC", ("ratio", "netInterestIncome"), "Large bank; about a third lending spread, rest is fees and markets."),
+            ("WFC", ("nii_share",), "Large bank; lending spread plus a big fee business."),
+            ("C", ("nii_share",), "Global bank; lending spread plus fees and trading."),
+            ("BAC", ("nii_share",), "Large bank; lending spread plus fees and markets."),
         ],
         "control": ("COST", "Warehouse retailer with no lending or deposit business."),
         "direct": [],
@@ -149,8 +150,8 @@ THEMES = [
     {
         "key": "healthcare", "plain": "healthcare companies", "name": "Healthcare", "ground_truth": "XLV",
         "measures": "Healthcare share of revenue",
-        "notes": "Exception (approved): only 1 Moderate reference. Kept only companies with a real partial "
-                 "healthcare business; PG and WM were dropped because they don't trade like healthcare.",
+        "notes": "Exception (approved): no Moderate references. PG and WM were dropped (don't trade like healthcare), "
+                 "then KR (failed the price check once style controls were added).",
         "High": [
             ("PFE", ["Biopharma Segment"], "Large drugmaker."),
             ("MRK", ["Pharmaceutical segment"], "Large drugmaker; animal health is the rest."),
@@ -161,9 +162,8 @@ THEMES = [
             # Only one real partial-healthcare business found. Rejected: GLW (Life Sciences 6%, but the stock
             # moves with optical fiber), ECL (Life Sciences 5%, an industrial service), MTD/WAT (lab equipment
             # with no healthcare share disclosed), PG and WM (don't trade like healthcare).
-            ("KR", ["Pharmacy"], "Grocer whose pharmacy (prescriptions) is a third of revenue."),
         ],
-        "control": ("CRM", "Business software (Salesforce); no healthcare segment."),
+        "control": ("ADM", "Crop processing and food ingredients; no healthcare segment."),
         "direct": [
             ("UNH", "High", "Health insurer; FMP segments are revenue types (premiums, services), not a health share."),
         ],
@@ -221,9 +221,6 @@ THEMES = [
         ],
         "Moderate": [
             ("COST", ["Non-Foods"], "Warehouse club; non-food goods are about a quarter, the rest is groceries."),
-            ("DIS", ["Theme park admissions", "Resorts and vacations",
-                     "Retail and wholesale sales of merchandise, food and beverage"],
-             "Media company; parks, resorts and merchandise are about a third, the rest is TV and streaming."),
             ("DG", ["Seasonal", "Home Products", "Apparel"],
              "Discount store; seasonal, home and apparel goods are a fifth, the rest is consumables."),
         ],
@@ -235,7 +232,6 @@ THEMES = [
     },
     {
         "key": "cyber", "plain": "cybersecurity companies", "name": "Cybersecurity", "ground_truth": "CIBR",
-        "controls": ["SPY", "TLT"],  # no VALUE: growth stocks dominate IWF, so the control removes the signal
         "measures": "Security share of revenue",
         "notes": "Exception (approved): only 1 Moderate reference instead of 2-4. FMP doesn't disclose a "
                  "security share for any other company with partial exposure.",
@@ -268,6 +264,8 @@ def _name(ticker: str) -> str:
 
 def _evidence(ticker: str, spec) -> dict:
     """Compute evidence for one reference from its spec (segments list, ALL, or a ratio)."""
+    if isinstance(spec, tuple) and spec[0] == "nii_share":
+        return nii_share(ticker)
     if isinstance(spec, tuple) and spec[0] == "ratio":
         return statement_ratio(ticker, spec[1])
     if spec == ALL:
@@ -303,7 +301,6 @@ def build_ai() -> dict:
     ct, cpct, cwhy = AI["control"]
     return {
         "key": AI["key"], "name": AI["name"], "plain": "AI companies", "measures": AI["measures"],
-        "controls": AI["controls"],
         "ground_truth": AI["ground_truth"], "references": refs,
         "control": {"ticker": ct, "name": _name(ct), "evidence_pct": cpct, "measures": AI["measures"],
                     "fiscal_year": AI_FISCAL_YEAR, "source": AI_SOURCE, "reason": cwhy},
@@ -325,7 +322,7 @@ def build_theme(theme: dict, warnings: list) -> dict:
                                "source": ev["source"], "reason": why})
     ct, cwhy = theme["control"]
     if theme["key"] == "bank_lending":
-        cev = statement_ratio(ct, "netInterestIncome")
+        cev = nii_share(ct)
         control = {"evidence_pct": cev["evidence_pct"], "fiscal_year": cev["fiscal_year"], "source": cev["source"]}
     else:
         from engine.evidence import show_segments
@@ -342,7 +339,6 @@ def build_theme(theme: dict, warnings: list) -> dict:
             warnings.append(f"{theme['key']}: {r['ticker']} is also an AI reference")
     out = {
         "key": theme["key"], "name": theme["name"], "plain": theme["plain"], "measures": theme["measures"],
-        "controls": theme.get("controls", ["SPY", "TLT", "VALUE"]),
         "ground_truth": theme.get("ground_truth"),
         "references": refs,
         "control": {"ticker": ct, "name": _name(ct), "measures": theme["measures"], **control, "reason": cwhy},
@@ -376,12 +372,22 @@ def summary_table(t: dict) -> str:
     return "\n".join(lines)
 
 
+def apply_controls(t: dict) -> None:
+    """Market + style controls via the objective 15% skip rule (engine/controls.py), plus sector settings."""
+    kept, skipped = style_controls(t)
+    t["controls"] = ["SPY", "TLT"] + kept
+    t["style_skips"] = skipped
+    t["sector_skips"] = sector_skips(t)
+    t["use_sector_control"] = USE_SECTOR_CONTROL
+
+
 def main():
     THEMES_DIR.mkdir(exist_ok=True)
     warnings: list[str] = []
     built = [build_ai()] + [build_theme(t, warnings) for t in THEMES]
     for t in built:
         t.pop("reference_count", None)
+        apply_controls(t)
         path = THEMES_DIR / f"{t['key']}.yaml"
         header = (f"# Theme: {t['name']}. Generated by engine/build_themes.py from FMP data "
                   f"(AI: user-provided research). Don't edit by hand; edit the picks and re-run.\n")

@@ -3,10 +3,6 @@ key: defense
 name: Defense & aerospace
 plain: defense contractors
 measures: Defense / government segment share of revenue
-controls:
-- SPY
-- TLT
-- VALUE
 ground_truth: ITA
 references:
   High:
@@ -70,3 +66,14 @@ control:
   source: 'No theme-related segment in FMP data (INTU FY2026: Global Business Solutions 60%, Consumer 40%)'
   reason: Tax and accounting software; no defense or government-contract revenue.
 direct_classification: []
+controls:
+- SPY
+- TLT
+- VALUE
+- SIZE
+- MOM
+- LOWVOL
+style_skips: {}
+sector_skips:
+  XLI: 19.46
+use_sector_control: false

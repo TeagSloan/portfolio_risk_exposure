@@ -11,9 +11,9 @@ Everything in this repository was built at **Monad Blitz Oregon (Nov 15, 2026)**
 ## How it works
 
 1. **Themes.** Each theme (AI, Oil, Bank lending, …) has reference companies with a disclosed exposure number, such as AI's share of revenue.
-2. **Exposure engine.** For each stock, a regression measures how much its daily returns move with each reference group, after controlling for the overall market (SPY), bonds (TLT) and the value-vs-growth swing (IWD minus IWF). The stock gets a tier: High / Moderate / Limited / Limited (lower confidence) / Not determined.
-   - *Why AI and Cybersecurity skip the value-vs-growth control:* the growth index is mostly these themes' own stocks, so controlling for it removes the very signal being measured. With it, oil producers wrongly came out "AI High"; without it, they don't.
-3. **Portfolio.** Your choices (want / avoid per theme) become a weighted basket, which is screened again to confirm it matches.
+2. **Exposure engine.** For each stock, a regression measures how much its daily returns move with each reference group, after controlling for the overall market (SPY), bonds (TLT) and four style swings: value vs growth (IWD − IWF), small vs mega-cap (RSP − SPY), momentum (MTUM − SPY) and low-volatility (USMV − SPY). The stock gets a tier: High / Moderate / Limited / Limited (lower confidence) / Not determined.
+   - *Objective skip rule:* a style control is skipped for a theme if that theme's reference companies make up more than 15% of the control ETF's holdings, because then the control would remove the very signal being measured. Today this skips value-vs-growth for AI only (AI references are 27% of the growth ETF). Every skip is recorded with its exact % in the theme file.
+3. **Portfolio.** Your choices (want / avoid per theme) become an equal-weight basket (15% cap), which is screened again to confirm it matches. For themes with an ETF, "want" picks are confirmed against the theme ETF; validation numbers come from the unfiltered method.
 4. **Risk.** A Monte Carlo simulation shows the range of outcomes and theme shocks (e.g. oil +30%).
 5. **On-chain fund.** The basket launches as an ERC-20 fund token on Monad testnet. Deposits mint at NAV, redemptions burn, and the mandate rules can't be broken.
 

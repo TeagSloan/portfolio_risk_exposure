@@ -3,9 +3,6 @@ key: cyber
 name: Cybersecurity
 plain: cybersecurity companies
 measures: Security share of revenue
-controls:
-- SPY
-- TLT
 ground_truth: CIBR
 references:
   High:
@@ -80,3 +77,13 @@ direct_classification:
   reason: Security is a large share alongside delivery and cloud; FMP reports a single segment.
 notes: 'Exception (approved): only 1 Moderate reference instead of 2-4. FMP doesn''t disclose a security share for any other
   company with partial exposure.'
+controls:
+- SPY
+- TLT
+- VALUE
+- SIZE
+- MOM
+- LOWVOL
+style_skips: {}
+sector_skips: {}
+use_sector_control: false

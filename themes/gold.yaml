@@ -3,10 +3,6 @@ key: gold
 name: Gold & precious metals
 plain: gold and silver miners
 measures: Gold and silver share of revenue
-controls:
-- SPY
-- TLT
-- VALUE
 ground_truth: GLD
 references:
   High:
@@ -67,3 +63,13 @@ direct_classification:
   source: No disclosed number (Tier 2)
   reason: Gold miner; FMP's latest segment data is from 2013, too old to cite.
 notes: 'Exception (approved): no Moderate references. FCX and SCCO (copper miners) were dropped.'
+controls:
+- SPY
+- TLT
+- VALUE
+- SIZE
+- MOM
+- LOWVOL
+style_skips: {}
+sector_skips: {}
+use_sector_control: false

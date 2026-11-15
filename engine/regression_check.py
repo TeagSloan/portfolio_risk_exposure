@@ -22,12 +22,22 @@ from scipy import stats
 
 from engine import fmp
 from engine.builder import universe
+from engine.controls import SPREADS, sector_control
 from engine.data import get_returns
 from engine.regression import ALPHA, MIN_SUM, Z_ONE_SIDED_95, classify, reference_names
 from engine.theme_loader import load_all
 
 ROOT = Path(__file__).resolve().parent.parent
 RNG = np.random.default_rng(2026)
+REAL: set[str] = set()  # real tickers (synthetic test series never get a sector control)
+
+
+def cls(ticker, theme, df):
+    """classify() with the holding's sector control when the theme uses sector controls."""
+    sc = sector_control(ticker, theme) if ticker in REAL else None
+    if sc and sc not in df.columns:
+        sc = None
+    return classify(ticker, theme, df, sc)
 N_SIM = 100
 NOISE = 0.015  # daily idiosyncratic noise for simulated holdings (1.5%, typical for a single stock)
 
@@ -36,6 +46,7 @@ def big_frame(themes):
     """One table of returns for the universe, controls, ETFs (drops names with short history)."""
     names = universe(themes) + ["SPY", "TLT", "IWD", "IWF"] + [t["ground_truth"] for t in themes.values() if t.get("ground_truth")]
     names += [t["control"]["ticker"] for t in themes.values()]
+    names += [leg for legs in SPREADS.values() for leg in legs]
     names = list(dict.fromkeys(names))
     keep = []
     for n in names:
@@ -44,8 +55,8 @@ def big_frame(themes):
                 keep.append(n)
         except Exception:  # noqa: BLE001, S110 - a missing ticker just isn't used
             pass
-    r = get_returns(keep)
-    r["VALUE"] = r["IWD"] - r["IWF"]
+    r = get_returns(keep + list(SPREADS))
+    REAL.update(keep)
     return r, sorted(set(names) - set(keep))
 
 
@@ -78,9 +89,10 @@ def math_check(themes, r):
     for ticker, key in (("SMH", "ai"), ("XOM", "oil"), ("JNJ", "healthcare")):
         th = themes[key]
         refs = reference_names(th)
-        cols = th["controls"] + refs["High"] + refs["Moderate"] + [th["control"]["ticker"]]
-        res = classify(ticker, th, r)
-        hand, tier = by_hand(r[ticker], r[cols], {g: refs[g] for g in refs if refs[g]}, len(cols) - len(th["controls"]))
+        res = cls(ticker, th, r)
+        ctrls = res.controls
+        cols = ctrls + refs["High"] + refs["Moderate"] + [th["control"]["ticker"]]
+        hand, tier = by_hand(r[ticker], r[cols], {g: refs[g] for g in refs if refs[g]}, len(cols) - len(ctrls))
         diff = max(max(abs(hand[g][0] - res.groups[g].beta_sum), abs(hand[g][1] - res.groups[g].se),
                        abs(hand[g][2] - res.groups[g].p_one_sided)) for g in hand)
         rows.append({"holding": ticker, "theme": th["name"], "engine_tier": res.tier, "hand_tier": tier,
@@ -103,7 +115,7 @@ def known_answers(themes, r):
             for _ in range(N_SIM):
                 y = r["SPY"] + (b * r[names].mean(axis=1) if names else 0) + RNG.normal(0, NOISE, len(r))
                 df = r.assign(SIMX=y)
-                tier = classify("SIMX", th, df).tier
+                tier = cls("SIMX", th, df).tier
                 if want:
                     hits += tier == want
                 else:
@@ -137,20 +149,20 @@ def false_positives(themes, r, univ):
         df = pd.concat([r, fake], axis=1)
         th = {**template, "references": {"High": [{"ticker": f"N{i}"} for i in range(4)],
                                          "Moderate": [{"ticker": f"N{i}"} for i in range(4, 7)]},
-              "control": {"ticker": "N7"}, "direct_classification": []}
+              "control": {"ticker": "N7"}, "direct_classification": [], "sector_skips": {}}
         for h in RNG.choice(stocks, 20, replace=False):
             noise_n += 1
-            noise_hits += classify(h, th, df).tier in ("High", "Moderate")
+            noise_hits += cls(h, th, df).tier in ("High", "Moderate")
         # (b) random real tickers; holdings only from sectors none of the references are in
         pick = list(RNG.choice(stocks, 8, replace=False))
         used = {sectors[p] for p in pick}
         th = {**template, "references": {"High": [{"ticker": p} for p in pick[:4]],
                                          "Moderate": [{"ticker": p} for p in pick[4:7]]},
-              "control": {"ticker": pick[7]}, "direct_classification": []}
+              "control": {"ticker": pick[7]}, "direct_classification": [], "sector_skips": {}}
         pool = [s for s in stocks if s not in pick and sectors[s] not in used]
         for h in RNG.choice(pool, min(20, len(pool)), replace=False) if pool else []:
             real_n += 1
-            real_hits += classify(h, th, r).tier in ("High", "Moderate")
+            real_hits += cls(h, th, r).tier in ("High", "Moderate")
     return {"noise_pct": 100 * noise_hits / noise_n, "noise_n": noise_n,
             "real_pct": 100 * real_hits / real_n, "real_n": real_n}
 
@@ -170,7 +182,7 @@ def leave_one_out(themes, r):
                 t = ref["ticker"]
                 if t not in r.columns:
                     continue
-                res = classify(t, _without(th, t), r)
+                res = cls(t, _without(th, t), r)
                 rows.append({"theme": th["name"], "ticker": t, "listed": g, "loo_tier": res.tier})
     return pd.DataFrame(rows)
 
@@ -188,7 +200,7 @@ def ground_truth(themes, r, univ):
         for t in univ:
             if t not in r.columns or t == gt or t in th["controls"]:
                 continue
-            res = classify(t, _without(th, t), r)  # references scored with themselves left out
+            res = cls(t, _without(th, t), r)  # references scored with themselves left out
             scores.append(max(g.beta_sum for g in res.groups.values()))
             fit = sm.OLS(r[t], sm.add_constant(pd.DataFrame({"SPY": r["SPY"], "ETF": sign * r[gt]}))).fit()
             betas.append(fit.params["ETF"])

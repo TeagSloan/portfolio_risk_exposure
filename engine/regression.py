@@ -75,10 +75,11 @@ def reference_names(theme: dict) -> dict[str, list[str]]:
     return {g: [r["ticker"] for r in theme["references"].get(g, [])] for g in GROUPS}
 
 
-def regressors_needed(theme: dict) -> list[str]:
+def regressors_needed(theme: dict, sector_control: str | None = None) -> list[str]:
     """Every price series a regression for this theme needs (besides the holding itself)."""
     refs = reference_names(theme)
-    return list(theme["controls"]) + refs[HIGH] + refs[MODERATE] + [theme["control"]["ticker"]]
+    extra = [sector_control] if sector_control else []
+    return list(theme["controls"]) + extra + refs[HIGH] + refs[MODERATE] + [theme["control"]["ticker"]]
 
 
 def _listed(ticker: str, theme: dict):
@@ -146,8 +147,12 @@ def group_stats(fit, names: list[str], n_refs: int) -> GroupStats:
                       eligible=bool(beta_sum > MIN_SUM and p < ALPHA / n_refs))
 
 
-def classify(ticker: str, theme: dict, returns: pd.DataFrame) -> Result:
-    """Classify one holding for one theme. `returns` must contain the holding and every regressor."""
+def classify(ticker: str, theme: dict, returns: pd.DataFrame, sector_control: str | None = None) -> Result:
+    """Classify one holding for one theme. `returns` must contain the holding and every regressor.
+
+    `sector_control` (e.g. "SEC_XLE") adds the holding's own sector-minus-SPY spread as a control.
+    Like all controls, it is never in a group and never counts in the Bonferroni denominator.
+    """
     ticker = ticker.upper()
     name = theme["name"]
     plain = theme.get("plain")
@@ -157,7 +162,7 @@ def classify(ticker: str, theme: dict, returns: pd.DataFrame) -> Result:
         tier, method, evidence = listed
         return Result(ticker, name, tier, method, sentence(ticker, name, tier, method, evidence, plain), evidence=evidence)
 
-    controls = list(theme["controls"])
+    controls = list(theme["controls"]) + ([sector_control] if sector_control else [])
     if ticker in controls:
         raise ValueError(f"{ticker} is one of the market controls for {name}; its exposure beyond itself can't be measured.")
 

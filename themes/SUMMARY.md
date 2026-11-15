@@ -1,6 +1,6 @@
 # Theme summary
 
-### AI  (ground truth: none; controls: SPY, TLT)
+### AI  (ground truth: none; controls: SPY, TLT, SIZE, MOM, LOWVOL)
 Measure: AI share of revenue
 
 | Group | Ticker | Company | Evidence | FY | Reason |
@@ -19,7 +19,7 @@ Measure: AI share of revenue
 | Tier 2 → Moderate | META | Meta Platforms, Inc. | n/a | - | AI drives ad ranking and capex, but no disclosed AI revenue share. |
 | Tier 2 → Moderate | TSLA | Tesla, Inc. | n/a | - | Autonomy and robotics bets, but no disclosed AI revenue share. |
 
-### Oil  (ground truth: USO; controls: SPY, TLT, VALUE)
+### Oil  (ground truth: USO; controls: SPY, TLT, VALUE, SIZE, MOM, LOWVOL)
 Measure: Crude-oil share of revenue (CVX: upstream oil & gas production share)
 
 | Group | Ticker | Company | Evidence | FY | Reason |
@@ -35,22 +35,22 @@ Measure: Crude-oil share of revenue (CVX: upstream oil & gas production share)
 | Tier 2 → Moderate | SLB | Slb N.V. | n/a | - | Oilfield services: revenue depends on drilling budgets; no disclosed oil-price share. |
 | Tier 2 → Moderate | HAL | Halliburton Company | n/a | - | Oilfield services: revenue depends on drilling budgets; no disclosed oil-price share. |
 
-### Bank lending / net interest income  (ground truth: none; controls: SPY, TLT, VALUE)
-Measure: Net interest income as a share of revenue  
+### Bank lending / net interest income  (ground truth: none; controls: SPY, TLT, VALUE, SIZE, MOM, LOWVOL)
+Measure: Net interest income / (net interest income + non-interest income)  
 Note: Validated by group consistency only (like AI). TLT was dropped as ground truth: over this window banks did not move opposite to long-term bonds beyond the market.
 
 | Group | Ticker | Company | Evidence | FY | Reason |
 |---|---|---|---|---|---|
-| High | MTB | M&T Bank Corporation | 56.4% | 2025 | Regional bank; most revenue is lending spread, which widens as rates rise. |
-| High | ZION | Zions Bancorporation, National | 53.1% | 2025 | Regional bank; over half of revenue is net interest income. |
-| High | CFG | Citizens Financial Group, Inc. | 52.5% | 2025 | Regional bank; over half of revenue is net interest income. |
-| High | RF | Regions Financial Corporation | 51.9% | 2025 | Regional bank; over half of revenue is net interest income. |
-| Moderate | WFC | Wells Fargo & Company | 38.4% | 2025 | Large bank; lending spread is over a third of revenue, rest is fees. |
-| Moderate | C | Citigroup Inc. | 35.5% | 2025 | Global bank; about a third lending spread, rest is fees and trading. |
-| Moderate | BAC | Bank of America Corporation | 31.4% | 2025 | Large bank; about a third lending spread, rest is fees and markets. |
+| High | MTB | M&T Bank Corporation | 79.2% | 2025 | Regional bank; most income is lending spread. |
+| High | ZION | Zions Bancorporation, National | 77.6% | 2025 | Regional bank; most income is lending spread. |
+| High | CFG | Citizens Financial Group, Inc. | 79.8% | 2025 | Regional bank; most income is lending spread. |
+| High | RF | Regions Financial Corporation | 66.3% | 2025 | Regional bank; most income is lending spread. |
+| Moderate | WFC | Wells Fargo & Company | 56.7% | 2025 | Large bank; lending spread plus a big fee business. |
+| Moderate | C | Citigroup Inc. | 70.2% | 2025 | Global bank; lending spread plus fees and trading. |
+| Moderate | BAC | Bank of America Corporation | 53.1% | 2025 | Large bank; lending spread plus fees and markets. |
 | Control | COST | Costco Wholesale Corporation | 0.2% | 2026 | Warehouse retailer with no lending or deposit business. |
 
-### Gold & precious metals  (ground truth: GLD; controls: SPY, TLT, VALUE)
+### Gold & precious metals  (ground truth: GLD; controls: SPY, TLT, VALUE, SIZE, MOM, LOWVOL)
 Measure: Gold and silver share of revenue  
 Note: Exception (approved): no Moderate references. FCX and SCCO (copper miners) were dropped.
 
@@ -65,7 +65,7 @@ Note: Exception (approved): no Moderate references. FCX and SCCO (copper miners)
 | Tier 2 → High | KGC | Kinross Gold Corporation | n/a | - | Gold miner; FMP has no segment data. |
 | Tier 2 → High | AEM | Agnico Eagle Mines Limited | n/a | - | Gold miner; FMP's latest segment data is from 2013, too old to cite. |
 
-### Defense & aerospace  (ground truth: ITA; controls: SPY, TLT, VALUE)
+### Defense & aerospace  (ground truth: ITA; controls: SPY, TLT, VALUE, SIZE, MOM, LOWVOL)
 Measure: Defense / government segment share of revenue
 
 | Group | Ticker | Company | Evidence | FY | Reason |
@@ -79,9 +79,9 @@ Measure: Defense / government segment share of revenue
 | Moderate | GE | GE Aerospace | 23.0% | 2025 | Military engines; most revenue is commercial engines. |
 | Control | INTU | Intuit Inc. | 0% | - | Tax and accounting software; no defense or government-contract revenue. |
 
-### Healthcare  (ground truth: XLV; controls: SPY, TLT, VALUE)
+### Healthcare  (ground truth: XLV; controls: SPY, TLT, VALUE, SIZE, MOM, LOWVOL)
 Measure: Healthcare share of revenue  
-Note: Exception (approved): only 1 Moderate reference. Kept only companies with a real partial healthcare business; PG and WM were dropped because they don't trade like healthcare.
+Note: Exception (approved): no Moderate references. PG and WM were dropped (don't trade like healthcare), then KR (failed the price check once style controls were added).
 
 | Group | Ticker | Company | Evidence | FY | Reason |
 |---|---|---|---|---|---|
@@ -89,11 +89,10 @@ Note: Exception (approved): only 1 Moderate reference. Kept only companies with 
 | High | MRK | Merck & Co., Inc. | 89.4% | 2025 | Large drugmaker; animal health is the rest. |
 | High | LLY | Eli Lilly and Company | 100.0% | 2025 | Drugmaker; all revenue is medicines. |
 | High | GEHC | GE HealthCare Technologies Inc | 100.0% | 2025 | Medical imaging and diagnostics; all segments are healthcare. |
-| Moderate | KR | The Kroger Co. | 32.8% | 2025 | Grocer whose pharmacy (prescriptions) is a third of revenue. |
-| Control | CRM | Salesforce, Inc. | 0% | - | Business software (Salesforce); no healthcare segment. |
+| Control | ADM | Archer-Daniels-Midland Company | 0% | - | Crop processing and food ingredients; no healthcare segment. |
 | Tier 2 → High | UNH | UnitedHealth Group Incorporate | n/a | - | Health insurer; FMP segments are revenue types (premiums, services), not a health share. |
 
-### Industrial / EV metals (copper + lithium)  (ground truth: COPX; controls: SPY, TLT, VALUE)
+### Industrial / EV metals (copper + lithium)  (ground truth: COPX; controls: SPY, TLT, VALUE, SIZE, MOM, LOWVOL)
 Measure: Copper and lithium share of revenue
 
 | Group | Ticker | Company | Evidence | FY | Reason |
@@ -110,7 +109,7 @@ Measure: Copper and lithium share of revenue
 | Tier 2 → High | HBM | Hudbay Minerals Inc. | n/a | - | Copper miner; FMP has no segment data. |
 | Tier 2 → High | LAC | Lithium Americas Corp. | n/a | - | Lithium developer; no meaningful revenue yet. |
 
-### Clean energy (solar & renewables)  (ground truth: ICLN; controls: SPY, TLT, VALUE)
+### Clean energy (solar & renewables)  (ground truth: ICLN; controls: SPY, TLT, VALUE, SIZE, MOM, LOWVOL)
 Measure: Solar and renewable-energy share of revenue  
 Note: Exception (approved): 1 Moderate reference (NEE). Uranium/nuclear names (LEU, BWXT, CCJ) were dropped to keep the group to solar and renewables.
 
@@ -124,7 +123,7 @@ Note: Exception (approved): 1 Moderate reference (NEE). Uranium/nuclear names (L
 | Tier 2 → High | ENPH | Enphase Energy, Inc. | n/a | - | Solar microinverters; FMP reports a single segment with no product split. |
 | Tier 2 → High | BEP | Brookfield Renewable Partners  | n/a | - | Renewable power producer; FMP has no segment data. |
 
-### Consumer discretionary  (ground truth: XLY; controls: SPY, TLT, VALUE)
+### Consumer discretionary  (ground truth: XLY; controls: SPY, TLT, VALUE, SIZE, MOM, LOWVOL)
 Measure: Discretionary-spending share of revenue
 
 | Group | Ticker | Company | Evidence | FY | Reason |
@@ -134,13 +133,12 @@ Measure: Discretionary-spending share of revenue
 | High | TJX | The TJX Companies, Inc. | 100.0% | 2026 | Off-price clothing and home goods retailer. |
 | High | RCL | Royal Caribbean Cruises Ltd. | 95.2% | 2025 | Cruise line; travel spending. |
 | Moderate | COST | Costco Wholesale Corporation | 25.5% | 2026 | Warehouse club; non-food goods are about a quarter, the rest is groceries. |
-| Moderate | DIS | The Walt Disney Company | 32.4% | 2025 | Media company; parks, resorts and merchandise are about a third, the rest is TV and streaming. |
 | Moderate | DG | Dollar General Corporation | 18.0% | 2025 | Discount store; seasonal, home and apparel goods are a fifth, the rest is consumables. |
 | Control | ADM | Archer-Daniels-Midland Company | 0% | - | Crop processing and food ingredients; no discretionary-spending revenue. |
 | Tier 2 → High | MCD | McDonald's Corporation | n/a | - | Restaurants; FMP segments are geographic, not by spending type. |
 | Tier 2 → Moderate | AMZN | Amazon.com, Inc. | n/a | - | Online retail is large, but FMP doesn't split discretionary from essentials. |
 
-### Cybersecurity  (ground truth: CIBR; controls: SPY, TLT)
+### Cybersecurity  (ground truth: CIBR; controls: SPY, TLT, VALUE, SIZE, MOM, LOWVOL)
 Measure: Security share of revenue  
 Note: Exception (approved): only 1 Moderate reference instead of 2-4. FMP doesn't disclose a security share for any other company with partial exposure.
 
