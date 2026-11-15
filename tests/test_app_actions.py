@@ -188,3 +188,22 @@ def test_reposting_many_prices_back_to_back_has_enough_gas(local_chain):
         chain.post_prices({t: p + bump for t, p in prices.items()}, f"round {bump}")
     oracle_price, _ = chain.oracle.functions.priceOf(publish.to_bytes32("T39")).call()
     assert oracle_price == publish.price_to_chain(141.0)
+
+
+@needs_chain
+def test_an_approved_friend_can_publish_but_a_stranger_cannot(local_chain):
+    w3 = Web3(Web3.HTTPProvider(local_chain["rpc"]))
+    owner, friend, stranger = local_chain["owner"], w3.eth.account.create(), w3.eth.account.create()
+    for acct in (friend, stranger):
+        w3.provider.make_request("anvil_setBalance", [acct.address, hex(10**20)])
+    as_owner = publish.Publisher(w3, local_chain["factory"], owner, log=lambda _m: None)
+    as_owner.send(as_owner.oracle.functions.setPublisher(friend.address, True), "approve friend (oracle)")
+    as_owner.send(as_owner.exchange.functions.setPublisher(friend.address, True), "approve friend (exchange)")
+
+    with pytest.raises(PublishError, match="isn't allowed to publish to the oracle"):
+        publish.Publisher(w3, local_chain["factory"], stranger)
+    as_friend = publish.Publisher(w3, local_chain["factory"], friend, log=lambda _m: None)
+    as_friend.list_stocks(["FRND"])
+    as_friend.post_prices({"FRND": 42.0})
+    price, _ = as_friend.oracle.functions.priceOf(publish.to_bytes32("FRND")).call()
+    assert price == publish.price_to_chain(42.0)

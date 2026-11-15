@@ -5,7 +5,9 @@ pragma solidity ^0.8.20;
 /// @notice The on-chain copy of the Python engine's results. For every stock it stores
 ///         the latest price, and for every (stock, theme) pair it stores the exposure
 ///         tier plus two fingerprints (hashes) of the data and statistics behind it.
-///         Only the owner (the wallet that runs chain/publish.py) can post.
+///         Only the owner or an approved publisher (a wallet running chain/publish.py) can post.
+///         The owner approves and removes publishers, so a team can share the work without
+///         sharing a wallet.
 ///
 ///         Keys are short text packed into bytes32:
 ///           ticker = bytes32("NVDA")   theme = bytes32("oil")   (the theme file's `key`)
@@ -39,6 +41,7 @@ contract ExposureOracle {
     uint8 public constant PRICE_DECIMALS = 8;
 
     address public owner;
+    mapping(address account => bool) public isPublisher;
     mapping(bytes32 ticker => Price) private _prices;
     mapping(bytes32 ticker => mapping(bytes32 theme => Exposure)) private _exposures;
 
@@ -52,9 +55,15 @@ contract ExposureOracle {
         uint256 timestamp
     );
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+    event PublisherSet(address indexed account, bool allowed);
 
     modifier onlyOwner() {
         require(msg.sender == owner, "Oracle: caller is not the owner");
+        _;
+    }
+
+    modifier onlyPublisher() {
+        require(canPublish(msg.sender), "Oracle: caller is not a publisher");
         _;
     }
 
@@ -63,9 +72,9 @@ contract ExposureOracle {
         emit OwnershipTransferred(address(0), msg.sender);
     }
 
-    // ───────────── posting (owner only) ─────────────
+    // ───────────── posting (owner or approved publishers) ─────────────
 
-    function postPrice(bytes32 ticker, uint256 price) public onlyOwner {
+    function postPrice(bytes32 ticker, uint256 price) public onlyPublisher {
         require(ticker != bytes32(0), "Oracle: empty ticker");
         require(price > 0, "Oracle: price must be positive");
         _prices[ticker] = Price(price, block.timestamp);
@@ -73,7 +82,7 @@ contract ExposureOracle {
     }
 
     /// Post many prices in one transaction.
-    function postPrices(bytes32[] calldata tickers, uint256[] calldata prices) external onlyOwner {
+    function postPrices(bytes32[] calldata tickers, uint256[] calldata prices) external onlyPublisher {
         require(tickers.length == prices.length, "Oracle: list lengths differ");
         for (uint256 i = 0; i < tickers.length; i++) {
             postPrice(tickers[i], prices[i]);
@@ -82,7 +91,7 @@ contract ExposureOracle {
 
     function postExposure(bytes32 ticker, bytes32 theme, Tier tier, bytes32 baselineHash, bytes32 statsHash)
         public
-        onlyOwner
+        onlyPublisher
     {
         require(ticker != bytes32(0), "Oracle: empty ticker");
         require(theme != bytes32(0), "Oracle: empty theme");
@@ -98,7 +107,7 @@ contract ExposureOracle {
         Tier[] calldata tiers,
         bytes32[] calldata baselineHashes,
         bytes32[] calldata statsHashes
-    ) external onlyOwner {
+    ) external onlyPublisher {
         uint256 n = tickers.length;
         require(
             themes.length == n && tiers.length == n && baselineHashes.length == n && statsHashes.length == n,
@@ -107,6 +116,20 @@ contract ExposureOracle {
         for (uint256 i = 0; i < n; i++) {
             postExposure(tickers[i], themes[i], tiers[i], baselineHashes[i], statsHashes[i]);
         }
+    }
+
+    // ───────────── access (owner only) ─────────────
+
+    /// Approve (true) or remove (false) a wallet that may post prices and tiers.
+    function setPublisher(address account, bool allowed) external onlyOwner {
+        require(account != address(0), "Oracle: publisher is the zero address");
+        isPublisher[account] = allowed;
+        emit PublisherSet(account, allowed);
+    }
+
+    /// True for the owner and for every approved publisher.
+    function canPublish(address account) public view returns (bool) {
+        return account == owner || isPublisher[account];
     }
 
     function transferOwnership(address newOwner) external onlyOwner {

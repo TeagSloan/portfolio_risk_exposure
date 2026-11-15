@@ -221,3 +221,63 @@ def test_fan_chart_has_bands_medians_and_loss_line():
     assert "Portfolio: 90% of outcomes" in names
     assert "not a forecast" in fig.layout.title.text
     assert any(s.y0 == pytest.approx(9_000) for s in fig.layout.shapes)
+
+
+# ---- small VaR wording and shortened-history warning ----
+
+def test_tiny_var_reads_as_break_even_not_a_zero_percent_gain():
+    port = mc.OutcomeStats(median=0.9, mean=1.1, p_loss_over_10=0.03, var_5=-0.0047, cvar_5=0.144, best_5=2.8)
+    bench = mc.OutcomeStats(median=0.22, mean=0.24, p_loss_over_10=0.02, var_5=0.043, cvar_5=0.108, best_5=0.55)
+    text = mc.sentences(port, bench, 0.94, 5000, "Mar 2025", "Nov 2026")
+    bad_year = next(s for s in text if s.startswith("Bad year"))
+    assert "roughly break even" in bad_year and "still gain at least 0%" not in bad_year
+    assert any("a 14% loss" in s for s in text)
+
+
+def test_history_note_is_the_second_sentence():
+    port = mc.outcome_stats(np.linspace(-0.2, 0.4, 101))
+    text = mc.sentences(port, port, 0.5, 100, "Mar 2025", "Nov 2026", history_note="Heads-up: short.")
+    assert text[1] == "Heads-up: short." and len(text) == 7
+
+
+def _young_stock_returns(monkeypatch, n_shared=300, raise_for=()):
+    """The fund's shared window is short because YNG listed late; OLD has the full two years."""
+    full = pd.bdate_range("2024-11-18", periods=500)
+
+    def fake_get_returns(tickers, start, end):
+        if tickers == ["YNG"]:
+            if "YNG" in raise_for:
+                raise mc.DataError("no data")
+            return pd.DataFrame({"YNG": 0.0}, index=full[-n_shared:])
+        if tickers == ["OLD"]:
+            if "OLD" in raise_for:
+                raise mc.DataError("no data")
+            return pd.DataFrame({"OLD": 0.0}, index=full)
+        rng = np.random.default_rng(0)
+        return pd.DataFrame({t: rng.normal(0.0005, 0.01, n_shared) for t in tickers}, index=full[-n_shared:])
+
+    monkeypatch.setattr(mc, "get_returns", fake_get_returns)
+
+
+def test_simulate_warns_and_names_the_young_holding(monkeypatch):
+    _young_stock_returns(monkeypatch)
+    res = mc.simulate({"OLD": 50, "YNG": 50}, n_paths=200)
+    assert res.history_note.startswith("Heads-up: YNG only has prices from")
+    assert "about 14 months" in res.history_note and "not the usual two years" in res.history_note
+    assert res.sentences[1] == res.history_note
+
+
+def test_no_warning_with_a_full_window(monkeypatch):
+    _young_stock_returns(monkeypatch, n_shared=480)
+    assert mc.simulate({"OLD": 50, "YNG": 50}, n_paths=200).history_note is None
+
+
+def test_warning_still_shown_if_start_dates_cant_be_found(monkeypatch):
+    _young_stock_returns(monkeypatch, raise_for=("OLD", "YNG"))
+    note = mc.simulate({"OLD": 50, "YNG": 50}, n_paths=200).history_note
+    assert note.startswith("Heads-up: some holdings have short price histories")
+
+
+def test_cash_only_needs_no_warning():
+    idx = pd.bdate_range("2024-11-18", periods=100)
+    assert mc.shortened_history_note([], pd.DataFrame({"SPY": 0.0}, index=idx), "a", "b") is None

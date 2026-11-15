@@ -74,8 +74,11 @@ def run_risk(holdings: dict[str, float], shock_sizes: dict[str, float] | None = 
 
 def summary_sentences(mc: monte_carlo.MonteCarloResult, shock_results: list[dict]) -> list[str]:
     """The three or four sentences a non-expert most needs."""
-    p = mc.portfolio
-    out = [mc.sentences[2], mc.sentences[3]]
+    p, b = mc.portfolio, mc.benchmark
+    out = [mc.history_note] if mc.history_note else []
+    out.append(f"Chance of losing more than 10% in a year: {p.p_loss_over_10 * 100:.0f}% "
+               f"(SPY: {b.p_loss_over_10 * 100:.0f}%).")
+    out.append(next(s for s in mc.sentences if s.startswith("Bad year (5% VaR)")))
     if shock_results:
         biggest = max(shock_results, key=lambda s: abs(s["portfolio_move"]))
         out.append(f"Most sensitive theme: {biggest['theme_name']}. {biggest['sentence']}")

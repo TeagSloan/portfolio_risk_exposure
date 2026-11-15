@@ -39,6 +39,34 @@ forge test
 
 Network: Monad testnet, chain ID 10143, RPC `https://testnet-rpc.monad.xyz`.
 
+## Live deployment (Monad testnet, deployed Nov 15 2026)
+
+Already deployed; you don't need to deploy again. Put these in your `.env` to use them:
+
+```
+MONAD_RPC_URL=https://testnet-rpc.monad.xyz
+FACTORY_ADDRESS=0x62cd00e1e5123d511201878679d3aCB62Dd62E5a
+ORACLE_ADDRESS=0x55AbD9CBEc8beB920EB4C8aA408088522e8A4df0
+DEPLOYER_KEYSTORE=<your Foundry keystore name>
+```
+
+| Contract | Address |
+|---|---|
+| ThemeFundFactory | `0x62cd00e1e5123d511201878679d3aCB62Dd62E5a` |
+| ExposureOracle | `0x55AbD9CBEc8beB920EB4C8aA408088522e8A4df0` |
+| MockExchange | `0x46baB6E7ba190930A82367e1C0822da541FD0577` |
+| MockUSDC (test dollars) | `0x318BFe1eADA7afe56Ce7FB8795cF5BDb25492bA3` |
+
+- Owner of the oracle and the exchange: `0xE0175dd6faBb0aB0479633aE73fD6AcDBAEfd03f`.
+- Approved publishers (can post tiers/prices and list stocks): `0x72592CBdfbA9022672a79EA6143231caafda1aE2`,
+  `0x4D4Bc40fb40AB34fcA22519D3cb968D2323d0FE9`, `0xBc94d2839840fe8e4BaF351B3F2BA678CD1e4E19` (plus the owner).
+- Anyone can launch a fund and deposit; publishing needs the owner or an approved publisher. The owner adds a
+  publisher with `cast send <ORACLE_ADDRESS> "setPublisher(address,bool)" <WALLET> true` and the same on the
+  exchange address.
+- Look any address up at https://testnet.monadexplorer.com.
+- The full record (every deploy, publisher-approval and ownership-transfer transaction, with explorer
+  links) is in `deployments/monad_testnet.json`.
+
 ## Putting it on Monad testnet (Phase 7)
 
 The contracts live in `contracts/src/` and the Python that talks to them in `chain/`.
@@ -50,6 +78,11 @@ cast wallet import deployer --interactive
 # 2. Deploy the oracle, exchange and factory, then copy the printed FACTORY_ADDRESS into .env
 cd contracts
 forge script script/Deploy.s.sol --rpc-url monad --account deployer --broadcast
+# Optional: also approve team wallets to publish (public addresses, comma-separated):
+#   PUBLISHERS=0xabc...,0xdef... forge script script/Deploy.s.sol --rpc-url monad --account deployer --broadcast
+# Hand both contracts to another owner later:
+#   cast send <ORACLE_ADDRESS> "transferOwnership(address)" <NEW_OWNER> --rpc-url monad --account deployer
+#   cast send <EXCHANGE_ADDRESS> "transferOwnership(address)" <NEW_OWNER> --rpc-url monad --account deployer
 cd ..
 
 # 3. Publish the latest built fund's tiers and prices (plus XOM for the rejection demo)
@@ -67,3 +100,9 @@ python -m chain.publish --extra XOM --replay 20 --interval 3
 The launched fund's address and explorer link are saved to `results/fund_latest.json`.
 
 On testnet the stocks are simulated tokens priced from our own data feed. In production this would plug into tokenized stocks.
+
+## Known limitations
+
+- **Revenue matching is keyword-based and sparse.** A segment counts toward a theme only when its name contains one of that theme's keywords (whole words, case-insensitive). FMP mostly names segments by product or region, not by theme, so most companies get no revenue match and their rating rests on the business link and the regression. The full list of matches is in `results/revenue_matches.md`.
+- **Some revenue shares are quirks of FMP's data**, not of our method. Examples: EQT reports a single "Oil Sales" segment, so it shows as 100% oil revenue even though it is mainly a natural gas producer; GFI shows "Silver 100%" because of how FMP labels its segment.
+- **Market-driven is a caution, not exposure.** It means the stock's price moves with the theme's companies but the company isn't in that business (price co-movement without a business link). It is shown as a caution in Check my portfolio, and stocks rated Market-driven are excluded when you avoid a theme.

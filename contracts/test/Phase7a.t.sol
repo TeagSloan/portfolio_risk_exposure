@@ -100,16 +100,16 @@ contract Phase7aTest is Test {
 
     function test_oracle_only_owner_can_post() public {
         vm.startPrank(stranger);
-        vm.expectRevert("Oracle: caller is not the owner");
+        vm.expectRevert("Oracle: caller is not a publisher");
         oracle.postPrice(NVDA, 1e8);
-        vm.expectRevert("Oracle: caller is not the owner");
+        vm.expectRevert("Oracle: caller is not a publisher");
         oracle.postExposure(XOM, OIL, ExposureOracle.Tier.High, 0, 0);
         vm.stopPrank();
     }
 
     function test_oracle_ownership_transfer() public {
         oracle.transferOwnership(alice);
-        vm.expectRevert("Oracle: caller is not the owner");
+        vm.expectRevert("Oracle: caller is not a publisher");
         oracle.postPrice(NVDA, 1e8);
         vm.prank(alice);
         oracle.postPrice(NVDA, 1e8);
@@ -204,7 +204,7 @@ contract Phase7aTest is Test {
         exchange.listStock("Duplicate", "NVDA");
 
         vm.prank(stranger);
-        vm.expectRevert("Exchange: caller is not the owner");
+        vm.expectRevert("Exchange: caller is not a publisher");
         exchange.listStock("Exxon Mobil Corporation", "XOM");
     }
 
