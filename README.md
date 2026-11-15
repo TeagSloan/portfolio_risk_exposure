@@ -64,6 +64,8 @@ DEPLOYER_KEYSTORE=<your Foundry keystore name>
   publisher with `cast send <ORACLE_ADDRESS> "setPublisher(address,bool)" <WALLET> true` and the same on the
   exchange address.
 - Look any address up at https://testnet.monadexplorer.com.
+- The full record (every deploy, publisher-approval and ownership-transfer transaction, with explorer
+  links) is in `deployments/monad_testnet.json`.
 
 ## Putting it on Monad testnet (Phase 7)
 
