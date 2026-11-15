@@ -67,3 +67,9 @@ python -m chain.publish --extra XOM --replay 20 --interval 3
 The launched fund's address and explorer link are saved to `results/fund_latest.json`.
 
 On testnet the stocks are simulated tokens priced from our own data feed. In production this would plug into tokenized stocks.
+
+## Known limitations
+
+- **Revenue matching is keyword-based and sparse.** A segment counts toward a theme only when its name contains one of that theme's keywords (whole words, case-insensitive). FMP mostly names segments by product or region, not by theme, so most companies get no revenue match and their rating rests on the business link and the regression. The full list of matches is in `results/revenue_matches.md`.
+- **Some revenue shares are quirks of FMP's data**, not of our method. Examples: EQT reports a single "Oil Sales" segment, so it shows as 100% oil revenue even though it is mainly a natural gas producer; GFI shows "Silver 100%" because of how FMP labels its segment.
+- **Market-driven is a caution, not exposure.** It means the stock's price moves with the theme's companies but the company isn't in that business (price co-movement without a business link). It is shown as a caution in Check my portfolio, and stocks rated Market-driven are excluded when you avoid a theme.
