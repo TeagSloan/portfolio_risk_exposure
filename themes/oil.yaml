@@ -85,6 +85,3 @@ controls:
 - MOM
 - LOWVOL
 style_skips: {}
-sector_skips:
-  XLE: 31.68
-use_sector_control: false

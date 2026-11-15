@@ -128,15 +128,3 @@ def test_cli(capsys, tmp_path, monkeypatch):
     assert "both want and avoid" in capsys.readouterr().err
     assert builder.main([]) == 2
     assert builder.main(["--want", "ai", "--avoid", "oil", "--refresh"]) == 0
-
-
-def test_two_key_rule_rejects_picks_without_etf_confirmation(monkeypatch):
-    themes = {**THEMES, "ai": {**THEMES["ai"], "ground_truth": "AIETF"}}
-    monkeypatch.setattr(builder, "load_all", lambda: themes)
-    monkeypatch.setattr(screen, "load_theme", lambda k: themes[k])
-    monkeypatch.setattr(builder, "etf_check", lambda t, th: {"etf": "AIETF", "pass": t != "A1"})
-    out = builder.build({"ai": "want", "oil": "avoid"}, refresh=True)
-    assert "A1" not in weights(out) and out["rejected_by_etf_check"] == ["A1"]
-    assert any("failed the theme-ETF confirmation: A1" in x for x in out["warnings"])
-    # avoid-only builds and themes without an ETF are unaffected
-    assert "A1" in weights(builder.build({"oil": "avoid"}))

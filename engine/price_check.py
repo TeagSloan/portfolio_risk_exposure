@@ -2,7 +2,7 @@
 
 For each theme:
 "Beyond the market" means after controlling for SPY, the theme's style controls (VALUE, SIZE, MOM, LOWVOL
-unless skipped by the 15% rule) and, when sector controls are on, the company's own sector-minus-SPY spread.
+unless skipped by the 15% rule) and, for a non-US company, INTL (VXUS minus SPY).
 - Each reference should move with its OWN group beyond the market: regress it on SPY, VALUE and the average
   return of the other members of its group. Pass = that coefficient is positive and significant
   (one-sided p < 0.05). If its group has no other members, the other group's average is used instead.
@@ -24,7 +24,7 @@ import pandas as pd
 import statsmodels.api as sm
 from scipy import stats
 
-from engine.controls import sector_control
+from engine.controls import intl_control
 from engine.data import get_returns
 from engine.regression import GROUPS, reference_names
 from engine.theme_loader import load_all, load_theme
@@ -51,7 +51,7 @@ def check_theme(theme: dict, returns: pd.DataFrame | None = None) -> list[dict]:
     ctrl = theme["control"]["ticker"]
     base = _controls(theme)
     members = refs["High"] + refs["Moderate"] + [ctrl]
-    sectors = {t: sector_control(t, theme) for t in members}
+    sectors = {t: intl_control(t) for t in members}  # INTL for non-US references
     if returns is None:
         need = base + members + [s for s in sectors.values() if s] + ([gt] if gt else [])
         returns = get_returns(list(dict.fromkeys(need)))

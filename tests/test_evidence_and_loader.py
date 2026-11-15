@@ -83,7 +83,7 @@ def test_real_theme_files_are_valid():
         assert t["controls"][:2] == ["SPY", "TLT"]
         for style in ("VALUE", "SIZE", "MOM", "LOWVOL"):  # each style control is either used or skipped (with %)
             assert (style in t["controls"]) != (style in t["style_skips"])
-        assert t["use_sector_control"] is False  # method version B
+        assert "use_sector_control" not in t and "sector_skips" not in t  # sector control deleted
         assert t["control"]["ticker"] not in refs
         assert 3 <= len(t["references"]["High"]) <= 5
         assert 0 <= len(t["references"]["Moderate"]) <= 4

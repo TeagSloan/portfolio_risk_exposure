@@ -108,6 +108,3 @@ style_skips:
   VALUE:
     IWD: 5.05
     IWF: 27.06
-sector_skips:
-  XLK: 34.01
-use_sector_control: false

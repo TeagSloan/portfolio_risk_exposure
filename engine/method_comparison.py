@@ -3,7 +3,7 @@
     A  = market + VALUE (the previous method; AI and Cyber without VALUE by hand, no sector control)
     A* = A with VALUE kept or skipped by the objective 15% rule (VALUE skipped for AI only)
     B = A + style controls SIZE, MOM, LOWVOL, all chosen by the objective 15% skip rule
-    C = B + each holding's sector control (sector ETF minus SPY), also with the 15% skip rule
+    (Version C, B + sector controls, was tested and rejected; the sector code has since been deleted.)
 
 Run:  python -m engine.method_comparison
 """
@@ -29,14 +29,8 @@ def variant(themes: dict, v: str) -> dict:
         t = dict(th)
         if v == "A":
             t["controls"] = ["SPY", "TLT"] if k in ("ai", "cyber") else ["SPY", "TLT", "VALUE"]
-            t["use_sector_control"] = False
         elif v == "A*":  # A, but VALUE kept/skipped by the objective 15% rule instead of by hand
             t["controls"] = ["SPY", "TLT"] + ([] if "VALUE" in th.get("style_skips", {}) else ["VALUE"])
-            t["use_sector_control"] = False
-        elif v == "B":
-            t["use_sector_control"] = False
-        else:
-            t["use_sector_control"] = True
         out[k] = t
     return out
 
@@ -55,7 +49,7 @@ def main():
     univ = universe(base)
     r, dropped = rc.big_frame(base)
     out = {"dropped": dropped, "n_days": len(r)}
-    for v in ("A", "A*", "B", "C"):
+    for v in ("A", "A*", "B"):
         rc.RNG = __import__("numpy").random.default_rng(2026)  # same random draws for every version
         th = variant(base, v)
         loo = rc.leave_one_out(th, r)

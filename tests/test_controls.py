@@ -11,8 +11,7 @@ HOLDINGS = {
     "RSP": {"NVDA": 0.2}, "USMV": {"MSFT": 1.5},
     "XLK": {"NVDA": 13.0, "MSFT": 12.0}, "XLE": {"XOM": 23.0},
 }
-PROFILES = {"NVDA": {"sector": "Technology"}, "XOM": {"sector": "Energy"}, "SMH": {"sector": "Technology", "isEtf": True},
-            "ODD": {"sector": "Shipping"}}
+PROFILES = {"NVDA": {"country": "US"}}
 
 
 @pytest.fixture(autouse=True)
@@ -40,17 +39,16 @@ def test_exactly_15_percent_is_not_skipped():
         del HOLDINGS["MTUM"]["XOM"]
 
 
-def test_sector_skips_and_sector_control():
-    th = theme(["XOM"], use_sector_control=True, sector_skips=controls.sector_skips(theme(["XOM"])))
-    assert th["sector_skips"] == {"XLE": 23.0}
-    assert controls.sector_control("XOM", th) is None          # Energy -> XLE, skipped for this theme
-    assert controls.sector_control("NVDA", th) == "SEC_XLK"    # Technology -> XLK
-    assert controls.sector_control("SMH", th) is None          # ETFs get no sector control
-    assert controls.sector_control("ODD", th) is None          # unknown sector
-    assert controls.sector_control("NOPE", th) is None         # no profile
-    assert controls.sector_control("NVDA", {**th, "use_sector_control": False}) is None
+def test_intl_control_for_non_us_stocks(monkeypatch):
+    monkeypatch.setattr(controls, "_COUNTRY", {"TSM": "TW", "NVDA": "US", "BLANK": ""})
+    assert controls.intl_control("TSM") == "INTL"
+    assert controls.intl_control("NVDA") is None
+    assert controls.intl_control("BLANK") is None
+    PROFILES["SAP"] = {"country": "DE"}
+    assert controls.intl_control("SAP") == "INTL"          # not in the universe file -> FMP profile
+    assert controls.intl_control("NOPE") is None           # no profile
 
 
-def test_spreads_cover_styles_and_all_sectors():
-    assert controls.SPREADS["SIZE"] == ("RSP", "SPY") and controls.SPREADS["SEC_XLRE"] == ("XLRE", "SPY")
-    assert len(controls.SECTOR_SPREADS) == 11
+def test_spreads_cover_styles_and_intl():
+    assert controls.SPREADS["SIZE"] == ("RSP", "SPY") and controls.SPREADS["INTL"] == ("VXUS", "SPY")
+    assert set(controls.SPREADS) == {"VALUE", "SIZE", "MOM", "LOWVOL", "INTL"}
