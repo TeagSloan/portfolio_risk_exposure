@@ -179,7 +179,8 @@ def why_in(h: dict) -> str:
     if not theme or theme == "_cap":
         return "One of the largest companies that passes every theme you chose to avoid."
     if (h.get("reference") or {}).get(theme):
-        return f"A {theme} reference company: its own filings show {theme} is a big part of its revenue."
+        article = "An" if theme[:1].upper() in "AEIOU" else "A"
+        return f"{article} {theme} reference company: its own filings show {theme} is a big part of its revenue."
     if rating == "High":
         return f"Rated High for {theme}: it's in the business, and its revenue or price moves strongly with it."
     if rating == "Moderate":
