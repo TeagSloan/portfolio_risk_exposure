@@ -276,7 +276,7 @@ def test_launch_tab_without_a_chain_shows_rules_steps_and_offchain_preview(app):
     app.text_input(key="try_ticker").set_value("XOM")
     app.button(key="try_add").click()
     app.run()
-    rejection = next(e.value for e in app.error if e.value.startswith("Rejected"))
+    rejection = next(m.value for m in app.markdown if "Rejected: XOM can't be added" in m.value)  # the red panel
     assert "Mandate: Oil exposure too high (XOM is Moderate for Oil)." in rejection
 
 
@@ -338,7 +338,8 @@ def test_launch_flow_with_a_chain(app, monkeypatch):
     app.text_input(key="try_ticker").set_value("XOM")
     app.button(key="try_add").click()
     app.run()
-    assert any(e.value == "Rejected by the fund contract: Mandate: Oil exposure too high" for e in app.error)
+    assert any("Mandate: Oil exposure too high" in m.value and "Refused by the fund contract on Monad" in m.value
+               for m in app.markdown)  # the red rejection panel
     assert ("launch", "AI ex-Oil Fund", "AIXO", 60.0) in calls and ("deposit", 1000.0) in calls
     assert not app.exception
 

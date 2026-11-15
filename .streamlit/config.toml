@@ -1,0 +1,9 @@
+# Look of the dashboard: colours and typeface. The rest of the styling is in engine/ui_style.py.
+[theme]
+base = "light"                          # always light, so it reads on a projector
+primaryColor = "#1F4E9E"                # ledger blue: buttons, selected choices
+backgroundColor = "#FBFCFE"             # cool white page
+secondaryBackgroundColor = "#EEF2F8"    # sidebar and input fields
+textColor = "#14213D"                   # ink navy
+# Loaded from Google Fonts. With no internet the app falls back to the system sans-serif and still works.
+font = "Schibsted Grotesk:https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap, sans-serif"

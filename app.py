@@ -20,7 +20,7 @@ import streamlit as st
 
 from chain import app_actions
 from chain.publish import PublishError
-from engine import assistant, builder, dashboard, risk, screen
+from engine import assistant, builder, dashboard, risk, screen, ui_style
 from engine.data import DEFAULT_END, DEFAULT_START, DataError
 from engine.monte_carlo import SimulationError
 from engine.shocks import LABEL as SHOCK_LABEL
@@ -28,6 +28,7 @@ from engine.shocks import ShockError
 from engine.theme_loader import load_all
 
 st.set_page_config(page_title="Theme Funds", page_icon="📈", layout="wide")
+ui_style.apply()
 
 BUILD, CHECK = "Build my ETF", "Check my portfolio"
 EXAMPLE_QUESTIONS = [
@@ -137,7 +138,7 @@ def heatmap_and_audit(table: dict[str, dict[str, dict]], holdings: dict[str, flo
     if matrix.empty:
         st.info("Only cash: nothing to score.")
         return
-    st.plotly_chart(dashboard.heatmap_figure(matrix, holdings), width="stretch")
+    st.plotly_chart(ui_style.chart(dashboard.heatmap_figure(matrix, holdings)), width="stretch")
 
     st.subheader("Audit trail")
     st.caption("How any one tier was decided: the regression numbers and the thresholds they were held to.")
@@ -239,7 +240,7 @@ def risk_tab(report: dict | None, figures: dict | None) -> None:
     m3.metric("Average of worst years (CVaR)", loss(p["cvar_5"]))
     m3.caption(f"SPY (the market): {loss(b['cvar_5'])}")
     m4.metric("Beat SPY", f"{mc['p_beat_benchmark']:.0%} of years")
-    st.plotly_chart(figures["fan_chart"], width="stretch")
+    st.plotly_chart(ui_style.chart(figures["fan_chart"]), width="stretch")
     for s in mc["sentences"]:
         st.markdown(f"- {s}")
 
@@ -265,7 +266,7 @@ def risk_tab(report: dict | None, figures: dict | None) -> None:
         fig.update_layout(title="Each holding's effect on the portfolio (percentage points)",
                           xaxis_ticksuffix="%", template="plotly_white", height=max(240, 28 * len(contrib) + 90),
                           margin={"t": 40, "l": 10, "r": 10, "b": 10})
-        st.plotly_chart(fig, width="stretch")
+        st.plotly_chart(ui_style.chart(fig), width="stretch")
     with st.expander("Every theme at +30%"):
         st.dataframe([{"Theme": s["theme_name"], "Estimated portfolio move": f"{s['portfolio_move']:+.1%}"}
                       for s in sorted(report["shocks"], key=lambda s: -abs(s["portfolio_move"]))],
@@ -274,7 +275,7 @@ def risk_tab(report: dict | None, figures: dict | None) -> None:
     st.subheader("Mean-variance check")
     frontier = report.get("frontier") or {}
     if figures and figures.get("frontier") is not None:
-        st.plotly_chart(figures["frontier"], width="stretch")
+        st.plotly_chart(ui_style.chart(figures["frontier"]), width="stretch")
     for s in frontier.get("sentences", []):
         st.markdown(f"- {s}")
 
@@ -325,7 +326,8 @@ def _try_adding_offchain(prefs: dict[str, str], ticker: str) -> None:
     if allowed:
         st.success(f"{ticker} fits every rule of this fund, so it could be added.")
     else:
-        st.error(f"Rejected: {ticker} can't be added.\n\n" + "\n\n".join(reasons))
+        ui_style.rejection(ticker, reasons, on_chain=False)
+        return
     st.caption("Preview: checked off-chain with the same rules, because no chain is connected yet.")
 
 
@@ -439,7 +441,8 @@ def chain_tab(portfolio: dict) -> None:
         if allowed:
             st.success(f"The fund would accept {ticker}: it doesn't break any rule.")
         else:
-            st.error(f"Rejected by the fund contract: {reason}")
+            ui_style.rejection(ticker, reason, on_chain=True)
+            return
         st.caption("Rehearsed against the live contract; nothing was sent.")
 
 
@@ -464,6 +467,7 @@ def main() -> None:
     if portfolio["kind"] == "build":
         holdings = dashboard.holdings_from_build(portfolio["build"])
         prefs = portfolio["prefs"]
+        ui_style.fund_header(portfolio["build"], prefs, themes(), st.session_state.get("fund"))
         region = builder.REGIONS.get(portfolio["build"].get("region") or "all", "All regions")
         st.caption("Your choices: " + ", ".join(f"{v} {themes()[k]['name']}" for k, v in prefs.items())
                    + f" · region: {region}")
