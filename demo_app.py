@@ -83,7 +83,7 @@ def screen_ticker(ticker: str, theme_keys: tuple[str, ...]) -> dict[str, dict]:
 
 def new_portfolio(portfolio: dict) -> None:
     st.session_state["portfolio"] = portfolio
-    for key in ("chat", "fund", "deposit", "published", "tried"):
+    for key in ("chat", "fund", "deposit", "published"):
         st.session_state.pop(key, None)
 
 
@@ -317,26 +317,13 @@ def stress_step(weights: dict[str, float]) -> None:
 # Step 4: launch on Monad
 # ---------------------------------------------------------------------------------------------
 
-def try_adding_offchain(prefs: dict[str, str], ticker: str) -> None:
-    table = universe_table()
-    results = table.get(ticker) or screen_ticker(ticker, tuple(sorted(prefs)))
-    tiers = {k: (results.get(k) or {}).get("tier", dashboard.NOT_SCREENED) for k in prefs}
-    allowed, reasons = dashboard.mandate_check(ticker, prefs, tiers, themes())
-    if allowed:
-        st.html(style.banner(f"{ticker} fits every rule of this fund, so it could be added.", True,
-                             "Preview checked with the same rules, because no chain is connected yet."))
-    else:
-        st.html(style.banner(f"Rejected: {ticker} can't be added. " + " ".join(reasons), False,
-                             "Preview checked with the same rules, because no chain is connected yet."))
-
-
 def launch_step(portfolio: dict) -> None:
     st.html(style.step(4, "Launch it on Monad", "Your choices become rules written into the fund's contract. "
                        "Nobody, including us, can quietly break them."))
     if portfolio["kind"] != "build":
         st.info("Launching needs a fund from Build my ETF: your Want and Avoid choices become its rules.")
         return
-    build, prefs = portfolio["build"], portfolio["prefs"]
+    build = portfolio["build"]
     if not dashboard.holdings_from_build(build):
         st.info("Build an ETF with at least one stock first.")
         return
@@ -368,11 +355,6 @@ def launch_step(portfolio: dict) -> None:
     if not cfg["ready"]:
         st.warning("The chain isn't connected on this computer yet. To launch for real:\n\n" +
                    "\n\n".join(f"{i}. {m}" for i, m in enumerate(cfg["missing"], 1)))
-        st.subheader("Try to break the rules")
-        c1, c2 = st.columns([3, 1], vertical_alignment="bottom")
-        ticker = c1.text_input("Stock to add", value="XOM", key="demo_try_ticker").strip().upper()
-        if c2.button("Try adding it", type="primary", width="stretch", key="demo_try_off") and ticker:
-            try_adding_offchain(prefs, ticker)
         return
 
     wallet = st.session_state.get("wallet")
@@ -391,7 +373,7 @@ def launch_step(portfolio: dict) -> None:
     w3, account = wallet
     st.caption(f"Wallet {account.address} on {app_actions.network_name(w3.eth.chain_id)}.")
 
-    a, b, c, d = st.columns(4)
+    a, b, c = st.columns(3)
     with a:
         st.markdown("**Publish the data**")
         st.caption("Ratings and prices go on-chain.")
@@ -424,16 +406,6 @@ def launch_step(portfolio: dict) -> None:
                                                                               account, cfg)
             except CHAIN_ERRORS as exc:
                 st.error(str(exc))
-    with d:
-        st.markdown("**Break a rule**")
-        ticker = st.text_input("Stock to add", value="XOM", key="demo_try_ticker",
-                               label_visibility="collapsed").strip().upper()
-        if st.button("Try adding it", width="stretch", key="demo_try_on", disabled=not fund) and ticker:
-            try:
-                st.session_state["tried"] = (ticker, *app_actions.try_adding(fund["address"], ticker, cfg))
-            except CHAIN_ERRORS as exc:
-                st.error(str(exc))
-
     if pub:
         st.html(style.banner(f"Published {len(pub['stocks'])} stocks with prices from {pub['price_date']}.", True))
     if fund:
@@ -446,15 +418,6 @@ def launch_step(portfolio: dict) -> None:
     if dep and fund:
         st.html(style.banner(f"You hold {dep['shares']:,.2f} ${fund['symbol']}. The fund is worth "
                              f"${dep['nav_usd']:,.2f}, or ${dep['nav_per_share_usd']:.4f} a token.", True))
-    tried = st.session_state.get("tried")
-    if tried:
-        t, allowed, reason = tried
-        if allowed:
-            st.html(style.banner(f"The fund would accept {t}: it breaks no rule.", True,
-                                 "Rehearsed against the live contract; nothing was sent."))
-        else:
-            st.html(style.banner(f"Rejected by the fund contract: {reason}", False,
-                                 "Rehearsed against the live contract; nothing was sent."))
 
 
 # ---------------------------------------------------------------------------------------------
