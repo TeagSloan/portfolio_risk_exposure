@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fantasy Funds League</title>
+<meta name="description" content="Build your own ETF, stake testnet MON and race other players over real past prices. Testnet only, no real money.">
+<style>
+  :root {
+    --bg: #f6f7f9; --card: #ffffff; --ink: #15171c; --muted: #5d6470; --line: #e3e6eb; --soft: #eef0f4;
+    --accent: #5b3df5; --accent-ink: #ffffff; --good: #0f8a4a; --bad: #c2362b; --warn-bg: #fff4d6; --warn-ink: #6b4b00;
+    --win-bg: #e7f8ee; --err-bg: #fde8e6; --err-ink: #7d1c14; --shadow: 0 1px 3px rgba(0,0,0,.08);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0f1115; --card: #181b21; --ink: #eceef2; --muted: #9aa2ae; --line: #2a2f38; --soft: #20242c;
+      --accent: #8b74ff; --accent-ink: #0f1115; --good: #3ccf7f; --bad: #ff6b5e; --warn-bg: #3a2f10; --warn-ink: #ffd98a;
+      --win-bg: #12301f; --err-bg: #3a1714; --err-ink: #ffb4ab; --shadow: none;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0f1115; --card: #181b21; --ink: #eceef2; --muted: #9aa2ae; --line: #2a2f38; --soft: #20242c;
+    --accent: #8b74ff; --accent-ink: #0f1115; --good: #3ccf7f; --bad: #ff6b5e; --warn-bg: #3a2f10; --warn-ink: #ffd98a;
+    --win-bg: #12301f; --err-bg: #3a1714; --err-ink: #ffb4ab; --shadow: none;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  .banner { background: var(--warn-bg); color: var(--warn-ink); text-align: center; padding: 10px 16px; font-weight: 700; font-size: 14px; }
+  main { max-width: 760px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 26px; margin: 8px 0 4px; }
+  h2 { font-size: 20px; margin: 0 0 10px; }
+  .sub { color: var(--muted); margin: 0 0 12px; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .btn { appearance: none; border: 0; border-radius: 12px; padding: 14px 18px; min-height: 52px; font-size: 17px; font-weight: 700;
+         background: var(--accent); color: var(--accent-ink); cursor: pointer; flex: 1 1 auto; }
+  .btn.secondary { background: var(--card); color: var(--ink); border: 1px solid var(--line); }
+  .btn.small { min-height: 44px; padding: 10px 12px; font-size: 15px; flex: 0 0 auto; }
+  .btn:disabled { opacity: .45; cursor: not-allowed; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px; margin: 12px 0; box-shadow: var(--shadow); }
+  .status { font-size: 15px; color: var(--muted); }
+  .status strong { color: var(--ink); }
+  .clock { font-size: 34px; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .theme { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--line); }
+  .theme:last-child { border-bottom: 0; }
+  .theme .tn { flex: 1; font-size: 15px; font-weight: 600; min-width: 0; }
+  .seg { display: flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; flex: 0 0 auto; }
+  .seg button { border: 0; background: var(--card); color: var(--ink); padding: 10px 10px; min-width: 58px; min-height: 44px; font-size: 14px; font-weight: 600; }
+  .seg button + button { border-left: 1px solid var(--line); }
+  .seg button.on.want { background: var(--good); color: #fff; }
+  .seg button.on.avoid { background: var(--bad); color: #fff; }
+  .seg button.on.none { background: var(--soft); }
+  .pick { display: flex; gap: 8px; align-items: center; margin: 8px 0; }
+  .pick select { flex: 1; min-width: 0; font-size: 16px; padding: 12px 8px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); }
+  .pick input { width: 76px; font-size: 18px; padding: 11px 8px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); text-align: right; }
+  .pick .x { width: 44px; height: 44px; border-radius: 10px; border: 1px solid var(--line); background: var(--card); color: var(--ink); font-size: 20px; }
+  input.name { width: 100%; font-size: 18px; padding: 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); }
+  .check { font-size: 14px; margin: 8px 0; } .check .ok { color: var(--good); } .check .no { color: var(--bad); }
+  .entry { padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .entry:last-child { border-bottom: 0; }
+  .entry .en { font-weight: 700; font-size: 17px; }
+  .entry .meta { font-size: 13px; color: var(--muted); }
+  .entry .stocks { font-size: 14px; margin-top: 2px; }
+  .tag { display: inline-block; font-size: 12px; padding: 2px 8px; border-radius: 999px; background: var(--soft); margin: 4px 4px 0 0; }
+  .you { color: var(--accent); font-weight: 700; }
+  .winner { background: var(--win-bg); border-color: var(--good); }
+  .board { width: 100%; border-collapse: collapse; }
+  .board td { padding: 10px 4px; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; vertical-align: top; }
+  .board td:last-child { text-align: right; font-weight: 800; font-size: 18px; white-space: nowrap; }
+  .bar { height: 8px; background: var(--soft); border-radius: 8px; overflow: hidden; margin-top: 4px; }
+  .bar i { display: block; height: 100%; background: var(--accent); }
+  .up { color: var(--good); } .down { color: var(--bad); }
+  .winbanner { font-size: 22px; font-weight: 800; text-align: center; }
+  .msg { padding: 12px; border-radius: 12px; margin: 10px 0; font-size: 15px; }
+  .msg.err { background: var(--err-bg); color: var(--err-ink); } .msg.ok { background: var(--win-bg); color: var(--good); }
+  #qr { display: flex; justify-content: center; margin: 10px 0; }
+  #qr img, #qr canvas { background: #fff; padding: 8px; border-radius: 8px; max-width: 220px; height: auto; }
+  .small { font-size: 13px; color: var(--muted); word-break: break-all; }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<div class="banner">Fantasy Funds League: testnet MON only, no real money.</div>
+<main>
+  <h1>Fantasy Funds League</h1>
+  <p class="sub">Build your own ETF from our stock pool, stake testnet MON and race everyone else over a random window of
+    real past prices. A future block picks the window after entries close, so nobody can know it in advance.
+    Best return takes the whole pot.</p>
+
+  <div class="card">
+    <div class="row">
+      <button id="connect" class="btn">Connect MetaMask</button>
+      <button id="addnet" class="btn secondary">Add Monad Testnet</button>
+    </div>
+    <a id="openmm" class="btn secondary hidden" style="display:block;text-align:center;text-decoration:none;margin-top:10px">Open in MetaMask app</a>
+    <p id="wallet" class="status" style="margin:10px 0 0">Read-only mode: connect MetaMask to enter.</p>
+  </div>
+
+  <div id="msg"></div>
+
+  <div class="card">
+    <div class="status" id="phase">Loading…</div>
+    <div class="clock" id="clock"></div>
+    <div class="status" id="potline"></div>
+  </div>
+
+  <div id="winbox" class="card winner hidden">
+    <div class="winbanner" id="winbanner"></div>
+    <p class="status" id="winline" style="text-align:center"></p>
+    <button id="claim" class="btn hidden">Claim</button>
+  </div>
+
+  <div id="race" class="card hidden">
+    <h2>Live leaderboard</h2>
+    <div class="status" id="raceday"></div>
+    <table class="board" id="board"></table>
+  </div>
+
+  <div id="build" class="card hidden">
+    <h2>Build your ETF</h2>
+    <p class="status">1. Choose what you want and what to avoid. We suggest stocks from the pool.</p>
+    <div id="themes"></div>
+    <label class="theme" style="border:0"><span class="tn">Well-known names only (reference or ≥ $20B)</span>
+      <input id="wellknown" type="checkbox" checked style="width:28px;height:28px"></label>
+    <p class="status" style="margin-top:14px">2. Adjust it: 3 to 8 stocks, each at least 5%, adding up to 100%.</p>
+    <div id="picks"></div>
+    <div class="row">
+      <button id="addpick" class="btn secondary small">+ Add stock</button>
+      <button id="equal" class="btn secondary small">Equal weights</button>
+    </div>
+    <div class="check" id="check"></div>
+    <p class="status">3. Name it and enter.</p>
+    <input id="etfname" class="name" maxlength="32" placeholder="e.g. AI Rocket">
+    <button id="enter" class="btn" style="width:100%;margin-top:10px">Enter</button>
+  </div>
+
+  <div class="card">
+    <h2 id="entrieshead">Entries</h2>
+    <div id="entries"><p class="status">No entries yet.</p></div>
+  </div>
+
+  <div class="card" style="text-align:center">
+    <div class="status">Scan to join from your phone</div>
+    <div id="qr"></div>
+    <div class="small" id="link"></div>
+  </div>
+  <p class="small">Network: <span id="netname"></span> · League contract: <span id="addr"></span></p>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+"use strict";
+const params = new URLSearchParams(location.search);
+const NETWORK = params.get("network") || "monad-testnet";
+const GAS_HEADROOM_PCT = 115n; // gas limit = estimate x 1.15 (Monad charges the limit)
+const MONAD = { chainId: "0x279f", chainName: "Monad Testnet", nativeCurrency: { name: "MON", symbol: "MON", decimals: 18 },
+                rpcUrls: ["https://testnet-rpc.monad.xyz"], blockExplorerUrls: ["https://testnet.monadexplorer.com"] };
+const LEAGUE_ABI = [
+  "function roundCount() view returns (uint256)",
+  "function getRound(uint256) view returns (tuple(bytes32[] pool,uint256 entryStake,uint256 deadline,uint256 roundDuration,uint256 startedAt,uint256 targetBlock,uint256 windowCount,uint256 windowIndex,bytes32 dataHash,bytes32 seed,uint8 phase,uint256 entryCount,uint256 winnerCount,int256 bestScore,uint256 pot))",
+  "function getEntry(uint256,uint256) view returns (address owner, string name, bytes32[] tickers, uint16[] weightsBps, int256 score)",
+  "function liveScores(uint256) view returns (int256[])",
+  "function entryOf(uint256,address) view returns (uint256)",
+  "function claimable(uint256,address) view returns (uint256)",
+  "function claimed(uint256,address) view returns (bool)",
+  "function oracle() view returns (address)",
+  "function enter(uint256 roundId, string name, bytes32[] tickers, uint16[] weightsBps) payable",
+  "function claim(uint256 roundId)",
+];
+const ORACLE_ABI = ["function priceOf(bytes32) view returns (uint256 price, uint256 timestamp)"];
+const PHASES = ["None", "Open", "Locked", "Started", "Settled", "Cancelled"];
+const $ = (id) => document.getElementById(id);
+
+let dep, cfg, readProvider, league, oracle, pool, presets, replay = null;
+let roundId = 0, round = null, entries = [], scores = null, me = null, signer = null, myIndex = 0;
+const prefs = {};      // theme key -> "want" | "avoid"
+let picks = [];        // [{ticker, pct}]
+
+function msg(text, kind = "err") { $("msg").innerHTML = text ? `<div class="msg ${kind}">${text}</div>` : ""; }
+function mon(wei, dp = 2) { return Number(ethers.formatEther(wei)).toLocaleString(undefined, { maximumFractionDigits: dp }); }
+function pctTxt(x) { return (x >= 0 ? "+" : "") + (100 * x).toFixed(2) + "%"; }
+function esc(s) { return String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+function short(a) { return a.slice(0, 6) + "…" + a.slice(-4); }
+function dec32(b) { return ethers.decodeBytes32String(b); }
+const byTicker = () => Object.fromEntries(pool.stocks.map((s) => [s.ticker, s]));
+
+// ───────────── builder (same rules as the engine's Way 2 builder, applied to the pool) ─────────────
+
+// Mirrors engine/builder.py on the pool, using each stock's FINAL rating (business link + revenue + regression):
+// want = rated High/Moderate; avoid = only "Not exposed" passes; several wants are combined (slots split);
+// well-known names only (reference or market cap >= $20B, lowered $20B -> $10B -> $2B per theme if needed);
+// ranking = references first, then 50% t-stat percentile + 50% market-cap percentile, High before Moderate;
+// picks alternate across wanted themes, at most 3 per industry (a theme's own industries don't count);
+// leftover slots go to the other wanted themes.
+let wellKnown = true;
+function pctRank(values) { // pandas rank(pct=True) with average ties
+  const idx = values.map((v, i) => [v, i]).sort((a, b) => a[0] - b[0]), out = new Array(values.length);
+  for (let i = 0; i < idx.length;) {
+    let j = i; while (j + 1 < idx.length && idx[j + 1][0] === idx[i][0]) j++;
+    const r = (i + j + 2) / 2 / values.length; for (let k = i; k <= j; k++) out[idx[k][1]] = r; i = j + 1;
+  }
+  return out;
+}
+function suggest(n = pool.rules.default_picks) {
+  const key = Object.keys(prefs).sort().map((k) => `${k}:${prefs[k]}`).join(",");
+  if (!key) return { picks: [], notes: [] };
+  const pre = wellKnown && presets.find((p) => p.key === key);
+  if (pre && (n === pool.rules.default_picks || n === 8)) {
+    const t = n === 8 ? pre.ranked : pre.picks, f = n === 8 ? pre.ranked_for : pre.picked_for;
+    return { picks: t.map((x, i) => ({ ticker: x, theme: f[i] })), notes: [] };
+  }
+  const R = pool.rules, floors = wellKnown ? R.well_known_floors : [0], notes = [];
+  const want = pool.themes.map((t) => t.key).filter((k) => prefs[k] === "want");
+  const avoid = pool.themes.map((t) => t.key).filter((k) => prefs[k] === "avoid");
+  const name = Object.fromEntries(pool.themes.map((t) => [t.key, t.name]));
+  const all = [...pool.stocks].sort((a, b) => (a.ticker < b.ticker ? -1 : 1));
+  const base = all.filter((s) => avoid.every((k) => s.themes[k].rating === "Not exposed"));
+  const rank = (cands, k) => {
+    const t = pctRank(cands.map((s) => s.themes[k].t ?? -99)), m = pctRank(cands.map((s) => s.market_cap || 0));
+    return cands.map((s, i) => ({ s, sc: 0.5 * t[i] + 0.5 * m[i] })).sort((a, b) =>
+      (b.s.themes[k].ref - a.s.themes[k].ref) || (b.sc - a.sc) ||
+      ((a.s.themes[k].rating !== "High") - (b.s.themes[k].rating !== "High")) || (a.s.ticker < b.s.ticker ? -1 : 1)).map((x) => x.s.ticker);
+  };
+  const lists = {}, slots = {};
+  if (want.length) {
+    const baseN = Math.floor(n / want.length), extra = n % want.length;
+    want.forEach((k, i) => {
+      slots[k] = baseN + (i < extra ? 1 : 0);
+      const fit = base.filter((s) => ["High", "Moderate"].includes(s.themes[k].rating));
+      let chosen = fit, used = floors[0];
+      for (const f of floors) {
+        used = f;
+        chosen = wellKnown ? fit.filter((s) => s.themes[k].ref || (s.market_cap || 0) >= f) : fit;
+        if (chosen.length >= slots[k]) break;
+      }
+      if (wellKnown && used < floors[0]) notes.push(`${name[k]}: floor lowered to $${used / 1e9}B to find enough stocks.`);
+      lists[k] = rank(chosen, k);
+    });
+  } else {
+    let chosen = base;
+    for (const f of floors) { chosen = wellKnown ? base.filter((s) => (s.market_cap || 0) >= f) : base; if (chosen.length >= n) break; }
+    lists._cap = [...chosen].sort((a, b) => (b.market_cap - a.market_cap) || (a.ticker < b.ticker ? -1 : 1)).map((s) => s.ticker);
+    slots._cap = n;
+  }
+  const ind = Object.fromEntries(pool.stocks.map((s) => [s.ticker, s.industry]));
+  const order = Object.keys(lists);
+  const pos = Object.fromEntries(order.map((k) => [k, 0])), taken = Object.fromEntries(order.map((k) => [k, 0]));
+  const pickedFor = new Map(), perInd = {};
+  const own = Object.fromEntries(pool.themes.map((t) => [t.key, new Set(t.industries || [])]));
+  const counts = (x, k) => !(own[k] && own[k].has(ind[x]));  // a theme's own industries don't count
+  const next = (k) => {
+    while (pos[k] < lists[k].length) {
+      const x = lists[k][pos[k]++];
+      if (pickedFor.has(x)) continue;
+      if (counts(x, k) && (perInd[ind[x]] || 0) >= R.max_per_industry) continue;
+      return x;
+    }
+    return null;
+  };
+  const take = (k, x) => { pickedFor.set(x, k); taken[k]++; if (counts(x, k)) perInd[ind[x]] = (perInd[ind[x]] || 0) + 1; };
+  let progress = true;
+  while (progress && pickedFor.size < n) {
+    progress = false;
+    for (const k of order) {
+      if (taken[k] >= slots[k] || pickedFor.size >= n) continue;
+      const x = next(k); if (x) { take(k, x); progress = true; }
+    }
+  }
+  if (want.length && order.some((k) => taken[k] < slots[k])) {
+    order.filter((k) => taken[k] < slots[k]).forEach((k) =>
+      notes.push(`${name[k]}: only ${taken[k]} of ${slots[k]} slots filled; the rest went to your other theme(s).`));
+    progress = true;
+    while (progress && pickedFor.size < n) {
+      progress = false;
+      for (const k of order) { if (pickedFor.size >= n) break; const x = next(k); if (x) { take(k, x); progress = true; } }
+    }
+  }
+  const picks = [...pickedFor.keys()].sort((a, b) =>
+    (order.indexOf(pickedFor.get(a)) - order.indexOf(pickedFor.get(b))) ||
+    (lists[pickedFor.get(a)].indexOf(a) - lists[pickedFor.get(b)].indexOf(b)));
+  return { picks: picks.map((x) => ({ ticker: x, theme: pickedFor.get(x) === "_cap" ? null : name[pickedFor.get(x)] })), notes };
+}
+
+function equalPcts(n) { const base = Math.floor(100 / n); return Array.from({ length: n }, (_, i) => base + (i < 100 - base * n ? 1 : 0)); }
+
+function applySuggestion() {
+  const { picks: sug, notes } = suggest();
+  if (Object.keys(prefs).length && sug.length < 3) {
+    const tip = Object.values(prefs).includes("avoid") ? " Try switching an Avoid to —." :
+      (wellKnown ? ' Try turning off "Well-known names only".' : "");
+    msg(`Only ${sug.length} pool stock(s) fit those choices.${tip} You can also add stocks yourself below.`);
+  } else { msg(notes.length ? notes.map(esc).join("<br>") : "", "ok"); }
+  const p = equalPcts(Math.max(sug.length, 1));
+  picks = sug.map((x, i) => ({ ticker: x.ticker, pct: p[i], theme: x.theme }));
+  renderPicks();
+}
+
+function renderThemes() {
+  $("themes").innerHTML = pool.themes.map((t) => {
+    const v = prefs[t.key] || "none";
+    const b = (val, label) => `<button class="${val}${v === val ? " on" : ""}" onclick="setPref('${t.key}','${val}')">${label}</button>`;
+    return `<div class="theme"><div class="tn">${esc(t.name)}</div><div class="seg">${b("want", "Want")}${b("none", "—")}${b("avoid", "Avoid")}</div></div>`;
+  }).join("");
+}
+
+window.setPref = (k, v) => { if (v === "none") delete prefs[k]; else prefs[k] = v; renderThemes(); applySuggestion(); };
+
+function renderPicks() {
+  const opts = (sel) => pool.stocks.map((s) => `<option value="${s.ticker}"${s.ticker === sel ? " selected" : ""}>${esc(s.ticker)} · ${esc(s.name)}</option>`).join("");
+  $("picks").innerHTML = picks.map((p, i) => `<div class="pick">
+      <select onchange="setPick(${i}, this.value)">${opts(p.ticker)}</select>
+      <input inputmode="numeric" value="${p.pct}" oninput="setPct(${i}, this.value)" aria-label="weight %"><span>%</span>
+      <button class="x" onclick="dropPick(${i})" aria-label="remove">×</button></div>
+      ${p.theme ? `<div class="small" style="margin:-4px 0 6px">picked for ${esc(p.theme)}</div>` : ""}`).join("") ||
+    `<p class="status">No stocks yet. Choose a theme above or tap "+ Add stock".</p>`;
+  validate();
+}
+
+window.setPick = (i, t) => { picks[i].ticker = t; picks[i].theme = null; renderPicks(); };
+window.setPct = (i, v) => { picks[i].pct = Number(v); validate(); };
+window.dropPick = (i) => { picks.splice(i, 1); renderPicks(); };
+
+function validate() {
+  const n = picks.length, sum = picks.reduce((a, p) => a + (p.pct || 0), 0);
+  const uniq = new Set(picks.map((p) => p.ticker)).size === n;
+  const minOk = picks.every((p) => p.pct >= 5 && Number.isInteger(p.pct));
+  const name = $("etfname").value.trim();
+  const nameOk = name.length > 0 && new TextEncoder().encode(name).length <= 32;
+  const items = [[n >= 3 && n <= 8, `${n} stocks (3 to 8)`], [sum === 100, `weights add up to ${sum}% (must be 100%)`],
+                 [minOk, "each weight a whole number, at least 5%"], [uniq, "no stock twice"], [nameOk, "a name (up to 32 characters)"]];
+  $("check").innerHTML = items.map(([ok, t]) => `<div class="${ok ? "ok" : "no"}">${ok ? "✓" : "✗"} ${esc(t)}</div>`).join("");
+  const good = items.every(([ok]) => ok);
+  $("enter").disabled = !(good && signer && round && PHASES[Number(round.phase)] === "Open" && !myIndex);
+  return good;
+}
+
+// ───────────── themes of an entry (business-linked High/Moderate weight per theme) ─────────────
+
+function entryThemes(tickers, weights) {
+  const s = byTicker(), out = [];
+  for (const t of pool.themes) {
+    let w = 0;
+    tickers.forEach((tk, i) => { const r = s[tk] && s[tk].themes[t.key]; if (r && ["High", "Moderate"].includes(r.rating)) w += weights[i]; });
+    if (w > 0) out.push([t.name, w / 100]);
+  }
+  return out.sort((a, b) => b[1] - a[1]).slice(0, 3);
+}
+
+// ───────────── chain ─────────────
+
+async function load() {
+  const get = async (p) => { const r = await fetch(p, { cache: "no-store" }); if (!r.ok) throw new Error(`Missing ${p}`); return r.json(); };
+  dep = await get(`../deployments/${NETWORK}-league.json`);
+  cfg = dep.league;
+  if (!cfg || !cfg.fundLeague) throw new Error(`deployments/${NETWORK}-league.json has no League deployment yet.`);
+  pool = await get("pool.json");
+  presets = (await get("presets.json")).presets;
+  try { replay = await get("replay_prices.json"); } catch { replay = null; }
+  readProvider = new ethers.JsonRpcProvider(dep.rpc);
+  league = new ethers.Contract(cfg.fundLeague, LEAGUE_ABI, readProvider);
+  oracle = new ethers.Contract(cfg.oracle, ORACLE_ABI, readProvider);
+  $("netname").textContent = NETWORK;
+  $("addr").textContent = cfg.fundLeague;
+  renderThemes(); renderPicks();
+}
+
+async function refresh() {
+  try {
+    roundId = Number(await league.roundCount());
+    if (!roundId) { $("phase").innerHTML = "<strong>No round yet.</strong> Waiting for the operator to open one."; return; }
+    round = await league.getRound(roundId);
+    const n = Number(round.entryCount);
+    if (entries.length !== n || ["Settled"].includes(PHASES[Number(round.phase)])) {
+      entries = await Promise.all(Array.from({ length: n }, (_, i) => league.getEntry(roundId, i)));
+    }
+    const phase = PHASES[Number(round.phase)];
+    scores = phase === "Started" || phase === "Settled" ? (await league.liveScores(roundId)).map((s) => Number(s) / 1e18) : null;
+    if (me) myIndex = Number(await league.entryOf(roundId, me));
+    await render(phase);
+  } catch (e) { msg("Couldn't read the chain: " + esc(e.shortMessage || e.message)); }
+}
+
+async function raceDay() {
+  // Which replay day is on-chain now: match the first pool stock's price to the replay file.
+  if (!replay) return null;
+  const t = dec32(round.pool[0]), col = replay.tickers.indexOf(t), w = Number(round.windowIndex);
+  if (col < 0) return null;
+  const [p] = await oracle.priceOf(round.pool[0]);
+  const now = Number(p) / 1e8;
+  let best = 0, err = Infinity;
+  for (let d = 0; d <= replay.race_days; d++) {
+    const v = replay.base_price * replay.closes[w + d][col] / replay.closes[w][col], e = Math.abs(v - now);
+    if (e < err) { err = e; best = d; }
+  }
+  return { day: best, days: replay.race_days, date: replay.dates[w + best], first: replay.dates[w], last: replay.dates[w + replay.race_days] };
+}
+
+async function render(phase) {
+  const now = Math.floor(Date.now() / 1000), deadline = Number(round.deadline);
+  const open = phase === "Open" && now < deadline;
+  $("enter").textContent = `Enter (${mon(round.entryStake, 4)} MON)`;
+  $("potline").innerHTML = `Round ${roundId} · ${entries.length} ${entries.length === 1 ? "entry" : "entries"} · Pot <strong>${mon(round.pot)} MON</strong>`;
+  $("build").classList.toggle("hidden", !open || !!myIndex);
+  if (open) {
+    const s = deadline - now;
+    $("phase").innerHTML = myIndex ? "<strong>You're in!</strong> Entries close in:" : "<strong>Entries are open.</strong> Closes in:";
+    $("clock").textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+  } else if (phase === "Open" || phase === "Locked") {
+    $("phase").innerHTML = "<strong>Entries closed.</strong> Waiting for the future block that picks the window…";
+    $("clock").textContent = "🔒";
+  } else if (phase === "Started") {
+    const d = await raceDay();
+    $("phase").innerHTML = "<strong>The race is on!</strong>";
+    $("clock").textContent = d ? `Day ${d.day} / ${d.days}` : "🏁";
+    $("raceday").textContent = d ? `Replaying ${d.first} → ${d.last} · now ${d.date}` : "";
+  } else if (phase === "Settled") {
+    $("phase").innerHTML = "<strong>Race finished.</strong>"; $("clock").textContent = "🏆";
+    if (replay) { const w = Number(round.windowIndex); $("raceday").textContent = `Replayed ${replay.dates[w]} → ${replay.dates[w + replay.race_days]}`; }
+  } else if (phase === "Cancelled") {
+    $("phase").innerHTML = "<strong>No race this round</strong> (fewer than 2 entries, or it stalled). Everyone gets their stake back.";
+    $("clock").textContent = "";
+  }
+  validate();
+
+  // entries list
+  $("entrieshead").textContent = `Entries (${entries.length})`;
+  $("entries").innerHTML = entries.length ? entries.map((e, i) => {
+    const w = e.weightsBps.map(Number), tk = e.tickers.map(dec32);
+    const tags = entryThemes(tk, w).map(([n, p]) => `<span class="tag">${esc(n)} ${p.toFixed(0)}%</span>`).join("");
+    const mine = me && e.owner.toLowerCase() === me.toLowerCase() ? ' <span class="you">(you)</span>' : "";
+    return `<div class="entry"><div class="en">${esc(e.name)}${mine}</div><div class="meta">${short(e.owner)}</div>
+      <div class="stocks">${tk.map((t, j) => `${esc(t)} ${(w[j] / 100).toFixed(0)}%`).join(" · ")}</div>${tags}</div>`;
+  }).join("") : `<p class="status">No entries yet.</p>`;
+
+  // leaderboard
+  if (scores) {
+    $("race").classList.remove("hidden");
+    const rows = entries.map((e, i) => ({ e, i, r: scores[i] })).sort((a, b) => b.r - a.r);
+    const maxAbs = Math.max(0.001, ...rows.map((x) => Math.abs(x.r)));
+    $("board").innerHTML = rows.map((x, k) => {
+      const mine = me && x.e.owner.toLowerCase() === me.toLowerCase() ? ' <span class="you">(you)</span>' : "";
+      return `<tr><td>${k + 1}. <strong>${esc(x.e.name)}</strong>${mine}<div class="small">${short(x.e.owner)}</div>
+        <div class="bar"><i style="width:${(100 * Math.abs(x.r) / maxAbs).toFixed(0)}%"></i></div></td>
+        <td class="${x.r >= 0 ? "up" : "down"}">${pctTxt(x.r)}</td></tr>`;
+    }).join("");
+  } else { $("race").classList.add("hidden"); }
+
+  // winner + claim
+  if (phase === "Settled" || phase === "Cancelled") {
+    $("winbox").classList.remove("hidden");
+    if (phase === "Settled") {
+      const best = round.bestScore;
+      const winners = entries.filter((e) => e.score === best);
+      $("winbanner").textContent = `🏆 ${winners.map((e) => e.name).join(" & ")} ${winners.length > 1 ? "win" : "wins"}!`;
+      $("winline").textContent = `${pctTxt(Number(best) / 1e18)} · ${winners.length > 1 ? "splitting" : "taking"} the ${mon(round.pot)} MON pot`;
+    } else { $("winbanner").textContent = "Stakes refunded"; $("winline").textContent = ""; }
+    await updateClaim();
+  } else { $("winbox").classList.add("hidden"); }
+}
+
+async function updateClaim() {
+  const b = $("claim");
+  if (!signer || !myIndex) { b.classList.add("hidden"); return; }
+  const amt = await league.claimable(roundId, me), done = await league.claimed(roundId, me);
+  b.classList.remove("hidden");
+  b.disabled = amt === 0n;
+  b.textContent = done ? "Claimed ✓" : (amt > 0n ? `Claim ${mon(amt, 4)} MON` : "No payout this time");
+}
+
+async function ensureChain() {
+  const want = "0x" + Number(dep.chainId).toString(16);
+  if ((await window.ethereum.request({ method: "eth_chainId" })) === want) return;
+  try { await window.ethereum.request({ method: "wallet_switchEthereumChain", params: [{ chainId: want }] }); }
+  catch (e) {
+    const code = e.code || (e.data && e.data.originalError && e.data.originalError.code);
+    if (code === 4902 && NETWORK === "monad-testnet") await window.ethereum.request({ method: "wallet_addEthereumChain", params: [MONAD] });
+    else throw e;
+  }
+}
+
+async function connect() {
+  msg("");
+  if (!window.ethereum) { msg("No wallet found. On a phone, open this page inside the MetaMask app (button above)."); return; }
+  try {
+    await window.ethereum.request({ method: "eth_requestAccounts" });
+    await ensureChain();
+    const bp = new ethers.BrowserProvider(window.ethereum);
+    signer = await bp.getSigner();
+    me = await signer.getAddress();
+    $("wallet").innerHTML = `Connected: <strong>${short(me)}</strong> · ${mon(await bp.getBalance(me), 3)} MON`;
+    $("connect").textContent = "Connected";
+    await refresh();
+  } catch (e) { msg("Couldn't connect: " + esc(e.shortMessage || e.message)); }
+}
+
+async function send(method, args, value) {
+  await ensureChain();
+  const c = league.connect(signer);
+  const est = await c[method].estimateGas(...args, { value });
+  return c[method](...args, { value, gasLimit: (est * GAS_HEADROOM_PCT) / 100n });
+}
+
+async function enter() {
+  msg("");
+  if (!validate()) return;
+  const name = $("etfname").value.trim();
+  try {
+    msg("Confirm in MetaMask…", "ok");
+    const tx = await send("enter", [roundId, name, picks.map((p) => ethers.encodeBytes32String(p.ticker)), picks.map((p) => p.pct * 100)], round.entryStake);
+    msg("Sending… waiting for the block.", "ok");
+    await tx.wait();
+    msg(`You're in: "${esc(name)}" entered.`, "ok");
+    await refresh();
+  } catch (e) { msg("Entry failed: " + esc(e.shortMessage || e.reason || e.message)); }
+}
+
+async function claim() {
+  msg("");
+  try { const tx = await send("claim", [roundId], 0n); msg("Claiming… waiting for the block.", "ok"); await tx.wait(); msg("Claimed! Check your MON balance.", "ok"); await refresh(); }
+  catch (e) { msg("Claim failed: " + esc(e.shortMessage || e.reason || e.message)); }
+}
+
+async function addNetwork() {
+  if (!window.ethereum) { msg("Open this page in the MetaMask app first."); return; }
+  try { await window.ethereum.request({ method: "wallet_addEthereumChain", params: [MONAD] }); msg("Monad Testnet added.", "ok"); }
+  catch (e) { msg("Couldn't add the network: " + esc(e.message)); }
+}
+
+$("connect").onclick = connect;
+$("addnet").onclick = addNetwork;
+$("claim").onclick = claim;
+$("enter").onclick = enter;
+$("etfname").oninput = validate;
+$("wellknown").onchange = (e) => { wellKnown = e.target.checked; applySuggestion(); };
+$("addpick").onclick = () => {
+  if (picks.length >= 8) { msg("At most 8 stocks."); return; }
+  const used = new Set(picks.map((p) => p.ticker));
+  const more = suggest(8).picks.find((x) => !used.has(x.ticker));
+  const next = more || { ticker: pool.stocks.map((s) => s.ticker).find((t) => !used.has(t)), theme: null };
+  picks.push({ ticker: next.ticker, pct: 5, theme: next.theme }); renderPicks();
+};
+$("equal").onclick = () => { const p = equalPcts(Math.max(picks.length, 1)); picks.forEach((x, i) => { x.pct = p[i]; }); renderPicks(); };
+
+// The QR code always shows the public page (GitHub Pages, fund_league branch) for the live network, so the big
+// screen shows the right link even when this page is opened locally.
+const PUBLIC_URL = "https://shannon-maccallum.github.io/portfolio_risk_exposure/league/?network=monad-testnet";
+const url = NETWORK === "monad-testnet" ? PUBLIC_URL : location.href;
+$("link").textContent = url;
+if (!window.ethereum) {
+  const mm = $("openmm");
+  mm.href = "https://metamask.app.link/dapp/" + url.replace(/^https?:\/\//, "");
+  mm.classList.remove("hidden");
+}
+try { new QRCode($("qr"), { text: url, width: 200, height: 200, correctLevel: QRCode.CorrectLevel.M }); } catch {}
+
+(async () => {
+  try { await load(); await refresh(); setInterval(refresh, 2000); }
+  catch (e) { $("phase").textContent = ""; msg(esc(e.message)); }
+})();
+</script>
+</body>
+</html>

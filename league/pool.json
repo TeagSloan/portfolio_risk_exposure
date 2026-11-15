@@ -1,0 +1,5475 @@
+{
+ "about": "Stock pool for the Fantasy Funds League, with each stock's engine result per theme.",
+ "themes": [
+  {
+   "key": "ai",
+   "name": "AI",
+   "industries": [
+    "Semiconductors",
+    "Software - Infrastructure",
+    "Software - Application",
+    "Information Technology Services",
+    "Computer Hardware",
+    "Hardware, Equipment & Parts",
+    "Communication Equipment",
+    "Electrical Equipment & Parts",
+    "Internet Content & Information",
+    "Independent Power Producers",
+    "REIT - Specialty"
+   ]
+  },
+  {
+   "key": "bank_lending",
+   "name": "Bank lending / net interest income",
+   "industries": [
+    "Banks",
+    "Banks - Diversified",
+    "Banks - Regional",
+    "Financial - Mortgages"
+   ]
+  },
+  {
+   "key": "clean_energy",
+   "name": "Clean energy (solar & renewables)",
+   "industries": [
+    "Solar",
+    "Renewable Utilities"
+   ]
+  },
+  {
+   "key": "consumer_disc",
+   "name": "Consumer discretionary",
+   "industries": [
+    "Apparel - Footwear & Accessories",
+    "Apparel - Manufacturers",
+    "Apparel - Retail",
+    "Auto - Dealerships",
+    "Auto - Manufacturers",
+    "Auto - Parts",
+    "Furnishings, Fixtures & Appliances",
+    "Gambling, Resorts & Casinos",
+    "Home Improvement",
+    "Leisure",
+    "Luxury Goods",
+    "Residential Construction",
+    "Restaurants",
+    "Specialty Retail",
+    "Travel Lodging",
+    "Travel Services"
+   ]
+  },
+  {
+   "key": "cyber",
+   "name": "Cybersecurity",
+   "industries": [
+    "Software - Infrastructure"
+   ]
+  },
+  {
+   "key": "defense",
+   "name": "Aerospace & defense",
+   "industries": [
+    "Aerospace & Defense"
+   ]
+  },
+  {
+   "key": "gold",
+   "name": "Gold & precious metals",
+   "industries": [
+    "Gold",
+    "Silver",
+    "Other Precious Metals"
+   ]
+  },
+  {
+   "key": "healthcare",
+   "name": "Healthcare",
+   "industries": [
+    "Biotechnology",
+    "Drug Manufacturers - General",
+    "Drug Manufacturers - Specialty & Generic",
+    "Medical - Care Facilities",
+    "Medical - Devices",
+    "Medical - Diagnostics & Research",
+    "Medical - Distribution",
+    "Medical - Healthcare Plans",
+    "Medical - Instruments & Supplies",
+    "Medical - Pharmaceuticals",
+    "Medical - Specialties"
+   ]
+  },
+  {
+   "key": "metals",
+   "name": "Industrial / EV metals (copper + lithium)",
+   "industries": [
+    "Copper",
+    "Industrial Materials",
+    "Other Industrial Metals & Mining"
+   ]
+  },
+  {
+   "key": "oil",
+   "name": "Oil",
+   "industries": [
+    "Oil & Gas Exploration & Production",
+    "Oil & Gas Integrated",
+    "Oil & Gas Equipment & Services",
+    "Oil & Gas Drilling"
+   ]
+  }
+ ],
+ "rules": {
+  "min_stocks": 3,
+  "max_stocks": 8,
+  "min_weight_pct": 5,
+  "default_picks": 5,
+  "well_known_floors": [
+   20000000000.0,
+   10000000000.0,
+   2000000000.0
+  ],
+  "max_per_industry": 3
+ },
+ "stocks": [
+  {
+   "ticker": "TSM",
+   "name": "Taiwan Semiconductor Manufacturing Company Limited",
+   "industry": "Semiconductors",
+   "country": "TW",
+   "market_cap": 2068005170400.0,
+   "themes": {
+    "ai": {
+     "tier": "Moderate",
+     "rating": "Moderate",
+     "revenue_pct": null,
+     "linked": true,
+     "t": 9.45,
+     "ref": true
+    },
+    "bank_lending": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.24,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Moderate",
+     "rating": "Market-driven",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.53,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.81,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.63,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.8,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -1.64,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.83,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.44,
+     "ref": false
+    },
+    "oil": {
+     "tier": "High",
+     "rating": "Market-driven",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.66,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "NVDA",
+   "name": "NVIDIA Corporation",
+   "industry": "Semiconductors",
+   "country": "US",
+   "market_cap": 3924685000000.0,
+   "themes": {
+    "ai": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": 89.7,
+     "linked": true,
+     "t": 3.52,
+     "ref": true
+    },
+    "bank_lending": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.74,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.69,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -1.05,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.76,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.17,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.62,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.2,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.02,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.84,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "AVGO",
+   "name": "Broadcom Inc.",
+   "industry": "Semiconductors",
+   "country": "US",
+   "market_cap": 1656497299454.0,
+   "themes": {
+    "ai": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": null,
+     "linked": true,
+     "t": 3.52,
+     "ref": true
+    },
+    "bank_lending": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.02,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.44,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.52,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.8,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.96,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.15,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.07,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.45,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.61,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "VRT",
+   "name": "Vertiv Holdings Co",
+   "industry": "Electrical Equipment & Parts",
+   "country": "US",
+   "market_cap": 77809074200.0,
+   "themes": {
+    "ai": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": null,
+     "linked": true,
+     "t": 4.91,
+     "ref": true
+    },
+    "bank_lending": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.88,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.06,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.67,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.5,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.91,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.53,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.08,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.06,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.13,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "VST",
+   "name": "Vistra Corp.",
+   "industry": "Independent Power Producers",
+   "country": "US",
+   "market_cap": 45142884259.0,
+   "themes": {
+    "ai": {
+     "tier": "Moderate",
+     "rating": "Moderate",
+     "revenue_pct": null,
+     "linked": true,
+     "t": 6.92,
+     "ref": true
+    },
+    "bank_lending": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.23,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.21,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.13,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.41,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.23,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.55,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.98,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.49,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.36,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "BAC",
+   "name": "Bank of America Corporation",
+   "industry": "Banks - Diversified",
+   "country": "US",
+   "market_cap": 352048714200.0,
+   "themes": {
+    "ai": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -2.11,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Moderate",
+     "rating": "Moderate",
+     "revenue_pct": 53.1,
+     "linked": true,
+     "t": 15.34,
+     "ref": true
+    },
+    "clean_energy": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.56,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.83,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.66,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Moderate",
+     "rating": "Market-driven",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.68,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -1.79,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -2.33,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.26,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.31,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "WFC",
+   "name": "Wells Fargo & Company",
+   "industry": "Banks - Diversified",
+   "country": "US",
+   "market_cap": 258279174000.0,
+   "themes": {
+    "ai": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -1.41,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Moderate",
+     "rating": "Moderate",
+     "revenue_pct": 56.7,
+     "linked": true,
+     "t": 14.97,
+     "ref": true
+    },
+    "clean_energy": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -2.62,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.35,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.71,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Moderate",
+     "rating": "Market-driven",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.74,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -1.65,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -2.76,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.53,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.27,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "C",
+   "name": "Citigroup Inc.",
+   "industry": "Banks - Diversified",
+   "country": "US",
+   "market_cap": 205261912401.0,
+   "themes": {
+    "ai": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.36,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Moderate",
+     "rating": "Moderate",
+     "revenue_pct": 70.2,
+     "linked": true,
+     "t": 12.72,
+     "ref": true
+    },
+    "clean_energy": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.79,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.53,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Moderate",
+     "rating": "Market-driven",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.47,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Moderate",
+     "rating": "Market-driven",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 3.46,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -2.2,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -1.47,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.14,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.38,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "MTB",
+   "name": "M&T Bank Corporation",
+   "industry": "Banks - Regional",
+   "country": "US",
+   "market_cap": 31716221825.0,
+   "themes": {
+    "ai": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -2.14,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": 79.2,
+     "linked": true,
+     "t": 22.97,
+     "ref": true
+    },
+    "clean_energy": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -2.3,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.07,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.92,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.46,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -4.94,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -2.4,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.85,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.78,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "RF",
+   "name": "Regions Financial Corporation",
+   "industry": "Banks - Regional",
+   "country": "US",
+   "market_cap": 24497735675.0,
+   "themes": {
+    "ai": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -2.0,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": 66.3,
+     "linked": true,
+     "t": 25.33,
+     "ref": true
+    },
+    "clean_energy": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -2.46,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.72,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.23,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.14,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -4.92,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -2.93,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.39,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.13,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "FSLR",
+   "name": "First Solar, Inc.",
+   "industry": "Solar",
+   "country": "US",
+   "market_cap": 18421168590.0,
+   "themes": {
+    "ai": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.95,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.68,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": 100.0,
+     "linked": true,
+     "t": 11.78,
+     "ref": true
+    },
+    "consumer_disc": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.17,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.58,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.31,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.95,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.05,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.92,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.75,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "RUN",
+   "name": "Sunrun Inc.",
+   "industry": "Solar",
+   "country": "US",
+   "market_cap": 2088120504.0,
+   "themes": {
+    "ai": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.11,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.17,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": null,
+     "linked": true,
+     "t": 14.36,
+     "ref": true
+    },
+    "consumer_disc": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.34,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.48,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.02,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.87,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.92,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.05,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.28,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "NEE",
+   "name": "NextEra Energy, Inc.",
+   "industry": "Regulated Electric",
+   "country": "US",
+   "market_cap": 178522690891.0,
+   "themes": {
+    "ai": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.22,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.85,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Moderate",
+     "rating": "Moderate",
+     "revenue_pct": null,
+     "linked": true,
+     "t": 6.91,
+     "ref": true
+    },
+    "consumer_disc": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.04,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.96,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.01,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.99,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.66,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.65,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.54,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "SEDG",
+   "name": "SolarEdge Technologies, Inc.",
+   "industry": "Solar",
+   "country": "IL",
+   "market_cap": 1476658440.0,
+   "themes": {
+    "ai": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.38,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.01,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": null,
+     "linked": true,
+     "t": 9.84,
+     "ref": true
+    },
+    "consumer_disc": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.19,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.1,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.81,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -1.06,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.08,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.45,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.87,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "ENPH",
+   "name": "Enphase Energy, Inc.",
+   "industry": "Solar",
+   "country": "US",
+   "market_cap": 3449425980.0,
+   "themes": {
+    "ai": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.79,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.39,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": null,
+     "linked": true,
+     "t": 13.59,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.46,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Moderate",
+     "rating": "Market-driven",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.78,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.3,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.86,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.42,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.01,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.05,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "COST",
+   "name": "Costco Wholesale Corporation",
+   "industry": "Discount Stores",
+   "country": "US",
+   "market_cap": 490194117157.0,
+   "themes": {
+    "ai": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.9,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.44,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.85,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Moderate",
+     "rating": "Moderate",
+     "revenue_pct": null,
+     "linked": true,
+     "t": 6.73,
+     "ref": true
+    },
+    "cyber": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.45,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.51,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -1.54,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -1.58,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.36,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.18,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "HD",
+   "name": "The Home Depot, Inc.",
+   "industry": "Home Improvement",
+   "country": "US",
+   "market_cap": 347884395690.0,
+   "themes": {
+    "ai": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.34,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.08,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.47,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": null,
+     "linked": true,
+     "t": 5.89,
+     "ref": true
+    },
+    "cyber": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.86,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.88,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.86,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -1.15,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.0,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -1.88,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "TJX",
+   "name": "The TJX Companies, Inc.",
+   "industry": "Apparel - Retail",
+   "country": "US",
+   "market_cap": 147803514577.0,
+   "themes": {
+    "ai": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.72,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.73,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.29,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": null,
+     "linked": true,
+     "t": 6.07,
+     "ref": true
+    },
+    "cyber": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.76,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Moderate",
+     "rating": "Market-driven",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 3.2,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -1.61,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.01,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.22,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.12,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "RCL",
+   "name": "Royal Caribbean Cruises Ltd.",
+   "industry": "Travel Services",
+   "country": "US",
+   "market_cap": 86465325925.0,
+   "themes": {
+    "ai": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.72,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Moderate",
+     "rating": "Market-driven",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.66,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.84,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": null,
+     "linked": true,
+     "t": 2.49,
+     "ref": true
+    },
+    "cyber": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.83,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Moderate",
+     "rating": "Market-driven",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 5.39,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -1.09,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.47,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.88,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.71,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "NKE",
+   "name": "NIKE, Inc.",
+   "industry": "Apparel - Footwear & Accessories",
+   "country": "US",
+   "market_cap": 56426882376.0,
+   "themes": {
+    "ai": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.16,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.18,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.29,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": null,
+     "linked": true,
+     "t": 2.94,
+     "ref": true
+    },
+    "cyber": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.42,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.73,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -1.84,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.13,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.29,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.03,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "PANW",
+   "name": "Palo Alto Networks, Inc.",
+   "industry": "Software - Infrastructure",
+   "country": "US",
+   "market_cap": 263840954261.0,
+   "themes": {
+    "ai": {
+     "tier": "Not determined",
+     "rating": "Business only",
+     "revenue_pct": null,
+     "linked": true,
+     "t": 2.02,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.81,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.26,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -1.1,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": null,
+     "linked": true,
+     "t": 20.61,
+     "ref": true
+    },
+    "defense": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.15,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.94,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -1.84,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.26,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.26,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "CRWD",
+   "name": "CrowdStrike Holdings, Inc.",
+   "industry": "Software - Infrastructure",
+   "country": "US",
+   "market_cap": 232033874546.0,
+   "themes": {
+    "ai": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": null,
+     "linked": true,
+     "t": 3.69,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.03,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.17,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.49,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": null,
+     "linked": true,
+     "t": 19.99,
+     "ref": true
+    },
+    "defense": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.11,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.14,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -3.14,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.19,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.78,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "FTNT",
+   "name": "Fortinet, Inc.",
+   "industry": "Software - Infrastructure",
+   "country": "US",
+   "market_cap": 93469773250.0,
+   "themes": {
+    "ai": {
+     "tier": "Not determined",
+     "rating": "Business only",
+     "revenue_pct": null,
+     "linked": true,
+     "t": 1.21,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.58,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.96,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.56,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": 38.7,
+     "linked": true,
+     "t": 14.47,
+     "ref": true
+    },
+    "defense": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -1.18,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.85,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -2.33,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.46,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.89,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "CSCO",
+   "name": "Cisco Systems, Inc.",
+   "industry": "Communication Equipment",
+   "country": "US",
+   "market_cap": 376532795318.0,
+   "themes": {
+    "ai": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Business only",
+     "revenue_pct": null,
+     "linked": true,
+     "t": 0.6,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.05,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.2,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.17,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Moderate",
+     "rating": "Moderate",
+     "revenue_pct": 13.0,
+     "linked": true,
+     "t": 2.34,
+     "ref": true
+    },
+    "defense": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.28,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -1.53,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -2.33,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.03,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.88,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "CHKP",
+   "name": "Check Point Software Technologies Ltd.",
+   "industry": "Software - Infrastructure",
+   "country": "IL",
+   "market_cap": 15027225180.0,
+   "themes": {
+    "ai": {
+     "tier": "Not determined",
+     "rating": "Business only",
+     "revenue_pct": null,
+     "linked": true,
+     "t": 1.74,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.96,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.42,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -1.32,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": 52.7,
+     "linked": true,
+     "t": 9.17,
+     "ref": true
+    },
+    "defense": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.9,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.52,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.63,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.65,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.37,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "RTX",
+   "name": "RTX Corporation",
+   "industry": "Aerospace & Defense",
+   "country": "US",
+   "market_cap": 267971795200.0,
+   "themes": {
+    "ai": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.84,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.26,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.32,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.07,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -1.59,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Moderate",
+     "rating": "Moderate",
+     "revenue_pct": 33.1,
+     "linked": true,
+     "t": 15.04,
+     "ref": true
+    },
+    "gold": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.62,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.17,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.78,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.6,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "GE",
+   "name": "GE Aerospace",
+   "industry": "Aerospace & Defense",
+   "country": "US",
+   "market_cap": 342876500907.0,
+   "themes": {
+    "ai": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.78,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Moderate",
+     "rating": "Market-driven",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 4.96,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.17,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "High",
+     "rating": "Market-driven",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 3.88,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -2.36,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Moderate",
+     "rating": "Moderate",
+     "revenue_pct": 23.0,
+     "linked": true,
+     "t": 9.47,
+     "ref": true
+    },
+    "gold": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.47,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.21,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.15,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.24,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "GD",
+   "name": "General Dynamics Corporation",
+   "industry": "Aerospace & Defense",
+   "country": "US",
+   "market_cap": 98215615040.0,
+   "themes": {
+    "ai": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.11,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.87,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.75,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.62,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.17,
+     "ref": false
+    },
+    "defense": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": 24.9,
+     "linked": true,
+     "t": 12.02,
+     "ref": true
+    },
+    "gold": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.46,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -1.73,
+     "ref": false
+    },
+    "metals": {
+     "tier": "High",
+     "rating": "Market-driven",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.86,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.49,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "LMT",
+   "name": "Lockheed Martin Corporation",
+   "industry": "Aerospace & Defense",
+   "country": "US",
+   "market_cap": 137688005626.0,
+   "themes": {
+    "ai": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.21,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.03,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.26,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.42,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.28,
+     "ref": false
+    },
+    "defense": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": null,
+     "linked": true,
+     "t": 10.87,
+     "ref": true
+    },
+    "gold": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.39,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -1.02,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.23,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.17,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "BA",
+   "name": "The Boeing Company",
+   "industry": "Aerospace & Defense",
+   "country": "US",
+   "market_cap": 135905164710.0,
+   "themes": {
+    "ai": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.46,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.97,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.49,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.3,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.47,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Moderate",
+     "rating": "Moderate",
+     "revenue_pct": 30.4,
+     "linked": true,
+     "t": 5.84,
+     "ref": true
+    },
+    "gold": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.58,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.34,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.99,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.7,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "NEM",
+   "name": "Newmont Corporation",
+   "industry": "Gold",
+   "country": "US",
+   "market_cap": 117574316951.0,
+   "themes": {
+    "ai": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.87,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.57,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.67,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.02,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.34,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.0,
+     "ref": false
+    },
+    "gold": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": 63.2,
+     "linked": true,
+     "t": 29.69,
+     "ref": true
+    },
+    "healthcare": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.81,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Moderate",
+     "rating": "Market-driven",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 3.82,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.35,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "PAAS",
+   "name": "Pan American Silver Corp.",
+   "industry": "Gold",
+   "country": "CA",
+   "market_cap": 15462075000.0,
+   "themes": {
+    "ai": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.32,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.75,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.36,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.36,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.44,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.7,
+     "ref": false
+    },
+    "gold": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": 83.8,
+     "linked": true,
+     "t": 29.84,
+     "ref": true
+    },
+    "healthcare": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -2.01,
+     "ref": false
+    },
+    "metals": {
+     "tier": "High",
+     "rating": "Market-driven",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 5.43,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.37,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "CDE",
+   "name": "Coeur Mining, Inc.",
+   "industry": "Gold",
+   "country": "US",
+   "market_cap": 14462460509.0,
+   "themes": {
+    "ai": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.3,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.61,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.09,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.22,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.17,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.05,
+     "ref": false
+    },
+    "gold": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": 100.0,
+     "linked": true,
+     "t": 27.05,
+     "ref": true
+    },
+    "healthcare": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.02,
+     "ref": false
+    },
+    "metals": {
+     "tier": "High",
+     "rating": "Market-driven",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 4.48,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.63,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "SSRM",
+   "name": "SSR Mining Inc.",
+   "industry": "Gold",
+   "country": "US",
+   "market_cap": 5418163442.0,
+   "themes": {
+    "ai": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.89,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Moderate",
+     "rating": "Market-driven",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.54,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.87,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.09,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.2,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.51,
+     "ref": false
+    },
+    "gold": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": 94.8,
+     "linked": true,
+     "t": 24.06,
+     "ref": true
+    },
+    "healthcare": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.19,
+     "ref": false
+    },
+    "metals": {
+     "tier": "High",
+     "rating": "Market-driven",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 3.95,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.25,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "AEM",
+   "name": "Agnico Eagle Mines Limited",
+   "industry": "Gold",
+   "country": "CA",
+   "market_cap": 90214769534.0,
+   "themes": {
+    "ai": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.61,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.39,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.58,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.15,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.0,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.86,
+     "ref": false
+    },
+    "gold": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": 97.7,
+     "linked": true,
+     "t": 37.93,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.71,
+     "ref": false
+    },
+    "metals": {
+     "tier": "High",
+     "rating": "Market-driven",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 3.94,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.43,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "MRK",
+   "name": "Merck & Co., Inc.",
+   "industry": "Drug Manufacturers - General",
+   "country": "US",
+   "market_cap": 364265340000.0,
+   "themes": {
+    "ai": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.42,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -1.35,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.09,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.96,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.4,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.07,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.11,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": 99.2,
+     "linked": true,
+     "t": 10.64,
+     "ref": true
+    },
+    "metals": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.15,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.33,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "LLY",
+   "name": "Eli Lilly and Company",
+   "industry": "Drug Manufacturers - General",
+   "country": "US",
+   "market_cap": 1357965407500.0,
+   "themes": {
+    "ai": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -1.36,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.55,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.35,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.12,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -1.22,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.27,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.97,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": null,
+     "linked": true,
+     "t": 8.28,
+     "ref": true
+    },
+    "metals": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.34,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.35,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "PFE",
+   "name": "Pfizer Inc.",
+   "industry": "Drug Manufacturers - General",
+   "country": "US",
+   "market_cap": 164668666500.0,
+   "themes": {
+    "ai": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.08,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.3,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.09,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.28,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -1.11,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.11,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.13,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": 97.8,
+     "linked": true,
+     "t": 9.86,
+     "ref": true
+    },
+    "metals": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.44,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.45,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "GEHC",
+   "name": "GE HealthCare Technologies Inc.",
+   "industry": "Medical - Devices",
+   "country": "US",
+   "market_cap": 37536481816.0,
+   "themes": {
+    "ai": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.19,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.06,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.01,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.11,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.66,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Moderate",
+     "rating": "Market-driven",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.63,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.27,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": null,
+     "linked": true,
+     "t": 2.6,
+     "ref": true
+    },
+    "metals": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.2,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.48,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "ABBV",
+   "name": "AbbVie Inc.",
+   "industry": "Drug Manufacturers - General",
+   "country": "US",
+   "market_cap": 521499838759.0,
+   "themes": {
+    "ai": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.84,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.63,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.67,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.28,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.29,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.64,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -1.31,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": null,
+     "linked": true,
+     "t": 10.04,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.39,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.68,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "BHP",
+   "name": "BHP Group Limited",
+   "industry": "Industrial Materials",
+   "country": "AU",
+   "market_cap": 202021998860.0,
+   "themes": {
+    "ai": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.24,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.13,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.77,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.36,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.35,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.78,
+     "ref": false
+    },
+    "gold": {
+     "tier": "High",
+     "rating": "Market-driven",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 7.72,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.51,
+     "ref": false
+    },
+    "metals": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": 49.4,
+     "linked": true,
+     "t": 19.67,
+     "ref": true
+    },
+    "oil": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.76,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "RIO",
+   "name": "Rio Tinto Group",
+   "industry": "Industrial Materials",
+   "country": "GB",
+   "market_cap": 134917947385.0,
+   "themes": {
+    "ai": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.59,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.03,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.27,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.07,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.24,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.71,
+     "ref": false
+    },
+    "gold": {
+     "tier": "High",
+     "rating": "Market-driven",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 8.44,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.1,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Moderate",
+     "rating": "Moderate",
+     "revenue_pct": 12.6,
+     "linked": true,
+     "t": 21.02,
+     "ref": true
+    },
+    "oil": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.24,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "SCCO",
+   "name": "Southern Copper Corporation",
+   "industry": "Copper",
+   "country": "US",
+   "market_cap": 140008315440.0,
+   "themes": {
+    "ai": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.25,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.67,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "High",
+     "rating": "Market-driven",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.37,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.21,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.22,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.27,
+     "ref": false
+    },
+    "gold": {
+     "tier": "High",
+     "rating": "Market-driven",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 12.97,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.96,
+     "ref": false
+    },
+    "metals": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": 74.8,
+     "linked": true,
+     "t": 9.71,
+     "ref": true
+    },
+    "oil": {
+     "tier": "Moderate",
+     "rating": "Market-driven",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.72,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "FCX",
+   "name": "Freeport-McMoRan Inc.",
+   "industry": "Copper",
+   "country": "US",
+   "market_cap": 85189797600.0,
+   "themes": {
+    "ai": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.62,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.3,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.45,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.1,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.79,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.3,
+     "ref": false
+    },
+    "gold": {
+     "tier": "High",
+     "rating": "Market-driven",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 11.91,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "High",
+     "rating": "Market-driven",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 3.15,
+     "ref": false
+    },
+    "metals": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": 74.5,
+     "linked": true,
+     "t": 7.24,
+     "ref": true
+    },
+    "oil": {
+     "tier": "Moderate",
+     "rating": "Market-driven",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.75,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "SQM",
+   "name": "Sociedad Qu\u00edmica y Minera de Chile S.A.",
+   "industry": "Chemicals - Specialty",
+   "country": "CL",
+   "market_cap": 15313043423.0,
+   "themes": {
+    "ai": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.43,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.4,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "High",
+     "rating": "Market-driven",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 3.03,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.05,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.79,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.32,
+     "ref": false
+    },
+    "gold": {
+     "tier": "High",
+     "rating": "Market-driven",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 4.11,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.33,
+     "ref": false
+    },
+    "metals": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": 50.0,
+     "linked": true,
+     "t": 7.87,
+     "ref": true
+    },
+    "oil": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.41,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "CVX",
+   "name": "Chevron Corporation",
+   "industry": "Oil & Gas Integrated",
+   "country": "US",
+   "market_cap": 429061173015.0,
+   "themes": {
+    "ai": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.21,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.16,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.16,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.21,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.71,
+     "ref": false
+    },
+    "defense": {
+     "tier": "High",
+     "rating": "Market-driven",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.97,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -3.44,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -1.19,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.65,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Moderate",
+     "rating": "Moderate",
+     "revenue_pct": 29.0,
+     "linked": true,
+     "t": 19.34,
+     "ref": true
+    }
+   }
+  },
+  {
+   "ticker": "COP",
+   "name": "ConocoPhillips",
+   "industry": "Oil & Gas Exploration & Production",
+   "country": "US",
+   "market_cap": 168223335200.0,
+   "themes": {
+    "ai": {
+     "tier": "High",
+     "rating": "Market-driven",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.67,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.89,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.89,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.65,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.91,
+     "ref": false
+    },
+    "defense": {
+     "tier": "High",
+     "rating": "Market-driven",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.91,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -2.23,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -1.1,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.45,
+     "ref": false
+    },
+    "oil": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": 66.3,
+     "linked": true,
+     "t": 17.33,
+     "ref": true
+    }
+   }
+  },
+  {
+   "ticker": "EOG",
+   "name": "EOG Resources, Inc.",
+   "industry": "Oil & Gas Exploration & Production",
+   "country": "US",
+   "market_cap": 82086422344.0,
+   "themes": {
+    "ai": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.19,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.48,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.17,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.78,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.24,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.28,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -2.47,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.99,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.88,
+     "ref": false
+    },
+    "oil": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": 61.6,
+     "linked": true,
+     "t": 17.53,
+     "ref": true
+    }
+   }
+  },
+  {
+   "ticker": "SHEL",
+   "name": "Shell plc",
+   "industry": "Oil & Gas Integrated",
+   "country": "GB",
+   "market_cap": 280826902600.0,
+   "themes": {
+    "ai": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.59,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.32,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.92,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.5,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.98,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.63,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.0,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.66,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Moderate",
+     "rating": "Market-driven",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 3.0,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Moderate",
+     "rating": "Moderate",
+     "revenue_pct": 56.3,
+     "linked": true,
+     "t": 10.3,
+     "ref": true
+    }
+   }
+  },
+  {
+   "ticker": "FANG",
+   "name": "Diamondback Energy, Inc.",
+   "industry": "Oil & Gas Exploration & Production",
+   "country": "US",
+   "market_cap": 51626538240.0,
+   "themes": {
+    "ai": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.36,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.78,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.99,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.13,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.83,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.15,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -1.97,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -1.09,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.61,
+     "ref": false
+    },
+    "oil": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": 93.5,
+     "linked": true,
+     "t": 18.85,
+     "ref": true
+    }
+   }
+  },
+  {
+   "ticker": "MSFT",
+   "name": "Microsoft Corporation",
+   "industry": "Software - Infrastructure",
+   "country": "US",
+   "market_cap": 3890432417200.0,
+   "themes": {
+    "ai": {
+     "tier": "Moderate",
+     "rating": "Moderate",
+     "revenue_pct": null,
+     "linked": true,
+     "t": 1.45,
+     "ref": true
+    },
+    "bank_lending": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.39,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.03,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.36,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": null,
+     "linked": true,
+     "t": 2.71,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.43,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.32,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -3.1,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.27,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.86,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "ORCL",
+   "name": "Oracle Corporation",
+   "industry": "Software - Infrastructure",
+   "country": "US",
+   "market_cap": 379025809000.0,
+   "themes": {
+    "ai": {
+     "tier": "Moderate",
+     "rating": "Moderate",
+     "revenue_pct": null,
+     "linked": true,
+     "t": 5.67,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.67,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.73,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -1.87,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": null,
+     "linked": true,
+     "t": 3.16,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.65,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.21,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.17,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.78,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.23,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "AMGN",
+   "name": "Amgen Inc.",
+   "industry": "Drug Manufacturers - General",
+   "country": "US",
+   "market_cap": 251886253548.0,
+   "themes": {
+    "ai": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.66,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.44,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.65,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.36,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -1.17,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.05,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.81,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": null,
+     "linked": true,
+     "t": 12.44,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.55,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.2,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "BEP",
+   "name": "Brookfield Renewable Partners L.P.",
+   "industry": "Renewable Utilities",
+   "country": "CA",
+   "market_cap": 9077404360.0,
+   "themes": {
+    "ai": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.91,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.27,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": null,
+     "linked": true,
+     "t": 5.55,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.36,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -1.18,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.46,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.03,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.28,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.3,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.79,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "CFG",
+   "name": "Citizens Financial Group, Inc.",
+   "industry": "Banks - Regional",
+   "country": "US",
+   "market_cap": 27356667593.0,
+   "themes": {
+    "ai": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -1.6,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": 79.8,
+     "linked": true,
+     "t": 23.24,
+     "ref": true
+    },
+    "clean_energy": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -1.87,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.85,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.64,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.46,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -4.61,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -2.98,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.25,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.14,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "DG",
+   "name": "Dollar General Corporation",
+   "industry": "Discount Stores",
+   "country": "US",
+   "market_cap": 29593536211.0,
+   "themes": {
+    "ai": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.06,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.36,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.77,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Moderate",
+     "rating": "Moderate",
+     "revenue_pct": null,
+     "linked": true,
+     "t": 3.77,
+     "ref": true
+    },
+    "cyber": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.04,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.19,
+     "ref": false
+    },
+    "gold": {
+     "tier": "High",
+     "rating": "Market-driven",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.55,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.19,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.54,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.2,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "NOC",
+   "name": "Northrop Grumman Corporation",
+   "industry": "Aerospace & Defense",
+   "country": "US",
+   "market_cap": 78196287520.0,
+   "themes": {
+    "ai": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.05,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.02,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.64,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.14,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -1.07,
+     "ref": false
+    },
+    "defense": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": 18.1,
+     "linked": true,
+     "t": 8.45,
+     "ref": true
+    },
+    "gold": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.12,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.05,
+     "ref": false
+    },
+    "metals": {
+     "tier": "High",
+     "rating": "Market-driven",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.66,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.66,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "PR",
+   "name": "Permian Resources Corporation",
+   "industry": "Oil & Gas Exploration & Production",
+   "country": "US",
+   "market_cap": 19299491258.0,
+   "themes": {
+    "ai": {
+     "tier": "High",
+     "rating": "Market-driven",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.55,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.78,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.9,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.35,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.86,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.89,
+     "ref": false
+    },
+    "gold": {
+     "tier": "Limited",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -2.04,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -1.12,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.23,
+     "ref": false
+    },
+    "oil": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": 97.0,
+     "linked": true,
+     "t": 20.0,
+     "ref": true
+    }
+   }
+  },
+  {
+   "ticker": "VALE",
+   "name": "Vale S.A.",
+   "industry": "Industrial Materials",
+   "country": "BR",
+   "market_cap": 47749668860.0,
+   "themes": {
+    "ai": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.55,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "High",
+     "rating": "Market-driven",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 2.63,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.38,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.37,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.22,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.84,
+     "ref": false
+    },
+    "gold": {
+     "tier": "High",
+     "rating": "Market-driven",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 5.38,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.58,
+     "ref": false
+    },
+    "metals": {
+     "tier": "Moderate",
+     "rating": "Moderate",
+     "revenue_pct": 12.9,
+     "linked": true,
+     "t": 6.46,
+     "ref": true
+    },
+    "oil": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.51,
+     "ref": false
+    }
+   }
+  },
+  {
+   "ticker": "WPM",
+   "name": "Wheaton Precious Metals Corp.",
+   "industry": "Gold",
+   "country": "CA",
+   "market_cap": 59699332000.0,
+   "themes": {
+    "ai": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.37,
+     "ref": false
+    },
+    "bank_lending": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 1.78,
+     "ref": false
+    },
+    "clean_energy": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.95,
+     "ref": false
+    },
+    "consumer_disc": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.03,
+     "ref": false
+    },
+    "cyber": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.55,
+     "ref": false
+    },
+    "defense": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.43,
+     "ref": false
+    },
+    "gold": {
+     "tier": "High",
+     "rating": "High",
+     "revenue_pct": null,
+     "linked": true,
+     "t": 35.95,
+     "ref": false
+    },
+    "healthcare": {
+     "tier": "Limited (lower confidence)",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": -0.95,
+     "ref": false
+    },
+    "metals": {
+     "tier": "High",
+     "rating": "Market-driven",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 5.11,
+     "ref": false
+    },
+    "oil": {
+     "tier": "Not determined",
+     "rating": "Not exposed",
+     "revenue_pct": null,
+     "linked": false,
+     "t": 0.99,
+     "ref": false
+    }
+   }
+  }
+ ]
+}

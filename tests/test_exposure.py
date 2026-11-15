@@ -59,6 +59,7 @@ def sim(monkeypatch):
     prices, stocks = simulated_prices()
     monkeypatch.setattr(data, "_from_fmp", lambda t, s, e: prices.get(t))
     monkeypatch.setattr(data, "_from_yfinance", lambda t, s, e: None)
+    monkeypatch.setattr(exposure, "revenue_pct", lambda t, k: None)  # no FMP calls for simulated tickers
     meta = {t: {"country": "US", "industry": "Widgets" if t == "S05" else "Other", "market_cap": 1e10} for t in stocks}
     meta["S03"]["country"] = "GB"  # a non-US stock gets the INTL control
     monkeypatch.setattr(screen, "intl_control", lambda t: "INTL" if meta.get(t, {}).get("country", "US") != "US" else None)
