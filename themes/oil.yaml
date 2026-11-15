@@ -1,0 +1,76 @@
+# Oil theme. Every evidence number is computed from FMP revenue-product-segmentation
+# (fiscal year 2025, annual): the named segment divided by the sum of reported segments.
+name: Oil
+order: 1
+description: Companies whose revenue rises and falls with the price of crude oil.
+ground_truth: USO
+
+references:
+  High:
+    - ticker: FANG
+      evidence_pct: 88.3
+      measures: Crude oil production share of revenue
+      fiscal_year: 2025
+      source: FMP revenue-product-segmentation FY2025 ($25.07B of $28.38B)
+      reason: Oil-weighted Permian producer; little gas, no refining.
+    - ticker: CHRD
+      evidence_pct: 78.4
+      measures: Oil production share of revenue
+      fiscal_year: 2025
+      source: FMP revenue-product-segmentation FY2025 ($3.55B of $4.53B)
+      reason: Bakken oil producer; most of the rest is purchased-oil marketing.
+    - ticker: COP
+      evidence_pct: 66.3
+      measures: Crude oil product line share of revenue
+      fiscal_year: 2025
+      source: FMP revenue-product-segmentation FY2025 ($39.07B of $58.95B)
+      reason: Largest US pure producer; no refining since its 2012 spin-off.
+    - ticker: EOG
+      evidence_pct: 61.6
+      measures: Oil and condensate share of revenue
+      fiscal_year: 2025
+      source: FMP revenue-product-segmentation FY2025 ($12.50B of $20.27B)
+      reason: Large US shale producer; the rest is mostly natural gas.
+  Moderate:
+    - ticker: CVX
+      evidence_pct: 29.0
+      measures: Upstream (oil and gas production) share of revenue
+      fiscal_year: 2025
+      source: FMP revenue-product-segmentation FY2025 ($53.45B of $184.43B)
+      reason: Integrated major; refining and marketing cushion swings in crude.
+    - ticker: IMO
+      evidence_pct: 23.0
+      measures: Upstream share of revenue
+      fiscal_year: 2025
+      source: FMP revenue-product-segmentation FY2025 ($15.95B of $69.42B)
+      reason: Canadian integrated producer with a large refining business.
+    - ticker: SHEL
+      evidence_pct: 13.4
+      measures: Crude oil product line share of revenue
+      fiscal_year: 2025
+      source: FMP revenue-product-segmentation FY2025 ($35.71B of $266.87B)
+      reason: Integrated major spread across crude, refined products, LNG and gas.
+
+control:
+  ticker: ADBE
+  evidence_pct: 0
+  measures: Oil share of revenue
+  fiscal_year: 2025
+  source: FMP revenue-product-segmentation FY2025 (Digital Media / Experience / Print)
+  reason: Subscription software; no oil revenue and no meaningful oil input costs.
+
+direct_classification:
+  - ticker: OXY
+    tier: High
+    evidence_pct: 94.3
+    measures: Oil AND gas segment share (no crude-only split in FMP)
+    source: FMP revenue-product-segmentation FY2025
+    reason: Major oil producer, but the disclosed number mixes oil and gas.
+  - ticker: HAL
+    tier: Moderate
+    source: FMP profile (Oil & Gas Equipment & Services)
+    reason: Oilfield services; customers' drilling budgets follow oil prices. No oil share disclosed.
+  - ticker: SLB
+    tier: Moderate
+    source: FMP profile (Oil & Gas Equipment & Services)
+    reason: Largest oilfield-services firm; exposure is indirect via customer spending.

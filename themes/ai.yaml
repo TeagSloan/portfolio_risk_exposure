@@ -1,0 +1,83 @@
+# AI theme: Wes's reference set, used exactly as given. Do not edit without asking Wes.
+name: AI
+order: 0
+description: Companies whose revenue depends on building or running artificial intelligence.
+ground_truth: null
+
+references:
+  High:
+    - ticker: NVDA
+      evidence_pct: 90
+      measures: AI share of revenue
+      fiscal_year: null
+      source: Wes's reference set (10-K / earnings call)
+      reason: Data-center GPUs are the core chips that train and run AI models.
+    - ticker: MU
+      evidence_pct: 55.5
+      measures: AI share of revenue
+      fiscal_year: null
+      source: Wes's reference set (10-K / earnings call)
+      reason: High-bandwidth memory and data-center DRAM sold into AI servers.
+    - ticker: VRT
+      evidence_pct: 50
+      measures: AI share of revenue
+      fiscal_year: null
+      source: Wes's reference set (10-K / earnings call)
+      reason: Power and cooling equipment for AI data centers.
+    - ticker: AVGO
+      evidence_pct: 49
+      measures: AI share of revenue
+      fiscal_year: null
+      source: Wes's reference set (10-K / earnings call)
+      reason: Custom AI accelerator chips and AI data-center networking.
+  Moderate:
+    - ticker: TSM
+      evidence_pct: 18
+      measures: AI share of revenue
+      fiscal_year: null
+      source: Wes's reference set (10-K / earnings call)
+      reason: Manufactures most AI accelerators; AI is a growing slice of foundry sales.
+    - ticker: MSFT
+      evidence_pct: 11.2
+      measures: AI share of revenue
+      fiscal_year: null
+      source: Wes's reference set (10-K / earnings call)
+      reason: Azure AI services and Copilot inside a much larger software business.
+    - ticker: VST
+      evidence_pct: 8.6
+      measures: AI share of revenue
+      fiscal_year: null
+      source: Wes's reference set (10-K / earnings call)
+      reason: Power producer selling electricity to AI data centers.
+
+control:
+  ticker: ADM
+  evidence_pct: 0
+  measures: AI share of revenue
+  fiscal_year: null
+  source: Wes's reference set (10-K / earnings call)
+  reason: Grain and food-ingredient processor with no AI revenue.
+
+direct_classification:
+  - ticker: CRWV
+    tier: High
+    evidence_pct: 100
+    measures: AI share of revenue
+    source: Wes's reference set
+    reason: AI cloud pure-play; too little trading history to use as a regression reference.
+  - ticker: GOOGL
+    tier: High
+    source: Wes's reference set
+    reason: AI is central to search, cloud and its own chips, but no AI revenue figure is disclosed.
+  - ticker: JPM
+    tier: Moderate
+    source: Wes's reference set
+    reason: Large AI spending and adoption, but no AI revenue figure.
+  - ticker: META
+    tier: Moderate
+    source: Wes's reference set
+    reason: AI drives ad targeting and huge capex, but no AI revenue figure.
+  - ticker: TSLA
+    tier: Moderate
+    source: Wes's reference set
+    reason: Self-driving and robotics bets; no AI revenue figure.
