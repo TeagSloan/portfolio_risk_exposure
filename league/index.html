@@ -98,6 +98,75 @@
   .small { font-size: 13px; color: var(--muted); word-break: break-all; }
   .mono { font-family: var(--mono); font-size: 13px; }
   .hidden { display: none !important; }
+  #msg:empty { display: none; }
+  /* ── motion and premium details (all motion: transform/opacity, 150-400ms, off under reduced motion) ── */
+  .live { display: inline-flex; align-items: center; gap: var(--s1); padding: 6px 12px; border: 1px solid var(--line);
+          border-radius: 999px; font-size: 13px; color: var(--muted); background: var(--card); white-space: nowrap; }
+  .live i { width: 8px; height: 8px; border-radius: 50%; background: var(--gain); animation: pulse 1.6s ease-in-out infinite; }
+  .live b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; min-width: 9ch; display: inline-block; }
+  @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .35; transform: scale(.8); } }
+  .clockwrap { display: flex; align-items: center; gap: var(--s3); }
+  .ring { width: 96px; height: 96px; flex: none; transform: rotate(-90deg); }
+  .ring circle { fill: none; stroke-width: 6; }
+  .ring .track { stroke: var(--raised); }
+  .ring .fg { stroke: var(--rose); stroke-linecap: round; transition: stroke-dashoffset .4s var(--ease); }
+  .ring.off { display: none; }
+  .skel { display: inline-block; height: 1em; width: 100%; border-radius: 6px; vertical-align: middle;
+          background: linear-gradient(90deg, var(--raised) 0%, #2A2226 50%, var(--raised) 100%); background-size: 200% 100%;
+          animation: shimmer 1.2s linear infinite; }
+  @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+  .empty { text-align: center; padding: var(--s4) var(--s2); color: var(--muted); border: 1px dashed var(--line); border-radius: 12px; }
+  .empty b { display: block; font-family: var(--serif); font-weight: 500; font-size: 20px; color: var(--ink); margin-bottom: 4px; }
+  .entry.new { animation: slidein .35s var(--ease) both, glow 1.2s ease-out .1s; border-radius: 10px; }
+  @keyframes slidein { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  @keyframes glow { 0% { background: rgba(244, 166, 191, .14); } 100% { background: transparent; } }
+  .racegrid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s3); }
+  #chart { width: 100%; height: auto; display: block; overflow: visible; }
+  #chart .ln { fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: stroke-dashoffset .4s var(--ease); }
+  #chart .ln.me { stroke-width: 3.5; }
+  #chart .dot { transition: transform .4s var(--ease); }
+  #chart text { font: 600 12px var(--sans); }
+  #chart .axis { stroke: var(--line); stroke-width: 1; }
+  #chart .ax { fill: var(--muted); font: 500 11px var(--sans); }
+  .lb { position: relative; }
+  .lbr { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 12px 0;
+         border-bottom: 1px solid var(--line); background: var(--card); will-change: transform; }
+  .lbr:last-child { border-bottom: 0; }
+  .lbr .rk { font-family: var(--serif); font-size: 18px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .lbr .nm { font-weight: 700; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .lbr .rt { font-family: var(--serif); font-weight: 500; font-size: 24px; font-variant-numeric: tabular-nums; text-align: right; }
+  .lbr .sw { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 8px; vertical-align: 0; }
+  .winner.reveal { animation: reveal 1.4s var(--ease) both; }
+  @keyframes reveal { 0% { opacity: 0; transform: translateY(8px); box-shadow: 0 0 0 0 rgba(244, 166, 191, 0); }
+                      40% { opacity: 1; transform: none; box-shadow: 0 0 48px 4px rgba(244, 166, 191, .28); }
+                      100% { box-shadow: 0 0 32px 0 rgba(244, 166, 191, .14); } }
+  .winbig { font-family: var(--serif); font-weight: 500; font-size: 48px; text-align: center; color: var(--ink);
+            font-variant-numeric: tabular-nums; margin-top: var(--s1); }
+  #toasts { position: fixed; right: var(--s2); bottom: var(--s2); display: flex; flex-direction: column; gap: var(--s1); z-index: 50;
+            max-width: min(360px, calc(100vw - 32px)); }
+  .toast { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px var(--s2); font-size: 14px;
+           animation: slidein .25s var(--ease) both; display: flex; gap: 10px; align-items: center; }
+  .toast.ok { border-color: #2B5A46; } .toast.err { border-color: #7A3530; color: #FFB8AC; }
+  .toast a { color: var(--blush); margin-left: auto; white-space: nowrap; }
+  .toast .spin { width: 14px; height: 14px; border: 2px solid var(--line); border-top-color: var(--blush); border-radius: 50%;
+                 animation: spin .8s linear infinite; flex: none; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  details.proof summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+  details.proof summary::-webkit-details-marker { display: none; }
+  details.proof summary h2 { margin: 0; }
+  details.proof summary span { color: var(--muted); font-size: 14px; transition: transform .2s var(--ease); }
+  details.proof[open] summary span { transform: rotate(180deg); }
+  .pf { padding: 12px 0; border-top: 1px solid var(--line); }
+  .pf:first-of-type { margin-top: var(--s2); }
+  .pf .k { font-weight: 600; font-size: 14px; }
+  .pf .v { display: flex; gap: var(--s1); align-items: center; margin: 4px 0; flex-wrap: wrap; }
+  .pf .v a { color: var(--blush); font-size: 13px; }
+  .pf p { margin: 0; font-size: 13px; color: var(--muted); }
+  .copy { background: var(--raised); border: 1px solid var(--line); color: var(--muted); border-radius: 8px; font: 600 12px var(--sans);
+          padding: 2px 8px; cursor: pointer; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
 </style>
 </head>
 <body>
@@ -110,32 +179,52 @@
         prices. A future block picks the month after entries close, so nobody can know it in advance. Best return
         takes the pot.</p>
     </div>
+    <div class="live" title="Monad testnet's latest block, read live"><i></i>Live on Monad · block <b id="block">…</b></div>
   </header>
 
   <div class="grid">
     <div class="col">
       <div class="card">
-        <div class="label" id="phase">Loading…</div>
-        <div class="clock" id="clock"></div>
-        <div class="status" id="potline"></div>
+        <div class="clockwrap">
+          <svg class="ring off" id="ring" viewBox="0 0 100 100" aria-hidden="true">
+            <circle class="track" cx="50" cy="50" r="44"></circle>
+            <circle class="fg" id="ringfg" cx="50" cy="50" r="44" stroke-dasharray="276.46" stroke-dashoffset="0"></circle>
+          </svg>
+          <div style="min-width:0;flex:1">
+            <div class="label" id="phase"><span class="skel" style="width:180px"></span></div>
+            <div class="clock" id="clock"><span class="skel" style="width:140px;height:56px"></span></div>
+            <div class="status" id="potline"><span class="skel" style="width:220px"></span></div>
+          </div>
+        </div>
       </div>
 
       <div id="winbox" class="card winner hidden">
+        <div class="label" style="text-align:center">Winner</div>
         <div class="winbanner" id="winbanner"></div>
+        <div class="winbig" id="winpot"></div>
         <p class="status" id="winline" style="text-align:center"></p>
         <button id="claim" class="btn hidden">Claim</button>
       </div>
 
       <div id="race" class="card hidden">
-        <h2>Live leaderboard</h2>
-        <div class="status" id="raceday"></div>
-        <table class="board" id="board"></table>
+        <h2>The race</h2>
+        <div class="status" id="raceday" style="margin-bottom:16px"></div>
+        <div class="racegrid">
+          <svg id="chart" viewBox="0 0 640 300" role="img" aria-label="Each entry's return, day by day"></svg>
+          <div class="lb" id="board"></div>
+        </div>
       </div>
 
       <div class="card">
         <h2 id="entrieshead">Entries</h2>
-        <div id="entries"><p class="status">No entries yet.</p></div>
+        <div id="entries"><div class="entry"><span class="skel" style="width:60%"></span></div>
+          <div class="entry"><span class="skel" style="width:45%"></span></div></div>
       </div>
+
+      <details class="card proof" id="proof">
+        <summary><h2>Proof</h2><span>▾</span></summary>
+        <div id="proofbody"><p class="status">Loading…</p></div>
+      </details>
     </div>
 
     <div class="col">
@@ -176,6 +265,7 @@
     </div>
   </div>
 </main>
+<div id="toasts" aria-live="polite"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -204,6 +294,7 @@ const $ = (id) => document.getElementById(id);
 
 let dep, cfg, readProvider, league, oracle, pool, presets, replay = null;
 let roundId = 0, round = null, entries = [], scores = null, me = null, signer = null, myIndex = 0;
+let ringTotal = 0, lastPot = null, knownEntries = null, prevScores = {}, chartKey = "", prevLen = {}, revealed = 0;
 const prefs = {};      // theme key -> "want" | "avoid"
 let picks = [];        // [{ticker, pct}]
 
@@ -404,6 +495,38 @@ function entryThemes(tickers, weights) {
   return out.sort((a, b) => b[1] - a[1]).slice(0, 3);
 }
 
+// ───────────── motion helpers (short, eased; skipped under prefers-reduced-motion) ─────────────
+const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const EXPLORER = "https://testnet.monadscan.com";
+const LINE_COLORS = ["#F4A6BF", "#E8C98F", "#C2456F", "#F5EEF1", "#B8A9B0", "#E07A9B", "#D9B37A", "#8A6F7B"];
+const ease = (t) => 1 - Math.pow(1 - t, 3);
+function countTo(el, from, to, fmt, ms = 400) {
+  if (RM || from === to || from == null) { el.textContent = fmt(to); return; }
+  const t0 = performance.now();
+  const step = (t) => { const k = Math.min(1, (t - t0) / ms); el.textContent = fmt(from + (to - from) * ease(k)); if (k < 1) requestAnimationFrame(step); };
+  requestAnimationFrame(step);
+}
+function toast(text, kind = "", link = null) {
+  const el = document.createElement("div");
+  const set = (t, k = "", l = null) => {
+    el.className = "toast " + k;
+    el.innerHTML = (k === "" ? '<span class="spin"></span>' : (k === "ok" ? "✓" : "!")) + `<span>${esc(t)}</span>` +
+      (l ? `<a href="${l}" target="_blank" rel="noopener">View ↗</a>` : "");
+  };
+  set(text, kind, link);
+  $("toasts").appendChild(el);
+  const done = () => setTimeout(() => el.remove(), 6000);
+  if (kind) done();
+  return { update: (t, k, l) => { set(t, k, l); if (k) done(); } };
+}
+function shortHash(h) { return h ? h.slice(0, 10) + "…" + h.slice(-6) : ""; }
+window.copyText = (t, b) => { navigator.clipboard && navigator.clipboard.writeText(t); b.textContent = "Copied"; setTimeout(() => { b.textContent = "Copy"; }, 1200); };
+
+// Live block number: shows how fast Monad is.
+async function tickBlock() {
+  try { const n = await readProvider.getBlockNumber(); $("block").textContent = n.toLocaleString(); } catch { /* keep the last one */ }
+}
+
 // ───────────── chain ─────────────
 
 async function load() {
@@ -424,7 +547,7 @@ async function load() {
 
 async function refresh() {
   try {
-    roundId = Number(await league.roundCount());
+    roundId = Number(params.get("round")) || Number(await league.roundCount());  // ?round=N shows a past round
     if (!roundId) { $("phase").innerHTML = "<strong>No round yet.</strong> Waiting for the operator to open one."; return; }
     round = await league.getRound(roundId);
     const n = Number(round.entryCount);
@@ -457,50 +580,73 @@ async function render(phase) {
   const now = Math.floor(Date.now() / 1000), deadline = Number(round.deadline);
   const open = phase === "Open" && now < deadline;
   $("enter").textContent = `Enter (${mon(round.entryStake, 4)} MON)`;
-  $("potline").innerHTML = `Round ${roundId} · ${entries.length} ${entries.length === 1 ? "entry" : "entries"} · Pot <strong>${mon(round.pot)} MON</strong>`;
+  const potNow = Number(ethers.formatEther(round.pot));
+  $("potline").innerHTML = `Round ${roundId} · ${entries.length} ${entries.length === 1 ? "entry" : "entries"} · Pot <strong id="pot"></strong> <strong>MON</strong>`;
+  countTo($("pot"), lastPot, potNow, (v) => v.toLocaleString(undefined, { maximumFractionDigits: 2 }), 600);
+  lastPot = potNow;
+  const ring = $("ring");
   $("build").classList.toggle("hidden", !open || !!myIndex);
   if (open) {
     const s = deadline - now;
     $("phase").innerHTML = myIndex ? "<strong>You're in!</strong> Entries close in:" : "<strong>Entries are open.</strong> Closes in:";
     $("clock").textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+    ringTotal = Math.max(ringTotal, s, 60);
+    ring.classList.remove("off");
+    $("ringfg").style.strokeDashoffset = (276.46 * (1 - s / ringTotal)).toFixed(1);
   } else if (phase === "Open" || phase === "Locked") {
     $("phase").innerHTML = "<strong>Entries closed.</strong> Waiting for the future block that picks the window…";
-    $("clock").textContent = "🔒";
+    $("clock").textContent = "Locked"; ring.classList.add("off");
   } else if (phase === "Started") {
     const d = await raceDay();
     $("phase").innerHTML = "<strong>The race is on!</strong>";
-    $("clock").textContent = d ? `Day ${d.day} / ${d.days}` : "🏁";
+    $("clock").textContent = d ? `Day ${d.day} / ${d.days}` : "Racing"; ring.classList.remove("off");
+    if (d) $("ringfg").style.strokeDashoffset = (276.46 * (1 - d.day / d.days)).toFixed(1);
+    drawChart(d ? d.day : 0);
     $("raceday").textContent = d ? `Replaying ${d.first} → ${d.last} · now ${d.date}` : "";
   } else if (phase === "Settled") {
-    $("phase").innerHTML = "<strong>Race finished.</strong>"; $("clock").textContent = "🏆";
+    $("phase").innerHTML = "<strong>Race finished.</strong>"; $("clock").textContent = "Finished"; ring.classList.add("off");
+    if (replay) drawChart(replay.race_days);
     if (replay) { const w = Number(round.windowIndex); $("raceday").textContent = `Replayed ${replay.dates[w]} → ${replay.dates[w + replay.race_days]}`; }
   } else if (phase === "Cancelled") {
     $("phase").innerHTML = "<strong>No race this round</strong> (fewer than 2 entries, or it stalled). Everyone gets their stake back.";
-    $("clock").textContent = "";
+    $("clock").textContent = "Refunded"; ring.classList.add("off");
   }
   validate();
 
   // entries list
   $("entrieshead").textContent = `Entries (${entries.length})`;
+  const fresh = knownEntries === null ? new Set() : new Set(entries.map((_, i) => i).filter((i) => !knownEntries.has(i)));
+  knownEntries = new Set(entries.map((_, i) => i));
   $("entries").innerHTML = entries.length ? entries.map((e, i) => {
     const w = e.weightsBps.map(Number), tk = e.tickers.map(dec32);
     const tags = entryThemes(tk, w).map(([n, p]) => `<span class="tag">${esc(n)} ${p.toFixed(0)}%</span>`).join("");
     const mine = me && e.owner.toLowerCase() === me.toLowerCase() ? ' <span class="you">(you)</span>' : "";
-    return `<div class="entry"><div class="en">${esc(e.name)}${mine}</div><div class="meta">${short(e.owner)}</div>
+    return `<div class="entry${fresh.has(i) ? " new" : ""}"><div class="en">${esc(e.name)}${mine}</div><div class="meta mono">${short(e.owner)}</div>
       <div class="stocks">${tk.map((t, j) => `${esc(t)} ${(w[j] / 100).toFixed(0)}%`).join(" · ")}</div>${tags}</div>`;
-  }).join("") : `<p class="status">No entries yet.</p>`;
+  }).join("") : `<div class="empty"><b>No entries yet</b>Be the first: build a fund and enter before the clock runs out.</div>`;
 
-  // leaderboard
+  // leaderboard: rows glide to their new rank (FLIP) and returns count to the new value
   if (scores) {
     $("race").classList.remove("hidden");
+    const board = $("board");
+    const before = {};
+    board.querySelectorAll(".lbr").forEach((r) => { before[r.dataset.k] = r.getBoundingClientRect().top; });
     const rows = entries.map((e, i) => ({ e, i, r: scores[i] })).sort((a, b) => b.r - a.r);
-    const maxAbs = Math.max(0.001, ...rows.map((x) => Math.abs(x.r)));
-    $("board").innerHTML = rows.map((x, k) => {
+    board.innerHTML = rows.map((x, k) => {
       const mine = me && x.e.owner.toLowerCase() === me.toLowerCase() ? ' <span class="you">(you)</span>' : "";
-      return `<tr><td>${k + 1}. <strong>${esc(x.e.name)}</strong>${mine}<div class="small">${short(x.e.owner)}</div>
-        <div class="bar"><i style="width:${(100 * Math.abs(x.r) / maxAbs).toFixed(0)}%"></i></div></td>
-        <td class="${x.r >= 0 ? "up" : "down"}">${pctTxt(x.r)}</td></tr>`;
+      return `<div class="lbr" data-k="${x.i}"><span class="rk">${k + 1}</span>
+        <div class="nm"><span class="sw" style="background:${LINE_COLORS[x.i % LINE_COLORS.length]}"></span>${esc(x.e.name)}${mine}</div>
+        <span class="rt ${x.r >= 0 ? "up" : "down"}" id="rt${x.i}"></span></div>`;
     }).join("");
+    const fmt = (v) => (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(100 * v).toFixed(2) + "%";
+    rows.forEach((x) => countTo($("rt" + x.i), prevScores[x.i], x.r, fmt, 400));
+    rows.forEach((x) => { prevScores[x.i] = x.r; });
+    if (!RM) board.querySelectorAll(".lbr").forEach((r) => {
+      const old = before[r.dataset.k]; if (old === undefined) return;
+      const dy = old - r.getBoundingClientRect().top; if (!dy) return;
+      r.style.transform = `translateY(${dy}px)`; r.style.transition = "none";
+      requestAnimationFrame(() => { r.style.transition = "transform .35s cubic-bezier(.2,.8,.2,1)"; r.style.transform = ""; });
+    });
   } else { $("race").classList.add("hidden"); }
 
   // winner + claim
@@ -509,11 +655,19 @@ async function render(phase) {
     if (phase === "Settled") {
       const best = round.bestScore;
       const winners = entries.filter((e) => e.score === best);
-      $("winbanner").textContent = `🏆 ${winners.map((e) => e.name).join(" & ")} ${winners.length > 1 ? "win" : "wins"}!`;
-      $("winline").textContent = `${pctTxt(Number(best) / 1e18)} · ${winners.length > 1 ? "splitting" : "taking"} the ${mon(round.pot)} MON pot`;
-    } else { $("winbanner").textContent = "Stakes refunded"; $("winline").textContent = ""; }
+      $("winbanner").textContent = winners.map((e) => e.name).join(" & ");
+      const b = Number(best) / 1e18;
+      $("winline").textContent = `${b > 0 ? "+" : b < 0 ? "−" : ""}${Math.abs(100 * b).toFixed(2)}% over the month · ` +
+        (winners.length > 1 ? "the pot is split evenly" : "takes the whole pot");
+      if (revealed !== roundId) {  // the calm reveal: blush glow on the card, the pot counting into it
+        revealed = roundId;
+        $("winbox").classList.remove("reveal"); void $("winbox").offsetWidth; $("winbox").classList.add("reveal");
+        countTo($("winpot"), 0, potNow, (v) => v.toFixed(2) + " MON", 1200);
+      }
+    } else { $("winbanner").textContent = "Stakes refunded"; $("winpot").textContent = ""; $("winline").textContent = "Fewer than 2 entries, so there was no race. Everyone can claim their stake back."; }
     await updateClaim();
   } else { $("winbox").classList.add("hidden"); }
+  renderProof();
 }
 
 async function updateClaim() {
@@ -523,6 +677,82 @@ async function updateClaim() {
   b.classList.remove("hidden");
   b.disabled = amt === 0n;
   b.textContent = done ? "Claimed ✓" : (amt > 0n ? `Claim ${mon(amt, 4)} MON` : "No payout this time");
+}
+
+// ───────────── the race chart: every entry's return, day by day, drawing in as days arrive ─────────────
+function curve(e, upto) {
+  const w = Number(round.windowIndex), tk = e.tickers.map(dec32), wt = e.weightsBps.map(Number);
+  const cols = tk.map((t) => replay.tickers.indexOf(t));
+  if (cols.some((c) => c < 0)) return null;
+  const out = [];
+  for (let d = 0; d <= upto; d++) {
+    let v = 0;
+    cols.forEach((c, j) => { v += wt[j] * replay.closes[w + d][c] / replay.closes[w][c]; });
+    out.push(v / 10000 - 1);
+  }
+  return out;
+}
+function drawChart(upto) {
+  if (!replay || !entries.length) return;
+  const key = `${roundId}:${entries.length}:${upto}:${me || ""}`;
+  if (key === chartKey) return;
+  chartKey = key;
+  const W = 640, H = 300, L = 44, R = 120, T = 16, B = 28, days = replay.race_days;
+  const cs = entries.map((e) => curve(e, upto));
+  const all = cs.flat().filter((v) => v != null).concat([0]);
+  let lo = Math.min(...all), hi = Math.max(...all); const pad = Math.max(0.005, (hi - lo) * 0.12); lo -= pad; hi += pad;
+  const x = (d) => L + (W - L - R) * d / days, y = (v) => T + (H - T - B) * (hi - v) / (hi - lo);
+  const fmt = (v) => (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(100 * v).toFixed(1) + "%";
+  let svg = `<line class="axis" x1="${L}" x2="${W - R}" y1="${y(0)}" y2="${y(0)}"></line>` +
+    `<text class="ax" x="${L - 8}" y="${y(0) + 4}" text-anchor="end">0%</text>` +
+    `<text class="ax" x="${L - 8}" y="${y(hi) + 10}" text-anchor="end">${fmt(hi)}</text>` +
+    `<text class="ax" x="${L - 8}" y="${y(lo)}" text-anchor="end">${fmt(lo)}</text>` +
+    `<text class="ax" x="${L}" y="${H - 6}">Day 0</text><text class="ax" x="${W - R}" y="${H - 6}" text-anchor="end">Day ${days}</text>`;
+  // End labels: spread apart vertically so close finishers don't overlap (30px apart, kept inside the chart).
+  const ends = cs.map((c, i) => (c ? { i, y: y(c[c.length - 1]) } : null)).filter(Boolean).sort((a, b) => a.y - b.y);
+  ends.forEach((e, k) => { e.ly = Math.max(e.y, k ? ends[k - 1].ly + 30 : T); });
+  for (let k = ends.length - 1; k >= 0; k--) { ends[k].ly = Math.min(ends[k].ly, (k < ends.length - 1 ? ends[k + 1].ly - 30 : H - B)); }
+  const labelY = Object.fromEntries(ends.map((e) => [e.i, e.ly]));
+  cs.forEach((c, i) => {
+    if (!c) return;
+    const col = LINE_COLORS[i % LINE_COLORS.length], mine = me && entries[i].owner.toLowerCase() === me.toLowerCase();
+    const d = c.map((v, k) => `${k ? "L" : "M"}${x(k).toFixed(1)},${y(v).toFixed(1)}`).join("");
+    const last = c[c.length - 1], cls = last >= 0 ? "up" : "down", ex = x(c.length - 1);
+    svg += `<path class="ln${mine ? " me" : ""}" data-i="${i}" d="${d}" stroke="${col}"></path>` +
+      `<g class="dot" style="transform:translate(${ex.toFixed(1)}px,${y(last).toFixed(1)}px)"><circle r="${mine ? 5 : 4}" fill="${col}"></circle></g>` +
+      `<g class="dot" style="transform:translate(${(ex + 10).toFixed(1)}px,${labelY[i].toFixed(1)}px)">` +
+      `<text x="0" y="0" fill="${col}">${esc(entries[i].name.slice(0, 12))}</text>` +
+      `<text x="0" y="14" class="${cls}" style="fill:currentColor">${fmt(last)}</text></g>`;
+  });
+  const chart = $("chart");
+  chart.innerHTML = svg;
+  chart.querySelectorAll(".ln").forEach((p) => {  // draw only the new part of each line
+    const len = p.getTotalLength(), i = p.dataset.i, was = Math.min(prevLen[i] || 0, len);
+    prevLen[i] = len;
+    if (RM || was >= len) return;
+    p.style.strokeDasharray = `${len}`; p.style.strokeDashoffset = `${len - was}`; p.style.transition = "none";
+    requestAnimationFrame(() => requestAnimationFrame(() => { p.style.transition = ""; p.style.strokeDashoffset = "0"; }));
+  });
+}
+
+// ───────────── proof panel: what anyone can check on the explorer ─────────────
+function renderProof() {
+  const rows = [];
+  const item = (k, v, href, why) => rows.push(`<div class="pf"><div class="k">${k}</div><div class="v"><span class="mono">${esc(shortHash(v))}</span>
+    <button class="copy" onclick="copyText('${v}', this)">Copy</button>${href ? `<a href="${href}" target="_blank" rel="noopener">Explorer ↗</a>` : ""}</div><p>${why}</p></div>`);
+  item("League contract", cfg.fundLeague, `${EXPLORER}/address/${cfg.fundLeague}`,
+    "The program that holds the stakes, checks every entry and pays the winner. Nobody can change its rules.");
+  if (round) {
+    item("Replay data fingerprint", round.dataHash, null,
+      "A hash of the price file, recorded on-chain when the round opened, before anyone entered. The prices can't be swapped later.");
+    const tb = Number(round.targetBlock);
+    if (tb) rows.push(`<div class="pf"><div class="k">Block that picked the month</div><div class="v"><span class="mono">#${tb.toLocaleString()}</span>
+      <a href="${EXPLORER}/block/${tb}" target="_blank" rel="noopener">Explorer ↗</a></div>
+      <p>Chosen when entries closed; its hash didn't exist yet, so nobody could know the month in advance.</p></div>`);
+    item("Stock pool (Merkle root)", round.poolRoot, null,
+      `One fingerprint of all ${Number(round.poolSize).toLocaleString()} stocks you can pick; each entry proves its stocks are in it.`);
+  }
+  $("proofbody").innerHTML = rows.join("");
 }
 
 async function ensureChain() {
@@ -562,21 +792,27 @@ async function enter() {
   msg("");
   if (!validate()) return;
   const name = $("etfname").value.trim();
+  const t = toast("Confirm in MetaMask");
   try {
-    msg("Confirm in MetaMask…", "ok");
     const proofs = picks.map((p) => merkleProof(p.ticker));  // one proof per stock: "it's in the pool"
     const tx = await send("enter", [roundId, name, picks.map((p) => ethers.encodeBytes32String(p.ticker)), picks.map((p) => p.pct * 100), proofs], round.entryStake);
-    msg("Sending… waiting for the block.", "ok");
+    t.update("Submitting…", "", `${EXPLORER}/tx/${tx.hash}`);
     await tx.wait();
-    msg(`You're in: "${esc(name)}" entered.`, "ok");
+    t.update(`Confirmed ✓ "${name}" is in`, "ok", `${EXPLORER}/tx/${tx.hash}`);
     await refresh();
-  } catch (e) { msg("Entry failed: " + esc(e.shortMessage || e.reason || e.message)); }
+  } catch (e) { t.update("Entry failed: " + (e.shortMessage || e.reason || e.message), "err"); }
 }
 
 async function claim() {
   msg("");
-  try { const tx = await send("claim", [roundId], 0n); msg("Claiming… waiting for the block.", "ok"); await tx.wait(); msg("Claimed! Check your MON balance.", "ok"); await refresh(); }
-  catch (e) { msg("Claim failed: " + esc(e.shortMessage || e.reason || e.message)); }
+  const t = toast("Confirm in MetaMask");
+  try {
+    const tx = await send("claim", [roundId], 0n);
+    t.update("Submitting…", "", `${EXPLORER}/tx/${tx.hash}`);
+    await tx.wait();
+    t.update("Confirmed ✓ Claimed. Check your MON balance.", "ok", `${EXPLORER}/tx/${tx.hash}`);
+    await refresh();
+  } catch (e) { t.update("Claim failed: " + (e.shortMessage || e.reason || e.message), "err"); }
 }
 
 async function addNetwork() {
@@ -631,7 +867,7 @@ function applyPrefill() {
 }
 
 (async () => {
-  try { await load(); applyPrefill(); await refresh(); setInterval(refresh, 2000); }
+  try { await load(); applyPrefill(); tickBlock(); setInterval(tickBlock, 1000); await refresh(); setInterval(refresh, 2000); }
   catch (e) { $("phase").textContent = ""; msg(esc(e.message)); }
 })();
 </script>
