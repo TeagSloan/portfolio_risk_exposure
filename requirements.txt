@@ -11,3 +11,4 @@ plotly==7.1.0
 web3==8.0.0
 python-dotenv==1.2.4
 anthropic==2.8.0
+pyarrow==26.0.1

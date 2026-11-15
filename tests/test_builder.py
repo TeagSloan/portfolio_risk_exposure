@@ -1,130 +1,132 @@
-"""Tests for engine/builder.py. Themes and every ticker's tier are faked, so the right basket is known."""
+"""Tests for engine/builder.py (Way 2). The exposure table and Way 1 re-check are faked."""
 
 import json
 
+import pandas as pd
 import pytest
 
 from engine import builder, screen
 
 H, M, L, LL, ND = "High", "Moderate", "Limited", "Limited (lower confidence)", "Not determined"
 
+THEMES = {k: {"key": k, "name": n, "references": {"High": [{"ticker": "A1"}], "Moderate": []}}
+          for k, n in (("ai", "AI"), ("oil", "Oil"), ("gold", "Gold"))}
 
-def theme(key, name, refs):
-    return {"key": key, "name": name, "plain": name, "controls": ["SPY", "TLT", "VALUE"],
-            "references": {"High": [{"ticker": refs[0]}], "Moderate": [{"ticker": refs[1]}]},
-            "control": {"ticker": "CTRL"}, "direct_classification": []}
-
-
-THEMES = {"ai": theme("ai", "AI", ["A1", "A2"]), "oil": theme("oil", "Oil", ["O1", "O2"]),
-          "cyber": theme("cyber", "Cyber", ["C1", "C2"])}
-
-# ticker -> (ai, oil, cyber)
-TABLE = {
-    "A1": (H, L, L), "A2": (M, L, LL), "A3": (H, LL, H), "A4": (M, ND, L), "A5": (H, M, L),
-    "A6": (M, L, M), "A7": (H, L, L), "A8": (M, L, ND), "O1": (L, H, L), "O2": (LL, M, L),
-    "C1": (L, L, H), "C2": (ND, L, M), "SMH": (H, L, L), "KO": (L, L, L), "XOM": (LL, M, ND),
+# ticker -> (country, {theme: (tier, business_linked)})
+ROWS = {
+    "A1": ("US", {"ai": (H, True), "oil": (L, False), "gold": (L, False)}),
+    "A2": ("US", {"ai": (M, True), "oil": (LL, False), "gold": (ND, False)}),
+    "A3": ("US", {"ai": (H, False), "oil": (L, False), "gold": (L, False)}),   # price link only
+    "A4": ("US", {"ai": (H, True), "oil": (ND, False), "gold": (L, False)}),  # oil can't tell -> out
+    "A5": ("US", {"ai": (H, True), "oil": (M, False), "gold": (L, False)}),
+    "A6": ("TW", {"ai": (H, True), "oil": (L, False), "gold": (L, False)}),   # international
+    "A7": ("US", {"ai": (M, True), "oil": (L, False), "gold": (H, True)}),
+    "A8": ("US", {"ai": (H, True), "oil": (L, False), "gold": (L, False)}),
+    "A9": ("US", {"ai": (M, True), "oil": (L, False), "gold": (L, False)}),
+    "O1": ("US", {"ai": (L, False), "oil": (H, True), "gold": (L, False)}),
+    "G1": ("CA", {"ai": (ND, False), "oil": (L, False), "gold": (H, True)}),
 }
 
 
+def table():
+    rows = []
+    for t, (c, d) in ROWS.items():
+        for k, (tier, bl) in d.items():
+            reg = tier != ND
+            rows.append({"ticker": t, "theme": k, "tier": tier, "business_linked": bl, "country": c,
+                         "method": "regression", "sentence": "x", "n_obs": 498, "r_squared": 0.5, "p_threshold": 0.01,
+                         "controls_used": "SPY,TLT", "High_sum": 0.4 if reg else None, "High_se": 0.1, "High_p": 0.001,
+                         "High_upper": 0.56, "High_eligible": True})
+    return pd.DataFrame(rows)
+
+
 @pytest.fixture(autouse=True)
-def fakes(monkeypatch, tmp_path):
-    def screen_one(ticker, th, start, end):
-        tier = TABLE[ticker][list(THEMES).index(th["key"])] if ticker in TABLE else ND
-        return {"ticker": ticker, "theme": th["name"], "tier": tier, "method": "fake", "sentence": f"{ticker} {tier}"}
-
-    monkeypatch.setattr(screen, "_screen_one", screen_one)
-    monkeypatch.setattr(screen, "load_theme", lambda k: THEMES[k])
-    monkeypatch.setattr(screen, "load_all", lambda: THEMES)
+def fakes(monkeypatch):
     monkeypatch.setattr(builder, "load_all", lambda: THEMES)
-    monkeypatch.setattr(builder, "universe", lambda themes: sorted(TABLE))
-    monkeypatch.setattr(builder, "CACHE_PATH", tmp_path / "universe_screen.json")
+    monkeypatch.setattr(builder, "load_table", table)
+    monkeypatch.setattr(screen, "load_theme", lambda k: {"key": k, "name": THEMES[k]["name"]})
+    monkeypatch.setattr(screen, "_screen_one", lambda t, th, s, e: {
+        "ticker": t, "theme": th["name"], "tier": ROWS[t][1][th["key"]][0], "method": "fake", "sentence": "x"})
 
 
-def weights(out):
+def w(out):
     return {h["ticker"]: h["weight_pct"] for h in out["holdings"]}
 
 
-def test_want_ai_avoid_oil_picks_and_weights():
+def test_want_ai_avoid_oil_funnel_and_basket():
     out = builder.build({"ai": "want", "oil": "avoid"})
-    w = weights(out)
-    # Pass: AI High/Moderate AND Oil Limited/Limited-low. A4 (oil ND), A5 (oil M), XOM, O*, C*, KO fail.
-    assert set(w) == {"A1", "A2", "A3", "A6", "A7", "A8", "SMH"}
-    # Equal weight: 7 picks -> 100/7 = 14.29% each, under the 15% cap.
-    for t in w:
-        assert w[t] == pytest.approx(100 / 7, abs=0.01)
-    assert sum(w.values()) == pytest.approx(100, abs=0.05)  # display rounding to 2 decimals
-    assert out["cash_pct"] == 0
-    a3 = next(h for h in out["holdings"] if h["ticker"] == "A3")
-    assert a3["labels"] == ["Oil: lower confidence"]
-    assert any("lower confidence: A3" in x for x in out["warnings"])
-    v = out["verification"]
-    assert v["all_pass"] and v["checks"]["ai"]["high_moderate_pct"] == pytest.approx(100)
-    assert v["checks"]["oil"]["high_moderate_pct"] == 0
-
-
-def test_multiple_want_themes_equal_weight():
-    out = builder.build({"ai": "want", "cyber": "want"})
-    pts = {h["ticker"]: h["points"] for h in out["holdings"] if h["ticker"] != "CASH"}
-    assert pts == {"A3": 1, "A6": 1}  # equal weight
-    assert any("Only 2 holding" in x for x in out["warnings"])
-    # Two names can hold at most 30% under the 15% cap; the rest is cash.
-    assert weights(out) == {"A3": 15.0, "A6": 15.0, "CASH": 70.0}
+    # 6 equal picks would be 16.7% each, over the 15% cap: each is held at 15% and 10% stays in cash.
+    assert w(out) == {"A1": 15.0, "A2": 15.0, "A6": 15.0, "A7": 15.0, "A8": 15.0, "A9": 15.0, "CASH": 10.0}
+    assert [f["left"] for f in out["funnel"]] == [11, 9, 8, 6]
+    assert out["funnel"][2]["step"] == "Want AI: business-linked"  # A3 dropped here
+    a2 = next(h for h in out["holdings"] if h["ticker"] == "A2")
+    assert a2["labels"] == ["Oil: lower confidence"]
     assert out["verification"]["all_pass"]
 
 
-def test_avoid_only_is_equal_weight_and_excludes_not_determined():
-    out = builder.build({"oil": "avoid", "cyber": "avoid"})
-    w = weights(out)
-    assert "A8" not in w and "C2" not in w and "XOM" not in w  # cyber ND / oil M are excluded
-    assert set(w) == {"A1", "A2", "A7", "SMH", "KO"} | {"CASH"}
-    assert all(w[t] == 15.0 for t in w if t != "CASH") and w["CASH"] == 25.0
+def test_region_filter():
+    us = builder.build({"ai": "want", "oil": "avoid"}, region="us")
+    assert "A6" not in w(us) and us["funnel"][1] == {"step": "Region: US only", "left": 9}
+    intl = builder.build({"gold": "want"}, region="intl")
+    assert w(intl) == {"G1": 15.0, "CASH": 85.0}
+
+
+def test_dont_care_adds_no_rule_but_is_listed():
+    a = builder.build({"ai": "want", "oil": "avoid"})
+    b = builder.build({"ai": "want", "oil": "avoid", "gold": "dont care"})
+    assert w(a) == w(b)
+    assert b["funnel"][-1]["step"] == "Don't care: Gold (no rule)"
+    assert "Gold" not in b["holdings"][0]["tiers"]
+
+
+def test_small_basket_warning_and_cash():
+    out = builder.build({"ai": "want", "gold": "want"})
+    assert w(out) == {"A7": 15.0, "CASH": 85.0}
+    assert any("Only 1 holding" in x for x in out["warnings"])
 
 
 def test_nothing_qualifies():
-    out = builder.build({"ai": "want", "oil": "want", "cyber": "want"})
-    assert out["holdings"] == [] and out["verification"] is None
-    assert "No stocks" in out["warnings"][0]
+    out = builder.build({"oil": "want", "gold": "want"})
+    assert out["holdings"] == [] and out["verification"] is None and out["cash_pct"] == 0.0
+
+
+def test_prescreen_keeps_run_screen_shape_for_chain_publish():
+    p = builder.prescreen()
+    r = p["A1"]["ai"]
+    assert r["tier"] == H and r["controls"] == ["SPY", "TLT"] and r["n_obs"] == 498
+    assert r["groups"]["High"] == {"names": ["A1"], "beta_sum": 0.4, "se": 0.1, "p_one_sided": 0.001,
+                                   "upper_95": 0.56, "eligible": True}
+    assert p["G1"]["ai"]["groups"] == {}  # Not determined row without stats
 
 
 def test_cap_and_rescale_math():
-    w, cash = builder.cap_and_rescale({"a": 10, "b": 1, "c": 1, "d": 1, "e": 1, "f": 1, "g": 1, "h": 1})
-    assert w["a"] == pytest.approx(15) and cash == 0
-    assert all(w[t] == pytest.approx(85 / 7) for t in "bcdefgh")
+    weights, cash = builder.cap_and_rescale({"a": 10, "b": 1, "c": 1, "d": 1, "e": 1, "f": 1, "g": 1, "h": 1})
+    assert weights["a"] == pytest.approx(15) and cash == 0
+    assert all(weights[t] == pytest.approx(85 / 7) for t in "bcdefgh")
     assert builder.cap_and_rescale({}) == ({}, 100.0)
-    w, cash = builder.cap_and_rescale({"a": 1})
-    assert w == {"a": 15.0} and cash == pytest.approx(85)
     with pytest.raises(ValueError):
         builder.cap_and_rescale({"a": 0})
 
 
-def test_prescreen_is_cached(monkeypatch):
-    builder.prescreen()
-    calls = []
-    monkeypatch.setattr(screen, "_screen_one", lambda *a: calls.append(a))
-    builder.prescreen()
-    assert calls == []  # second run read the cache
-    monkeypatch.setattr(builder, "_cache_key", lambda themes, tickers: "different")
-    builder.prescreen()
-    assert len(calls) == len(TABLE) * len(THEMES)  # key changed -> the whole universe is re-screened
-
-
-@pytest.mark.parametrize("prefs, msg", [
-    ({}, "at least one"), ({"nope": "want"}, "No theme called"), ({"ai": "love"}, "'want' or 'avoid'"),
+@pytest.mark.parametrize("prefs, region, msg", [
+    ({}, "all", "at least one"), ({"gold": "dont_care"}, "all", "at least one"),
+    ({"nope": "want"}, "all", "No theme called"), ({"ai": "love"}, "all", "'want', 'avoid' or 'dont_care'"),
+    ({"ai": "want"}, "mars", "Region must be"),
 ])
-def test_bad_preferences(prefs, msg):
+def test_bad_preferences(prefs, region, msg):
     with pytest.raises(builder.BuildError, match=msg):
-        builder.build(prefs)
+        builder.build(prefs, region=region)
 
 
 def test_cli(capsys, tmp_path, monkeypatch):
     monkeypatch.setattr(builder, "ROOT", tmp_path)
-    assert builder.main(["--want", "ai", "--avoid", "oil"]) == 0
+    assert builder.main(["--want", "ai", "--avoid", "oil", "--dont-care", "gold"]) == 0
     out = capsys.readouterr().out
-    assert "Basket (7 holdings)" in out and "All goals met." in out and "[Oil: lower confidence]" in out
-    assert json.loads((tmp_path / "results" / "build_latest.json").read_text())["preferences"] == {"ai": "want", "oil": "avoid"}
-    assert builder.main(["--want", "ai,cyber", "--json"]) == 0
-    assert json.loads(capsys.readouterr().out)["cash_pct"] == 70
+    assert "Funnel:" in out and "Basket (6 holdings)" in out and "All goals met." in out
+    saved = json.loads((tmp_path / "results" / "build_latest.json").read_text())
+    assert saved["preferences"] == {"gold": "dont_care", "ai": "want", "oil": "avoid"}
+    assert builder.main(["--want", "gold", "--region", "intl", "--json"]) == 0
+    assert json.loads(capsys.readouterr().out)["cash_pct"] == 85.0
     assert builder.main(["--want", "ai", "--avoid", "ai"]) == 2
-    assert "both want and avoid" in capsys.readouterr().err
+    assert "listed twice" in capsys.readouterr().err
     assert builder.main([]) == 2
-    assert builder.main(["--want", "ai", "--avoid", "oil", "--refresh"]) == 0

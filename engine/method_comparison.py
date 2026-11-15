@@ -16,9 +16,9 @@ from pathlib import Path
 import pandas as pd
 
 from engine import regression_check as rc
-from engine.builder import universe
 from engine.price_check import check_theme
 from engine.theme_loader import load_all
+from engine.universe import load_universe
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -46,7 +46,7 @@ def nd_share(themes, r, univ):
 
 def main():
     base = load_all()
-    univ = universe(base)
+    univ = [r['ticker'] for r in load_universe()]
     r, dropped = rc.big_frame(base)
     out = {"dropped": dropped, "n_days": len(r)}
     for v in ("A", "A*", "B"):
