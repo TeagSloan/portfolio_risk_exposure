@@ -5,8 +5,8 @@ import datetime as dt
 import pytest
 import requests
 
-import data_fetcher
-from errors import DataFetchError
+from engine.mean_variance import data_fetcher
+from engine.mean_variance.errors import DataFetchError
 
 
 class FakeResponse:

@@ -22,7 +22,7 @@ from dataclasses import dataclass
 import numpy as np
 import pandas as pd
 
-from errors import InsufficientDataError, PortfolioInputError
+from .errors import InsufficientDataError, PortfolioInputError
 
 MONTHS_PER_YEAR = 12
 # Fewer shared months than this and the correlation estimates are too noisy.

@@ -39,28 +39,20 @@ window moves. The chart shows how the portfolio *did*; it is not a forecast.
 
 ## Install
 
-Needs Python 3.10 or newer. From this folder:
-
-```bash
-pip install -r requirements.txt
-```
-
-Set your FMP API key. Never put the key in the code or commit it to git:
-
-```bash
-export FMP_API_KEY="your_key_here"
-```
+Part of the Theme Funds project. Install the project's requirements from the repo root
+(see the main README). The FMP key is read from the project's `.env` file
+(`FMP_API_KEY=...`); never put the key in the code or commit it to git.
 
 ## Run from the command line
 
 ```bash
-python analyze_portfolio.py AAPL=0.4 MSFT=0.35 XOM=0.25 --output chart.html
+python -m engine.mean_variance.analyze_portfolio AAPL=0.4 MSFT=0.35 XOM=0.25 --output chart.html
 ```
 
 For a portfolio with a younger stock (ARM listed in 2023), using each stock's own history:
 
 ```bash
-python analyze_portfolio.py AAPL=0.5 ARM=0.5 --window max_available --output chart_arm.html
+python -m engine.mean_variance.analyze_portfolio AAPL=0.5 ARM=0.5 --window max_available --output chart_arm.html
 ```
 
 This prints the summary table and saves an interactive chart. Open the `.html` file in
@@ -78,7 +70,7 @@ one-line `Error: ...` message and exits with code 1.
 ## Use from the main app
 
 ```python
-from analyze_portfolio import analyze_portfolio
+from engine.mean_variance.analyze_portfolio import analyze_portfolio
 
 result = analyze_portfolio({"AAPL": 0.4, "MSFT": 0.35, "XOM": 0.25},
                            window_mode="shared")
@@ -103,14 +95,12 @@ a message that can be shown to the user as-is.
 | `optimizer.py` | Minimum-variance portfolio, efficient frontier, tangency portfolio |
 | `chart_builder.py` | Draws the chart and table |
 | `errors.py` | Error types with plain-language messages |
-| `tests/` | Automated tests; they use made-up prices and need no internet or key |
+| `tests/mean_variance/` (repo root) | Automated tests; they use made-up prices and need no internet or key |
 
-## Run the tests and the style checker
+## Run the tests
 
-```bash
-python -m pytest --cov=. --cov-report=term-missing
-```
+From the repo root:
 
 ```bash
-ruff check .
+python -m pytest tests/mean_variance
 ```

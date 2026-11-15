@@ -4,8 +4,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
-import return_calculator as rc
-from errors import InsufficientDataError, PortfolioInputError
+from engine.mean_variance import return_calculator as rc
+from engine.mean_variance.errors import InsufficientDataError, PortfolioInputError
 
 
 def test_monthly_returns_match_hand_calculation():

@@ -5,8 +5,8 @@ import pandas as pd
 import pytest
 from scipy.optimize import OptimizeResult
 
-import optimizer as opt
-from errors import OptimizationError
+from engine.mean_variance import optimizer as opt
+from engine.mean_variance.errors import OptimizationError
 
 TICKERS = ["A", "B", "C"]
 MU = pd.Series([0.08, 0.12, 0.15], index=TICKERS)

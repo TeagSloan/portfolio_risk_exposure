@@ -1,8 +1,7 @@
-"""Shared test helpers: made-up price data, so tests never need the internet."""
+"""Made-up price data, so the mean-variance tests never need the internet."""
 
 import numpy as np
 import pandas as pd
-import pytest
 
 
 def make_prices(tickers, years=10, drifts=None, vols=None, start_after=None, seed=0,
@@ -28,11 +27,3 @@ def make_prices(tickers, years=10, drifts=None, vols=None, start_after=None, see
     return pd.DataFrame(data)
 
 
-@pytest.fixture
-def prices_three():
-    return make_prices(["AAA", "BBB", "CCC"])
-
-
-@pytest.fixture
-def prices_with_ipo():
-    return make_prices(["AAA", "BBB", "NEW"], start_after={"NEW": "2023-06-01"}, seed=1)

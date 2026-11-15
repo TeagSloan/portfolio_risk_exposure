@@ -14,7 +14,7 @@ import numpy as np
 import pandas as pd
 from scipy.optimize import minimize
 
-from errors import OptimizationError
+from .errors import OptimizationError
 
 SOLVER_OPTIONS = {"ftol": 1e-12, "maxiter": 1000}
 # How far a solver answer may miss a constraint (e.g. weights summing to 1)

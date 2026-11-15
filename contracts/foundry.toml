@@ -1,0 +1,11 @@
+# Foundry project for the Theme Funds smart contracts (Monad testnet).
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+optimizer = true
+optimizer_runs = 200
+
+# Monad testnet: chain ID 10143. Deploy with --rpc-url monad
+[rpc_endpoints]
+monad = "https://testnet-rpc.monad.xyz"

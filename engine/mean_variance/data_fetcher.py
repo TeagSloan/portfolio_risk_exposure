@@ -16,7 +16,7 @@ import os
 import pandas as pd
 import requests
 
-from errors import DataFetchError
+from .errors import DataFetchError
 
 BASE_URL = "https://financialmodelingprep.com/stable"
 REQUEST_TIMEOUT_SECONDS = 30

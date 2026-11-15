@@ -6,10 +6,10 @@ import math
 import numpy as np
 import pandas as pd
 import pytest
-from conftest import make_prices
+from price_simulator import make_prices
 
-import analyze_portfolio as ap
-from errors import DataFetchError, InsufficientDataError, PortfolioInputError
+from engine.mean_variance import analyze_portfolio as ap
+from engine.mean_variance.errors import DataFetchError, InsufficientDataError, PortfolioInputError
 
 # ---- input checks ----
 

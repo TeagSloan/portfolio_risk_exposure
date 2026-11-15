@@ -1,0 +1,22 @@
+[project]
+name = "theme-funds"
+version = "0.1.0"
+description = "Theme Funds: theme-exposure screening, portfolio building and on-chain fund tokens (Monad Blitz Oregon)"
+requires-python = ">=3.10"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+# Any warning counts as a test failure.
+filterwarnings = ["error"]
+markers = ["live: calls real outside services (FMP); skipped unless RUN_LIVE=1"]
+
+[tool.ruff]
+line-length = 100
+extend-exclude = [".venv", "contracts"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["engine", "chain"]

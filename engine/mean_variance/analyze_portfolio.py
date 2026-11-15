@@ -3,7 +3,7 @@
 The main app will call analyze_portfolio(...) when someone builds a portfolio.
 It can also be run from the command line:
 
-    python analyze_portfolio.py AAPL=0.4 MSFT=0.35 XOM=0.25 --output chart.html
+    python -m engine.mean_variance.analyze_portfolio AAPL=0.4 MSFT=0.35 XOM=0.25 --output chart.html
 
 Steps:
 1. Check the tickers and weights the user entered.
@@ -23,12 +23,10 @@ import sys
 from dataclasses import dataclass
 
 import pandas as pd
+from dotenv import load_dotenv
 
-import chart_builder
-import data_fetcher
-import optimizer
-import return_calculator
-from errors import PortfolioInputError, PortfolioToolError
+from . import chart_builder, data_fetcher, optimizer, return_calculator
+from .errors import PortfolioInputError, PortfolioToolError
 
 LOOKBACK_YEARS = 10
 # Weights may add up to anywhere from 99% to 101%; they are then rescaled to 100%.
@@ -212,6 +210,7 @@ def format_summary(summary):
 
 
 def main(argv=None):
+    load_dotenv()  # picks up FMP_API_KEY from the project's .env file
     parser = argparse.ArgumentParser(description="Mean-variance analysis of a stock portfolio.")
     parser.add_argument("holdings", nargs="+", help="TICKER=WEIGHT pairs, e.g. AAPL=0.4 MSFT=0.6")
     parser.add_argument("--window", choices=return_calculator.WINDOW_MODES, default="shared",

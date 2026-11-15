@@ -4,7 +4,7 @@ import math
 
 import pandas as pd
 
-import chart_builder as cb
+from engine.mean_variance import chart_builder as cb
 
 
 def _inputs(with_tangency=True):

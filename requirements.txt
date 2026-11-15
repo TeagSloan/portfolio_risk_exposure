@@ -1,0 +1,16 @@
+pandas
+numpy
+statsmodels
+scipy
+pyyaml
+requests
+yfinance
+streamlit
+plotly
+web3
+python-dotenv
+anthropic
+# testing and style checking
+pytest
+pytest-cov
+ruff
