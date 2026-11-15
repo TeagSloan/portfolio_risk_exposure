@@ -3,147 +3,178 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Fantasy Funds League</title>
+<title>Fantasy Fund League</title>
 <meta name="description" content="Build your own ETF, stake testnet MON and race other players over real past prices. Testnet only, no real money.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&display=swap" rel="stylesheet">
 <style>
+  /* Same palette and type as the Theme Funds dashboard (demo/style.py). 8px spacing scale. */
   :root {
-    --bg: #f6f7f9; --card: #ffffff; --ink: #15171c; --muted: #5d6470; --line: #e3e6eb; --soft: #eef0f4;
-    --accent: #5b3df5; --accent-ink: #ffffff; --good: #0f8a4a; --bad: #c2362b; --warn-bg: #fff4d6; --warn-ink: #6b4b00;
-    --win-bg: #e7f8ee; --err-bg: #fde8e6; --err-ink: #7d1c14; --shadow: 0 1px 3px rgba(0,0,0,.08);
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --bg: #0f1115; --card: #181b21; --ink: #eceef2; --muted: #9aa2ae; --line: #2a2f38; --soft: #20242c;
-      --accent: #8b74ff; --accent-ink: #0f1115; --good: #3ccf7f; --bad: #ff6b5e; --warn-bg: #3a2f10; --warn-ink: #ffd98a;
-      --win-bg: #12301f; --err-bg: #3a1714; --err-ink: #ffb4ab; --shadow: none;
-    }
-  }
-  :root[data-theme="dark"] {
-    --bg: #0f1115; --card: #181b21; --ink: #eceef2; --muted: #9aa2ae; --line: #2a2f38; --soft: #20242c;
-    --accent: #8b74ff; --accent-ink: #0f1115; --good: #3ccf7f; --bad: #ff6b5e; --warn-bg: #3a2f10; --warn-ink: #ffd98a;
-    --win-bg: #12301f; --err-bg: #3a1714; --err-ink: #ffb4ab; --shadow: none;
+    --bg: #0B0A0B; --card: #171315; --raised: #211B1E; --line: #2E2529; --ink: #F5EEF1; --muted: #B8A9B0;
+    --rose: #C2456F; --rose-hover: #AD3A61; --rose-soft: #3A1A27; --blush: #F4A6BF; --blush-text: #F9C9D8;
+    --champagne: #E8C98F; --champagne-soft: #2E2516; --gain: #6FD6AE; --loss: #FF8A7A;
+    --serif: Fraunces, Georgia, serif; --sans: Manrope, system-ui, -apple-system, sans-serif;
+    --mono: ui-monospace, Menlo, monospace; --ease: cubic-bezier(.2, .8, .2, 1);
+    --s1: 8px; --s2: 16px; --s3: 24px; --s4: 32px; --s5: 40px; --s6: 48px;
+    color-scheme: dark;
   }
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-  .banner { background: var(--warn-bg); color: var(--warn-ink); text-align: center; padding: 10px 16px; font-weight: 700; font-size: 14px; }
-  main { max-width: 760px; margin: 0 auto; padding: 16px; }
-  h1 { font-size: 26px; margin: 8px 0 4px; }
-  h2 { font-size: 20px; margin: 0 0 10px; }
-  .sub { color: var(--muted); margin: 0 0 12px; }
-  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-  .btn { appearance: none; border: 0; border-radius: 12px; padding: 14px 18px; min-height: 52px; font-size: 17px; font-weight: 700;
-         background: var(--accent); color: var(--accent-ink); cursor: pointer; flex: 1 1 auto; }
-  .btn.secondary { background: var(--card); color: var(--ink); border: 1px solid var(--line); }
-  .btn.small { min-height: 44px; padding: 10px 12px; font-size: 15px; flex: 0 0 auto; }
-  .btn:disabled { opacity: .45; cursor: not-allowed; }
-  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px; margin: 12px 0; box-shadow: var(--shadow); }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); }
+  body { font: 16px/1.5 var(--sans); -webkit-font-smoothing: antialiased; }
+  .banner { border-bottom: 1px solid var(--line); color: var(--muted); text-align: center; padding: var(--s1) var(--s2);
+            font-size: 13px; letter-spacing: .02em; }
+  .banner b { color: var(--champagne); font-weight: 600; }
+  main { max-width: 1200px; margin: 0 auto; padding: var(--s4) var(--s2) var(--s6); }
+  header.top { display: flex; justify-content: space-between; align-items: flex-end; gap: var(--s3); flex-wrap: wrap;
+               padding-bottom: var(--s3); border-bottom: 1px solid var(--line); margin-bottom: var(--s3); }
+  h1 { font-family: var(--serif); font-weight: 500; font-size: 56px; line-height: 1; letter-spacing: -.02em; margin: 0; }
+  h2 { font-family: var(--serif); font-weight: 500; font-size: 26px; line-height: 1.15; margin: 0 0 var(--s2); }
+  .sub { color: var(--muted); margin: var(--s2) 0 0; max-width: 640px; font-size: 17px; }
+  .grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--s3); align-items: start; }
+  @media (max-width: 900px) { .grid { grid-template-columns: minmax(0, 1fr); } h1 { font-size: 40px; } }
+  .col { display: flex; flex-direction: column; gap: var(--s3); min-width: 0; }
+  .row { display: flex; gap: var(--s1); flex-wrap: wrap; align-items: center; }
+  .btn { appearance: none; border: 0; border-radius: 12px; padding: 12px var(--s2); min-height: 48px; font: 600 16px var(--sans);
+         background: var(--rose); color: #fff; cursor: pointer; flex: 1 1 auto; transition: background .15s var(--ease), transform .15s var(--ease); }
+  .btn:hover:not(:disabled) { background: var(--rose-hover); }
+  .btn:active:not(:disabled) { transform: scale(.98); }
+  .btn.secondary { background: var(--raised); color: var(--ink); border: 1px solid var(--line); }
+  .btn.secondary:hover:not(:disabled) { background: #2A2226; }
+  .btn.small { min-height: 44px; padding: var(--s1) 12px; font-size: 15px; flex: 0 0 auto; }
+  .btn:disabled { opacity: .4; cursor: not-allowed; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: var(--s3); }
   .status { font-size: 15px; color: var(--muted); }
-  .status strong { color: var(--ink); }
-  .clock { font-size: 34px; font-weight: 800; font-variant-numeric: tabular-nums; }
-  .theme { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--line); }
+  .status strong { color: var(--ink); font-weight: 600; }
+  .label { font-size: 13px; color: var(--muted); letter-spacing: .02em; }
+  .num, .board td, .pick input, .clock { font-variant-numeric: tabular-nums; }
+  .clock { font-family: var(--serif); font-weight: 500; font-size: 64px; line-height: 1; letter-spacing: -.02em; margin: var(--s1) 0; }
+  .theme { display: flex; align-items: center; gap: var(--s1); padding: var(--s1) 0; border-bottom: 1px solid var(--line); }
   .theme:last-child { border-bottom: 0; }
   .theme .tn { flex: 1; font-size: 15px; font-weight: 600; min-width: 0; }
-  .seg { display: flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; flex: 0 0 auto; }
-  .seg button { border: 0; background: var(--card); color: var(--ink); padding: 10px 10px; min-width: 58px; min-height: 44px; font-size: 14px; font-weight: 600; }
+  .seg { display: flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; flex: 0 0 auto; background: var(--raised); }
+  .seg button { border: 0; background: transparent; color: var(--muted); padding: var(--s1) 12px; min-width: 60px; min-height: 40px;
+                font: 600 14px var(--sans); cursor: pointer; transition: background .15s var(--ease), color .15s var(--ease); }
   .seg button + button { border-left: 1px solid var(--line); }
-  .seg button.on.want { background: var(--good); color: #fff; }
-  .seg button.on.avoid { background: var(--bad); color: #fff; }
-  .seg button.on.none { background: var(--soft); }
-  .pick { display: flex; gap: 8px; align-items: center; margin: 8px 0; }
-  .pick select { flex: 1; min-width: 0; font-size: 16px; padding: 12px 8px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); }
-  .pick input { width: 76px; font-size: 18px; padding: 11px 8px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); text-align: right; }
-  .pick .x { width: 44px; height: 44px; border-radius: 10px; border: 1px solid var(--line); background: var(--card); color: var(--ink); font-size: 20px; }
-  input.name { width: 100%; font-size: 18px; padding: 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); }
-  .check { font-size: 14px; margin: 8px 0; } .check .ok { color: var(--good); } .check .no { color: var(--bad); }
-  .entry { padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .seg button.on.want { background: var(--rose); color: #fff; }
+  .seg button.on.avoid { background: var(--champagne-soft); color: var(--champagne); }
+  .seg button.on.none { background: #2A2226; color: var(--ink); }
+  .pick { display: flex; gap: var(--s1); align-items: center; margin: var(--s1) 0; }
+  select, input { font-family: var(--sans); }
+  .pick select { flex: 1; min-width: 0; font-size: 15px; padding: 12px var(--s1); border-radius: 10px; border: 1px solid var(--line);
+                 background: var(--raised); color: var(--ink); }
+  .pick input { width: 72px; font-size: 17px; padding: 11px var(--s1); border-radius: 10px; border: 1px solid var(--line);
+                background: var(--raised); color: var(--ink); text-align: right; }
+  .pick span { color: var(--muted); }
+  .pick .x { width: 44px; height: 44px; border-radius: 10px; border: 1px solid var(--line); background: var(--raised); color: var(--muted);
+             font-size: 20px; cursor: pointer; }
+  input.name { width: 100%; font-size: 17px; padding: 12px var(--s2); border-radius: 12px; border: 1px solid var(--line);
+               background: var(--raised); color: var(--ink); }
+  input[type=checkbox] { accent-color: var(--rose); }
+  :focus-visible { outline: 2px solid var(--blush); outline-offset: 2px; }
+  .check { font-size: 14px; margin: var(--s2) 0; display: grid; gap: 4px; }
+  .check .ok { color: var(--gain); } .check .no { color: var(--muted); }
+  .entry { padding: 12px 0; border-bottom: 1px solid var(--line); }
   .entry:last-child { border-bottom: 0; }
-  .entry .en { font-weight: 700; font-size: 17px; }
+  .entry .en { font-weight: 700; font-size: 16px; }
   .entry .meta { font-size: 13px; color: var(--muted); }
-  .entry .stocks { font-size: 14px; margin-top: 2px; }
-  .tag { display: inline-block; font-size: 12px; padding: 2px 8px; border-radius: 999px; background: var(--soft); margin: 4px 4px 0 0; }
-  .you { color: var(--accent); font-weight: 700; }
-  .winner { background: var(--win-bg); border-color: var(--good); }
+  .entry .stocks { font-size: 14px; margin-top: 2px; color: var(--muted); }
+  .tag { display: inline-block; font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: 999px; background: var(--rose-soft);
+         color: var(--blush-text); margin: var(--s1) 4px 0 0; }
+  .you { color: var(--blush); font-weight: 700; }
+  .winner { border-color: var(--blush); }
   .board { width: 100%; border-collapse: collapse; }
-  .board td { padding: 10px 4px; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; vertical-align: top; }
-  .board td:last-child { text-align: right; font-weight: 800; font-size: 18px; white-space: nowrap; }
-  .bar { height: 8px; background: var(--soft); border-radius: 8px; overflow: hidden; margin-top: 4px; }
-  .bar i { display: block; height: 100%; background: var(--accent); }
-  .up { color: var(--good); } .down { color: var(--bad); }
-  .winbanner { font-size: 22px; font-weight: 800; text-align: center; }
-  .msg { padding: 12px; border-radius: 12px; margin: 10px 0; font-size: 15px; }
-  .msg.err { background: var(--err-bg); color: var(--err-ink); } .msg.ok { background: var(--win-bg); color: var(--good); }
-  #qr { display: flex; justify-content: center; margin: 10px 0; }
-  #qr img, #qr canvas { background: #fff; padding: 8px; border-radius: 8px; max-width: 220px; height: auto; }
+  .board td { padding: 12px 4px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .board td:last-child { text-align: right; font-family: var(--serif); font-weight: 500; font-size: 22px; white-space: nowrap; }
+  .bar { height: 6px; background: var(--raised); border-radius: 6px; overflow: hidden; margin-top: 6px; }
+  .bar i { display: block; height: 100%; background: var(--rose); border-radius: 6px; }
+  .up { color: var(--gain); } .down { color: var(--loss); }
+  .winbanner { font-family: var(--serif); font-weight: 500; font-size: 32px; text-align: center; color: var(--blush); }
+  .msg { padding: 12px var(--s2); border-radius: 12px; font-size: 15px; border: 1px solid var(--line); }
+  .msg.err { background: #2B1513; border-color: #7A3530; color: #FFB8AC; }
+  .msg.ok { background: #13261E; border-color: #2B5A46; color: #A6EBCF; }
+  #qr { display: flex; justify-content: center; margin: var(--s2) 0; }
+  #qr img, #qr canvas { background: var(--ink); padding: var(--s1); border-radius: 12px; max-width: 200px; height: auto; }
   .small { font-size: 13px; color: var(--muted); word-break: break-all; }
+  .mono { font-family: var(--mono); font-size: 13px; }
   .hidden { display: none !important; }
 </style>
 </head>
 <body>
-<div class="banner">Fantasy Funds League: testnet MON only, no real money.</div>
+<div class="banner"><b>Testnet only.</b> Stakes are Monad testnet MON, with no real money involved.</div>
 <main>
-  <h1>Fantasy Funds League</h1>
-  <p class="sub">Build your own ETF from our stock pool, stake testnet MON and race everyone else over a random window of
-    real past prices. A future block picks the window after entries close, so nobody can know it in advance.
-    Best return takes the whole pot.</p>
-
-  <div class="card">
-    <div class="row">
-      <button id="connect" class="btn">Connect MetaMask</button>
-      <button id="addnet" class="btn secondary">Add Monad Testnet</button>
+  <header class="top">
+    <div>
+      <h1>Fantasy Fund League</h1>
+      <p class="sub">Build your own fund, stake testnet MON and race everyone else over a random month of real past
+        prices. A future block picks the month after entries close, so nobody can know it in advance. Best return
+        takes the pot.</p>
     </div>
-    <a id="openmm" class="btn secondary hidden" style="display:block;text-align:center;text-decoration:none;margin-top:10px">Open in MetaMask app</a>
-    <p id="wallet" class="status" style="margin:10px 0 0">Read-only mode: connect MetaMask to enter.</p>
-  </div>
+  </header>
 
-  <div id="msg"></div>
+  <div class="grid">
+    <div class="col">
+      <div class="card">
+        <div class="label" id="phase">Loading…</div>
+        <div class="clock" id="clock"></div>
+        <div class="status" id="potline"></div>
+      </div>
 
-  <div class="card">
-    <div class="status" id="phase">Loading…</div>
-    <div class="clock" id="clock"></div>
-    <div class="status" id="potline"></div>
-  </div>
+      <div id="winbox" class="card winner hidden">
+        <div class="winbanner" id="winbanner"></div>
+        <p class="status" id="winline" style="text-align:center"></p>
+        <button id="claim" class="btn hidden">Claim</button>
+      </div>
 
-  <div id="winbox" class="card winner hidden">
-    <div class="winbanner" id="winbanner"></div>
-    <p class="status" id="winline" style="text-align:center"></p>
-    <button id="claim" class="btn hidden">Claim</button>
-  </div>
+      <div id="race" class="card hidden">
+        <h2>Live leaderboard</h2>
+        <div class="status" id="raceday"></div>
+        <table class="board" id="board"></table>
+      </div>
 
-  <div id="race" class="card hidden">
-    <h2>Live leaderboard</h2>
-    <div class="status" id="raceday"></div>
-    <table class="board" id="board"></table>
-  </div>
-
-  <div id="build" class="card hidden">
-    <h2>Build your ETF</h2>
-    <p class="status">1. Choose what you want and what to avoid. We suggest stocks from the pool.</p>
-    <div id="themes"></div>
-    <label class="theme" style="border:0"><span class="tn">Well-known names only (reference or ≥ $20B)</span>
-      <input id="wellknown" type="checkbox" checked style="width:28px;height:28px"></label>
-    <p class="status" style="margin-top:14px">2. Adjust it: 3 to 8 stocks, each at least 5%, adding up to 100%.</p>
-    <div id="picks"></div>
-    <div class="row">
-      <button id="addpick" class="btn secondary small">+ Add stock</button>
-      <button id="equal" class="btn secondary small">Equal weights</button>
+      <div class="card">
+        <h2 id="entrieshead">Entries</h2>
+        <div id="entries"><p class="status">No entries yet.</p></div>
+      </div>
     </div>
-    <div class="check" id="check"></div>
-    <p class="status">3. Name it and enter.</p>
-    <input id="etfname" class="name" maxlength="32" placeholder="e.g. AI Rocket">
-    <button id="enter" class="btn" style="width:100%;margin-top:10px">Enter</button>
-  </div>
 
-  <div class="card">
-    <h2 id="entrieshead">Entries</h2>
-    <div id="entries"><p class="status">No entries yet.</p></div>
-  </div>
+    <div class="col">
+      <div class="card">
+        <div class="row">
+          <button id="connect" class="btn">Connect MetaMask</button>
+          <button id="addnet" class="btn secondary">Add Monad Testnet</button>
+        </div>
+        <a id="openmm" class="btn secondary hidden" style="display:block;text-align:center;text-decoration:none;margin-top:8px">Open in MetaMask app</a>
+        <p id="wallet" class="status" style="margin:16px 0 0">Read-only mode: connect MetaMask to enter.</p>
+      </div>
 
-  <div class="card" style="text-align:center">
-    <div class="status">Scan to join from your phone</div>
-    <div id="qr"></div>
-    <div class="small" id="link"></div>
+      <div id="msg"></div>
+
+      <div id="build" class="card hidden">
+        <h2>Build your fund</h2>
+        <p class="status">Choose what you want and what to avoid, and we suggest stocks from the pool.</p>
+        <div id="themes"></div>
+        <label class="theme" style="border:0"><span class="tn">Well-known names only (reference or ≥ $20B)</span>
+          <input id="wellknown" type="checkbox" checked style="width:24px;height:24px"></label>
+        <p class="status" style="margin-top:16px">Adjust it: 3 to 8 stocks, each at least 5%, adding up to 100%.</p>
+        <div id="picks"></div>
+        <div class="row">
+          <button id="addpick" class="btn secondary small">+ Add stock</button>
+          <button id="equal" class="btn secondary small">Equal weights</button>
+        </div>
+        <div class="check" id="check"></div>
+        <input id="etfname" class="name" maxlength="32" placeholder="Name your fund, e.g. AI Rocket">
+        <button id="enter" class="btn" style="width:100%;margin-top:16px">Enter</button>
+      </div>
+
+      <div class="card" style="text-align:center">
+        <div class="label">Scan to join from your phone</div>
+        <div id="qr"></div>
+        <div class="small" id="link"></div>
+      </div>
+      <p class="small">Network: <span id="netname"></span> · League contract: <span id="addr" class="mono"></span></p>
+    </div>
   </div>
-  <p class="small">Network: <span id="netname"></span> · League contract: <span id="addr"></span></p>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
