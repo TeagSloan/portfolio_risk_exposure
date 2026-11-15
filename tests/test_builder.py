@@ -6,13 +6,14 @@ import pandas as pd
 import pytest
 
 from engine import builder, screen
+from engine.rating import final_rating
 
 H, M, L, LL, ND = "High", "Moderate", "Limited", "Limited (lower confidence)", "Not determined"
 B = 1e9
 
 THEMES = {k: {"key": k, "name": n, "references": {"High": [], "Moderate": []}, "direct_classification": [],
-              "allowed_industries": []}
-          for k, n in (("ai", "AI"), ("oil", "Oil"), ("gold", "Gold"))}
+              "allowed_industries": inds}
+          for k, n, inds in (("ai", "AI", []), ("oil", "Oil", ["Oil"]), ("gold", "Gold", ["Gold", "Silver"]))}
 
 # ticker: (country, market cap $bn, industry, {theme: (tier, business_linked, t-stat, reference)})
 _ = (L, False, 0.0, False)
@@ -45,6 +46,7 @@ def table():
     for t, (c, cap, ind, d) in ROWS.items():
         for k, (tier, bl, ts, ref) in d.items():
             rows.append({"ticker": t, "theme": k, "tier": tier, "business_linked": bl, "country": c,
+                         "final_rating": final_rating(bl, None, tier, ref),
                          "name": f"{t} Inc", "industry": ind, "market_cap": cap * B, "strength": ts / 10,
                          "strength_t": ts, "reference": ref, "method": "regression", "sentence": "x", "n_obs": 498,
                          "r_squared": 0.5, "p_threshold": 0.01, "controls_used": "SPY,TLT",
@@ -62,6 +64,8 @@ def fakes(monkeypatch):
     monkeypatch.setattr(screen, "_screen_one", lambda t, th, s, e: {
         "ticker": t, "theme": th["name"], "tier": ROWS[t][3][th["key"]][0], "method": "fake", "sentence": "x"})
     monkeypatch.setattr(screen, "business_linked", lambda t, ind, th: ROWS[t][3][th["key"]][1])
+    monkeypatch.setattr(screen, "revenue_for", lambda t, k: None)
+    monkeypatch.setattr(screen, "_is_listed", lambda t, th: ROWS[t][3][th["key"]][3])
 
 
 def tickers(out):
@@ -89,7 +93,8 @@ def test_want_ai_avoid_oil_quality_ranking_and_industry_cap(monkeypatch):
     assert "A5" not in t  # A1, A3, A4 already fill the 3 "Semis" slots
     assert set(t) == {"A1", "A2", "A3", "A4", "A6"}
     assert all(h["picked_for"] == "AI" for h in out["holdings"] if h["ticker"] != "CASH")
-    assert by(out)["A3"]["avoid_tiers"] == {"Oil": ND}
+    assert by(out)["A3"]["avoid_tiers"] == {"Oil": "Not exposed"}
+    assert by(out)["A3"]["regression_tiers"]["Oil"] == ND
     assert any("Industry limit" in w for w in out["warnings"])
     assert out["verification"]["all_pass"]
 
@@ -155,6 +160,7 @@ def test_diagnosis_for_an_avoid_rule(monkeypatch):
     rows = {"X1": ("US", 50, "Oil", {"ai": _, "oil": (ND, True, 0.0, False), "gold": (H, True, 3.0, False)})}
     monkeypatch.setattr(builder, "load_table", lambda: pd.DataFrame(
         [{"ticker": "X1", "theme": k, "tier": v[0], "business_linked": v[1], "country": "US", "name": "X1",
+          "final_rating": final_rating(v[1], None, v[0], v[3]),
           "industry": "Oil", "market_cap": 50e9, "strength": 0.1, "strength_t": v[2], "reference": v[3]}
          for k, v in rows["X1"][3].items()]))
     out = builder.build({"gold": "want", "oil": "avoid"})
@@ -228,3 +234,21 @@ def test_floor_is_lowered_when_a_theme_has_too_few_well_known_names():
     out = builder.build({"ai": "want", "oil": "avoid"})  # 15 slots, only 6 AI stocks at >= $20B
     assert "A7" in tickers(out)
     assert any(w.startswith("AI: only 6 stock(s) at ≥ $20B") for w in out["warnings"])
+
+
+def test_avoid_excludes_business_only_and_market_driven():
+    out = builder.build({"oil": "avoid"})
+    t = tickers(out)
+    assert "O1" not in t  # an oil business whose regression can't tell: Business only -> excluded (safety net)
+    assert "A9" not in t  # moves with oil, not an oil business: Market-driven -> excluded
+    assert "A3" in t  # not exposed to oil at all
+
+
+def test_own_theme_industry_does_not_count_toward_the_limit(monkeypatch):
+    extra = {f"G{i}": ("US", 30 + i, "Gold", {"ai": _, "oil": _, "gold": (H, True, 2.0 + i / 10, False)}) for i in range(4, 9)}
+    for t, row in extra.items():
+        monkeypatch.setitem(ROWS, t, row)
+    monkeypatch.setattr(builder, "TOP_N", 6)
+    out = builder.build({"gold": "want"})
+    gold_industry = [h for h in out["holdings"] if h.get("industry") == "Gold"]
+    assert len(gold_industry) > 3  # gold miners in a Gold pick aren't limited to 3

@@ -186,10 +186,12 @@ const byTicker = () => Object.fromEntries(pool.stocks.map((s) => [s.ticker, s]))
 
 // ───────────── builder (same rules as the engine's Way 2 builder, applied to the pool) ─────────────
 
-// Mirrors engine/builder.py on the pool: avoids first; several wants are combined (slots split across them);
+// Mirrors engine/builder.py on the pool, using each stock's FINAL rating (business link + revenue + regression):
+// want = rated High/Moderate; avoid = only "Not exposed" passes; several wants are combined (slots split);
 // well-known names only (reference or market cap >= $20B, lowered $20B -> $10B -> $2B per theme if needed);
 // ranking = references first, then 50% t-stat percentile + 50% market-cap percentile, High before Moderate;
-// picks alternate across wanted themes, at most 3 per industry; leftover slots go to the other wanted themes.
+// picks alternate across wanted themes, at most 3 per industry (a theme's own industries don't count);
+// leftover slots go to the other wanted themes.
 let wellKnown = true;
 function pctRank(values) { // pandas rank(pct=True) with average ties
   const idx = values.map((v, i) => [v, i]).sort((a, b) => a[0] - b[0]), out = new Array(values.length);
@@ -212,19 +214,19 @@ function suggest(n = pool.rules.default_picks) {
   const avoid = pool.themes.map((t) => t.key).filter((k) => prefs[k] === "avoid");
   const name = Object.fromEntries(pool.themes.map((t) => [t.key, t.name]));
   const all = [...pool.stocks].sort((a, b) => (a.ticker < b.ticker ? -1 : 1));
-  const base = all.filter((s) => avoid.every((k) => !["High", "Moderate"].includes(s.themes[k].tier) && !s.themes[k].linked));
+  const base = all.filter((s) => avoid.every((k) => s.themes[k].rating === "Not exposed"));
   const rank = (cands, k) => {
     const t = pctRank(cands.map((s) => s.themes[k].t ?? -99)), m = pctRank(cands.map((s) => s.market_cap || 0));
     return cands.map((s, i) => ({ s, sc: 0.5 * t[i] + 0.5 * m[i] })).sort((a, b) =>
       (b.s.themes[k].ref - a.s.themes[k].ref) || (b.sc - a.sc) ||
-      ((a.s.themes[k].tier !== "High") - (b.s.themes[k].tier !== "High")) || (a.s.ticker < b.s.ticker ? -1 : 1)).map((x) => x.s.ticker);
+      ((a.s.themes[k].rating !== "High") - (b.s.themes[k].rating !== "High")) || (a.s.ticker < b.s.ticker ? -1 : 1)).map((x) => x.s.ticker);
   };
   const lists = {}, slots = {};
   if (want.length) {
     const baseN = Math.floor(n / want.length), extra = n % want.length;
     want.forEach((k, i) => {
       slots[k] = baseN + (i < extra ? 1 : 0);
-      const fit = base.filter((s) => ["High", "Moderate"].includes(s.themes[k].tier) && s.themes[k].linked);
+      const fit = base.filter((s) => ["High", "Moderate"].includes(s.themes[k].rating));
       let chosen = fit, used = floors[0];
       for (const f of floors) {
         used = f;
@@ -244,16 +246,18 @@ function suggest(n = pool.rules.default_picks) {
   const order = Object.keys(lists);
   const pos = Object.fromEntries(order.map((k) => [k, 0])), taken = Object.fromEntries(order.map((k) => [k, 0]));
   const pickedFor = new Map(), perInd = {};
+  const own = Object.fromEntries(pool.themes.map((t) => [t.key, new Set(t.industries || [])]));
+  const counts = (x, k) => !(own[k] && own[k].has(ind[x]));  // a theme's own industries don't count
   const next = (k) => {
     while (pos[k] < lists[k].length) {
       const x = lists[k][pos[k]++];
       if (pickedFor.has(x)) continue;
-      if ((perInd[ind[x]] || 0) >= R.max_per_industry) continue;
+      if (counts(x, k) && (perInd[ind[x]] || 0) >= R.max_per_industry) continue;
       return x;
     }
     return null;
   };
-  const take = (k, x) => { pickedFor.set(x, k); taken[k]++; perInd[ind[x]] = (perInd[ind[x]] || 0) + 1; };
+  const take = (k, x) => { pickedFor.set(x, k); taken[k]++; if (counts(x, k)) perInd[ind[x]] = (perInd[ind[x]] || 0) + 1; };
   let progress = true;
   while (progress && pickedFor.size < n) {
     progress = false;
@@ -336,7 +340,7 @@ function entryThemes(tickers, weights) {
   const s = byTicker(), out = [];
   for (const t of pool.themes) {
     let w = 0;
-    tickers.forEach((tk, i) => { const r = s[tk] && s[tk].themes[t.key]; if (r && r.linked && ["High", "Moderate"].includes(r.tier)) w += weights[i]; });
+    tickers.forEach((tk, i) => { const r = s[tk] && s[tk].themes[t.key]; if (r && ["High", "Moderate"].includes(r.rating)) w += weights[i]; });
     if (w > 0) out.push([t.name, w / 100]);
   }
   return out.sort((a, b) => b[1] - a[1]).slice(0, 3);

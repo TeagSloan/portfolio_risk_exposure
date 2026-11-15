@@ -101,7 +101,7 @@
     "RUN",
     "NEE",
     "SEDG",
-    "BEP"
+    "ENPH"
    ],
    "picked_for": [
     "Clean energy (solar & renewables)",
@@ -115,9 +115,11 @@
     "RUN",
     "NEE",
     "SEDG",
+    "ENPH",
     "BEP"
    ],
    "ranked_for": [
+    "Clean energy (solar & renewables)",
     "Clean energy (solar & renewables)",
     "Clean energy (solar & renewables)",
     "Clean energy (solar & renewables)",
@@ -184,9 +186,11 @@
     "PANW",
     "CRWD",
     "FTNT",
-    "CSCO"
+    "CSCO",
+    "CHKP"
    ],
    "picked_for": [
+    "Cybersecurity",
     "Cybersecurity",
     "Cybersecurity",
     "Cybersecurity",
@@ -196,19 +200,26 @@
     "PANW",
     "CRWD",
     "FTNT",
-    "CSCO"
+    "CSCO",
+    "CHKP",
+    "MSFT",
+    "ORCL"
    ],
    "ranked_for": [
+    "Cybersecurity",
+    "Cybersecurity",
+    "Cybersecurity",
     "Cybersecurity",
     "Cybersecurity",
     "Cybersecurity",
     "Cybersecurity"
    ],
    "weights_bps": [
-    2500,
-    2500,
-    2500,
-    2500
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
    ]
   },
   {
@@ -219,9 +230,13 @@
    "picks": [
     "RTX",
     "GE",
-    "LMT"
+    "LMT",
+    "GD",
+    "BA"
    ],
    "picked_for": [
+    "Aerospace & defense",
+    "Aerospace & defense",
     "Aerospace & defense",
     "Aerospace & defense",
     "Aerospace & defense"
@@ -229,17 +244,25 @@
    "ranked": [
     "RTX",
     "GE",
-    "LMT"
+    "LMT",
+    "GD",
+    "BA",
+    "NOC"
    ],
    "ranked_for": [
+    "Aerospace & defense",
+    "Aerospace & defense",
+    "Aerospace & defense",
     "Aerospace & defense",
     "Aerospace & defense",
     "Aerospace & defense"
    ],
    "weights_bps": [
-    3334,
-    3333,
-    3333
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
    ]
   },
   {
@@ -250,9 +273,13 @@
    "picks": [
     "NEM",
     "PAAS",
-    "CDE"
+    "CDE",
+    "SSRM",
+    "AEM"
    ],
    "picked_for": [
+    "Gold & precious metals",
+    "Gold & precious metals",
     "Gold & precious metals",
     "Gold & precious metals",
     "Gold & precious metals"
@@ -260,17 +287,25 @@
    "ranked": [
     "NEM",
     "PAAS",
-    "CDE"
+    "CDE",
+    "SSRM",
+    "AEM",
+    "WPM"
    ],
    "ranked_for": [
+    "Gold & precious metals",
+    "Gold & precious metals",
+    "Gold & precious metals",
     "Gold & precious metals",
     "Gold & precious metals",
     "Gold & precious metals"
    ],
    "weights_bps": [
-    3334,
-    3333,
-    3333
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
    ]
   },
   {
@@ -282,9 +317,11 @@
     "MRK",
     "LLY",
     "PFE",
-    "GEHC"
+    "GEHC",
+    "ABBV"
    ],
    "picked_for": [
+    "Healthcare",
     "Healthcare",
     "Healthcare",
     "Healthcare",
@@ -294,19 +331,24 @@
     "MRK",
     "LLY",
     "PFE",
-    "GEHC"
+    "GEHC",
+    "ABBV",
+    "AMGN"
    ],
    "ranked_for": [
+    "Healthcare",
+    "Healthcare",
     "Healthcare",
     "Healthcare",
     "Healthcare",
     "Healthcare"
    ],
    "weights_bps": [
-    2500,
-    2500,
-    2500,
-    2500
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
    ]
   },
   {
@@ -362,7 +404,7 @@
     "PR",
     "COP",
     "EOG",
-    "SHEL"
+    "FANG"
    ],
    "picked_for": [
     "Oil",
@@ -376,9 +418,11 @@
     "PR",
     "COP",
     "EOG",
+    "FANG",
     "SHEL"
    ],
    "ranked_for": [
+    "Oil",
     "Oil",
     "Oil",
     "Oil",
@@ -494,7 +538,7 @@
     "RUN",
     "NEE",
     "SEDG",
-    "BEP"
+    "ENPH"
    ],
    "picked_for": [
     "Clean energy (solar & renewables)",
@@ -508,9 +552,11 @@
     "RUN",
     "NEE",
     "SEDG",
+    "ENPH",
     "BEP"
    ],
    "ranked_for": [
+    "Clean energy (solar & renewables)",
     "Clean energy (solar & renewables)",
     "Clean energy (solar & renewables)",
     "Clean energy (solar & renewables)",
@@ -579,9 +625,11 @@
     "PANW",
     "CRWD",
     "FTNT",
-    "CSCO"
+    "CSCO",
+    "CHKP"
    ],
    "picked_for": [
+    "Cybersecurity",
     "Cybersecurity",
     "Cybersecurity",
     "Cybersecurity",
@@ -591,19 +639,26 @@
     "PANW",
     "CRWD",
     "FTNT",
-    "CSCO"
+    "CSCO",
+    "CHKP",
+    "MSFT",
+    "ORCL"
    ],
    "ranked_for": [
+    "Cybersecurity",
+    "Cybersecurity",
+    "Cybersecurity",
     "Cybersecurity",
     "Cybersecurity",
     "Cybersecurity",
     "Cybersecurity"
    ],
    "weights_bps": [
-    2500,
-    2500,
-    2500,
-    2500
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
    ]
   },
   {
@@ -615,9 +670,13 @@
    "picks": [
     "RTX",
     "GE",
-    "LMT"
+    "LMT",
+    "GD",
+    "BA"
    ],
    "picked_for": [
+    "Aerospace & defense",
+    "Aerospace & defense",
     "Aerospace & defense",
     "Aerospace & defense",
     "Aerospace & defense"
@@ -625,17 +684,25 @@
    "ranked": [
     "RTX",
     "GE",
-    "LMT"
+    "LMT",
+    "GD",
+    "BA",
+    "NOC"
    ],
    "ranked_for": [
+    "Aerospace & defense",
+    "Aerospace & defense",
+    "Aerospace & defense",
     "Aerospace & defense",
     "Aerospace & defense",
     "Aerospace & defense"
    ],
    "weights_bps": [
-    3334,
-    3333,
-    3333
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
    ]
   },
   {
@@ -647,9 +714,13 @@
    "picks": [
     "NEM",
     "PAAS",
-    "CDE"
+    "CDE",
+    "SSRM",
+    "AEM"
    ],
    "picked_for": [
+    "Gold & precious metals",
+    "Gold & precious metals",
     "Gold & precious metals",
     "Gold & precious metals",
     "Gold & precious metals"
@@ -657,17 +728,25 @@
    "ranked": [
     "NEM",
     "PAAS",
-    "CDE"
+    "CDE",
+    "SSRM",
+    "AEM",
+    "WPM"
    ],
    "ranked_for": [
+    "Gold & precious metals",
+    "Gold & precious metals",
+    "Gold & precious metals",
     "Gold & precious metals",
     "Gold & precious metals",
     "Gold & precious metals"
    ],
    "weights_bps": [
-    3334,
-    3333,
-    3333
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
    ]
   },
   {
@@ -680,9 +759,11 @@
     "MRK",
     "LLY",
     "PFE",
-    "GEHC"
+    "GEHC",
+    "ABBV"
    ],
    "picked_for": [
+    "Healthcare",
     "Healthcare",
     "Healthcare",
     "Healthcare",
@@ -692,19 +773,24 @@
     "MRK",
     "LLY",
     "PFE",
-    "GEHC"
+    "GEHC",
+    "ABBV",
+    "AMGN"
    ],
    "ranked_for": [
+    "Healthcare",
+    "Healthcare",
     "Healthcare",
     "Healthcare",
     "Healthcare",
     "Healthcare"
    ],
    "weights_bps": [
-    2500,
-    2500,
-    2500,
-    2500
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
    ]
   },
   {
@@ -799,7 +885,7 @@
     "RUN",
     "NEE",
     "SEDG",
-    "BEP"
+    "ENPH"
    ],
    "picked_for": [
     "Clean energy (solar & renewables)",
@@ -813,9 +899,11 @@
     "RUN",
     "NEE",
     "SEDG",
+    "ENPH",
     "BEP"
    ],
    "ranked_for": [
+    "Clean energy (solar & renewables)",
     "Clean energy (solar & renewables)",
     "Clean energy (solar & renewables)",
     "Clean energy (solar & renewables)",
@@ -895,9 +983,13 @@
    "picks": [
     "RTX",
     "GE",
-    "LMT"
+    "LMT",
+    "GD",
+    "BA"
    ],
    "picked_for": [
+    "Aerospace & defense",
+    "Aerospace & defense",
     "Aerospace & defense",
     "Aerospace & defense",
     "Aerospace & defense"
@@ -905,17 +997,25 @@
    "ranked": [
     "RTX",
     "GE",
-    "LMT"
+    "LMT",
+    "GD",
+    "BA",
+    "NOC"
    ],
    "ranked_for": [
+    "Aerospace & defense",
+    "Aerospace & defense",
+    "Aerospace & defense",
     "Aerospace & defense",
     "Aerospace & defense",
     "Aerospace & defense"
    ],
    "weights_bps": [
-    3334,
-    3333,
-    3333
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
    ]
   },
   {
@@ -927,9 +1027,13 @@
    "picks": [
     "NEM",
     "PAAS",
-    "CDE"
+    "CDE",
+    "SSRM",
+    "AEM"
    ],
    "picked_for": [
+    "Gold & precious metals",
+    "Gold & precious metals",
     "Gold & precious metals",
     "Gold & precious metals",
     "Gold & precious metals"
@@ -937,17 +1041,25 @@
    "ranked": [
     "NEM",
     "PAAS",
-    "CDE"
+    "CDE",
+    "SSRM",
+    "AEM",
+    "WPM"
    ],
    "ranked_for": [
+    "Gold & precious metals",
+    "Gold & precious metals",
+    "Gold & precious metals",
     "Gold & precious metals",
     "Gold & precious metals",
     "Gold & precious metals"
    ],
    "weights_bps": [
-    3334,
-    3333,
-    3333
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
    ]
   },
   {
@@ -960,9 +1072,11 @@
     "MRK",
     "LLY",
     "PFE",
-    "GEHC"
+    "GEHC",
+    "ABBV"
    ],
    "picked_for": [
+    "Healthcare",
     "Healthcare",
     "Healthcare",
     "Healthcare",
@@ -972,19 +1086,24 @@
     "MRK",
     "LLY",
     "PFE",
-    "GEHC"
+    "GEHC",
+    "ABBV",
+    "AMGN"
    ],
    "ranked_for": [
+    "Healthcare",
+    "Healthcare",
     "Healthcare",
     "Healthcare",
     "Healthcare",
     "Healthcare"
    ],
    "weights_bps": [
-    2500,
-    2500,
-    2500,
-    2500
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
    ]
   },
   {
@@ -1237,9 +1356,9 @@
     "NVDA",
     "MSFT",
     "VST",
-    "AVGO",
     "PANW",
     "CRWD",
+    "FTNT",
     "CSCO"
    ],
    "ranked_for": [
@@ -1247,7 +1366,7 @@
     "AI",
     "AI",
     "AI",
-    "AI",
+    "Cybersecurity",
     "Cybersecurity",
     "Cybersecurity",
     "Cybersecurity"
@@ -1285,17 +1404,17 @@
     "NVDA",
     "MSFT",
     "VST",
-    "AVGO",
     "RTX",
     "GE",
-    "LMT"
+    "LMT",
+    "GD"
    ],
    "ranked_for": [
     "AI",
     "AI",
     "AI",
     "AI",
-    "AI",
+    "Aerospace & defense",
     "Aerospace & defense",
     "Aerospace & defense",
     "Aerospace & defense"
@@ -1333,17 +1452,17 @@
     "NVDA",
     "MSFT",
     "VST",
-    "AVGO",
     "NEM",
     "PAAS",
-    "CDE"
+    "CDE",
+    "SSRM"
    ],
    "ranked_for": [
     "AI",
     "AI",
     "AI",
     "AI",
-    "AI",
+    "Gold & precious metals",
     "Gold & precious metals",
     "Gold & precious metals",
     "Gold & precious metals"
@@ -1669,17 +1788,17 @@
     "CFG",
     "RF",
     "WFC",
-    "MTB",
     "RTX",
     "GE",
-    "LMT"
+    "LMT",
+    "GD"
    ],
    "ranked_for": [
     "Bank lending / net interest income",
     "Bank lending / net interest income",
     "Bank lending / net interest income",
     "Bank lending / net interest income",
-    "Bank lending / net interest income",
+    "Aerospace & defense",
     "Aerospace & defense",
     "Aerospace & defense",
     "Aerospace & defense"
@@ -1717,17 +1836,17 @@
     "CFG",
     "RF",
     "WFC",
-    "MTB",
     "NEM",
     "PAAS",
-    "CDE"
+    "CDE",
+    "SSRM"
    ],
    "ranked_for": [
     "Bank lending / net interest income",
     "Bank lending / net interest income",
     "Bank lending / net interest income",
     "Bank lending / net interest income",
-    "Bank lending / net interest income",
+    "Gold & precious metals",
     "Gold & precious metals",
     "Gold & precious metals",
     "Gold & precious metals"
@@ -2007,13 +2126,15 @@
     "SEDG",
     "RTX",
     "GE",
-    "LMT"
+    "LMT",
+    "GD"
    ],
    "ranked_for": [
     "Clean energy (solar & renewables)",
     "Clean energy (solar & renewables)",
     "Clean energy (solar & renewables)",
     "Clean energy (solar & renewables)",
+    "Aerospace & defense",
     "Aerospace & defense",
     "Aerospace & defense",
     "Aerospace & defense"
@@ -2053,13 +2174,15 @@
     "SEDG",
     "NEM",
     "PAAS",
-    "CDE"
+    "CDE",
+    "SSRM"
    ],
    "ranked_for": [
     "Clean energy (solar & renewables)",
     "Clean energy (solar & renewables)",
     "Clean energy (solar & renewables)",
     "Clean energy (solar & renewables)",
+    "Gold & precious metals",
     "Gold & precious metals",
     "Gold & precious metals",
     "Gold & precious metals"
@@ -2289,17 +2412,17 @@
     "HD",
     "TJX",
     "NKE",
-    "RCL",
     "RTX",
     "GE",
-    "LMT"
+    "LMT",
+    "GD"
    ],
    "ranked_for": [
     "Consumer discretionary",
     "Consumer discretionary",
     "Consumer discretionary",
     "Consumer discretionary",
-    "Consumer discretionary",
+    "Aerospace & defense",
     "Aerospace & defense",
     "Aerospace & defense",
     "Aerospace & defense"
@@ -2337,17 +2460,17 @@
     "HD",
     "TJX",
     "NKE",
-    "RCL",
     "NEM",
     "PAAS",
-    "CDE"
+    "CDE",
+    "SSRM"
    ],
    "ranked_for": [
     "Consumer discretionary",
     "Consumer discretionary",
     "Consumer discretionary",
     "Consumer discretionary",
-    "Consumer discretionary",
+    "Gold & precious metals",
     "Gold & precious metals",
     "Gold & precious metals",
     "Gold & precious metals"
@@ -2531,13 +2654,15 @@
     "CSCO",
     "RTX",
     "GE",
-    "LMT"
+    "LMT",
+    "GD"
    ],
    "ranked_for": [
     "Cybersecurity",
     "Cybersecurity",
     "Cybersecurity",
     "Cybersecurity",
+    "Aerospace & defense",
     "Aerospace & defense",
     "Aerospace & defense",
     "Aerospace & defense"
@@ -2577,13 +2702,15 @@
     "CSCO",
     "NEM",
     "PAAS",
-    "CDE"
+    "CDE",
+    "SSRM"
    ],
    "ranked_for": [
     "Cybersecurity",
     "Cybersecurity",
     "Cybersecurity",
     "Cybersecurity",
+    "Gold & precious metals",
     "Gold & precious metals",
     "Gold & precious metals",
     "Gold & precious metals"
@@ -2764,14 +2891,18 @@
     "RTX",
     "GE",
     "LMT",
+    "GD",
     "NEM",
     "PAAS",
-    "CDE"
+    "CDE",
+    "SSRM"
    ],
    "ranked_for": [
     "Aerospace & defense",
     "Aerospace & defense",
     "Aerospace & defense",
+    "Aerospace & defense",
+    "Gold & precious metals",
     "Gold & precious metals",
     "Gold & precious metals",
     "Gold & precious metals"
@@ -2808,12 +2939,14 @@
     "RTX",
     "GE",
     "LMT",
+    "GD",
     "MRK",
     "LLY",
     "PFE",
     "GEHC"
    ],
    "ranked_for": [
+    "Aerospace & defense",
     "Aerospace & defense",
     "Aerospace & defense",
     "Aerospace & defense",
@@ -2854,17 +2987,17 @@
     "RTX",
     "GE",
     "LMT",
+    "GD",
     "BHP",
     "RIO",
     "SCCO",
-    "FCX",
-    "SQM"
+    "FCX"
    ],
    "ranked_for": [
     "Aerospace & defense",
     "Aerospace & defense",
     "Aerospace & defense",
-    "Industrial / EV metals (copper + lithium)",
+    "Aerospace & defense",
     "Industrial / EV metals (copper + lithium)",
     "Industrial / EV metals (copper + lithium)",
     "Industrial / EV metals (copper + lithium)",
@@ -2902,17 +3035,17 @@
     "RTX",
     "GE",
     "LMT",
+    "GD",
     "CVX",
     "PR",
     "COP",
-    "EOG",
-    "SHEL"
+    "EOG"
    ],
    "ranked_for": [
     "Aerospace & defense",
     "Aerospace & defense",
     "Aerospace & defense",
-    "Oil",
+    "Aerospace & defense",
     "Oil",
     "Oil",
     "Oil",
@@ -2950,12 +3083,14 @@
     "NEM",
     "PAAS",
     "CDE",
+    "SSRM",
     "MRK",
     "LLY",
     "PFE",
     "GEHC"
    ],
    "ranked_for": [
+    "Gold & precious metals",
     "Gold & precious metals",
     "Gold & precious metals",
     "Gold & precious metals",
@@ -2996,17 +3131,17 @@
     "NEM",
     "PAAS",
     "CDE",
+    "SSRM",
     "BHP",
     "RIO",
     "SCCO",
-    "FCX",
-    "SQM"
+    "FCX"
    ],
    "ranked_for": [
     "Gold & precious metals",
     "Gold & precious metals",
     "Gold & precious metals",
-    "Industrial / EV metals (copper + lithium)",
+    "Gold & precious metals",
     "Industrial / EV metals (copper + lithium)",
     "Industrial / EV metals (copper + lithium)",
     "Industrial / EV metals (copper + lithium)",
@@ -3044,17 +3179,17 @@
     "NEM",
     "PAAS",
     "CDE",
+    "SSRM",
     "CVX",
     "PR",
     "COP",
-    "EOG",
-    "SHEL"
+    "EOG"
    ],
    "ranked_for": [
     "Gold & precious metals",
     "Gold & precious metals",
     "Gold & precious metals",
-    "Oil",
+    "Gold & precious metals",
     "Oil",
     "Oil",
     "Oil",

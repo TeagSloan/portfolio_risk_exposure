@@ -55,6 +55,7 @@ def fakes(monkeypatch):
     monkeypatch.setattr(screen, "load_theme", lambda k: THEMES[k] if k in THEMES else (_ for _ in ()).throw(ValueError(f"No theme called '{k}'")))
     monkeypatch.setattr(screen, "load_all", lambda: THEMES)
     monkeypatch.setattr(screen, "industry_of", lambda t: "Widgets" if t == "ALPHAY" else None)
+    monkeypatch.setattr(screen, "revenue_for", lambda t, k: None)  # no FMP calls for fake tickers
 
 
 def test_tiers_cash_and_fingerprint():
@@ -71,7 +72,8 @@ def test_tiers_cash_and_fingerprint():
     assert by["ALPHAY"]["results"]["t1"]["business_linked"] is True
     assert fp["t1"]["cash_pct"] == 50
     assert sum(fp["t1"]["by_tier_pct"].values()) + fp["t1"]["cash_pct"] == pytest.approx(100)
-    assert "Business-linked exposure: 30% of your portfolio (ALPHAY)" in fp["t1"]["sentence"]
+    assert "Alpha exposure: 30% of your portfolio (ALPHAY)" in fp["t1"]["sentence"]
+    assert by["ALPHAY"]["results"]["t1"]["final_rating"] == "High"
     json.dumps(rep)  # must be JSON-serializable
 
 
@@ -85,7 +87,7 @@ def test_weights_rescaled_when_not_100():
 def test_all_cash_portfolio():
     rep = screen.run_screen({"CASH": 100}, ["t1"])
     assert rep["fingerprint"]["t1"]["high_moderate_pct"] == 0
-    assert rep["fingerprint"]["t1"]["sentence"].startswith("Business-linked exposure: none of your portfolio has")
+    assert rep["fingerprint"]["t1"]["sentence"].startswith("Alpha exposure: none of your portfolio is rated High or Moderate")
 
 
 def test_unknown_ticker_is_not_determined_with_reason():
@@ -133,7 +135,7 @@ def test_cli_summary_json_and_errors(capsys, tmp_path, monkeypatch):
     assert screen.main(["ALPHAY:30", "CASH:70", "--themes", "t1"]) == 0
     out = capsys.readouterr().out
     assert "Portfolio fingerprint" in out and "ALPHAY (30%)" in out and "cash: kept" in out
-    assert "Business-linked exposure %" in out and "Price co-movement only %" in out and "business linked: yes" in out
+    assert "Exposure %" in out and "Market-driven %" in out and "business linked: yes" in out
     assert json.loads((tmp_path / "results" / "screen_latest.json").read_text())["cash_pct"] == 70
     assert screen.main(["ALPHAY:1", "PLAIN:1", "--json"]) == 0
     assert json.loads(capsys.readouterr().out)["weights_rescaled_to_100"] is True
@@ -144,5 +146,6 @@ def test_cli_summary_json_and_errors(capsys, tmp_path, monkeypatch):
 def test_price_co_movement_only_is_reported_separately(monkeypatch):
     monkeypatch.setattr(screen, "industry_of", lambda t: None)  # ALPHAY moves with t1 but isn't in its business
     fp = screen.run_screen({"ALPHAY": 30, "CASH": 70}, ["t1"])["fingerprint"]["t1"]
-    assert (fp["business_linked_pct"], fp["price_only_pct"], fp["high_moderate_pct"]) == (0, 30, 30)
-    assert "Price co-movement only: 30% (ALPHAY)" in fp["sentence"]
+    assert (fp["business_linked_pct"], fp["price_only_pct"], fp["high_moderate_pct"]) == (0, 30, 0)
+    assert "Caution, market-driven: 30% (ALPHAY)" in fp["sentence"]
+    assert fp["market_driven_pct"] == 30 and fp["exposure_pct"] == 0

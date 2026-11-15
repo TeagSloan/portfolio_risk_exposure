@@ -11,25 +11,30 @@ Command line:
 Rules:
 - Universe: data/exposure_table.parquet (every stock in data/universe.csv, already scored on every theme by
   python -m engine.build_table). Individual NYSE + NASDAQ stocks only. Region: all, us or intl.
-- "avoid" X (every stock must pass every avoid rule): not flagged High or Moderate on X, and not business_linked
-  to X (e.g. no oil companies for avoid Oil, even if their regression is Not determined).
+- Ratings come from the final rating (engine/rating.py: business link + revenue share + regression), not the
+  regression alone.
+- "avoid" X (every stock must pass every avoid rule): the stock must be rated "Not exposed" on X, so High,
+  Moderate, Business only (an X business with no confirmed exposure: the safety net) and Market-driven (moves
+  with X's companies without being an X business) are all excluded.
 - "want": several wants are COMBINED (OR). The ETF holds stocks from EACH wanted theme: the TOP_N slots are split
-  across the wanted themes (15 slots, 2 wants -> 8 + 7). A stock picked for a theme must be High or Moderate AND
-  business_linked for THAT theme. Each stock is labeled with the theme it was picked for; no duplicates.
+  across the wanted themes (15 slots, 2 wants -> 8 + 7). A stock picked for a theme must be rated High or
+  Moderate for THAT theme (which means business-linked, backed by revenue or a price link). Each stock is labeled with the theme it was picked for; no duplicates.
 - "dont_care": no rule for that theme.
 - Well-known names only (ON by default): non-reference picks need a market cap of at least $20B. Tier 1
   references always qualify.
 - Ranking within each wanted theme: Tier 1 references first, then a combined score = 50% percentile of the
   t-statistic (strength of the price link) + 50% percentile of market cap, with High before Moderate as a
-  tiebreaker. Picks alternate across wanted themes. At most MAX_PER_INDUSTRY stocks per FMP industry in the ETF.
+  tiebreaker. Picks alternate across wanted themes. At most MAX_PER_INDUSTRY stocks per FMP industry in the ETF,
+  except that a stock picked for a theme doesn't count when its industry is one of that theme's own industries
+  (gold miners in a Gold pick, defense companies in an Aerospace & defense pick).
 - No wants: the largest companies by market cap that pass every avoid rule.
 - Never empty: if a wanted theme has fewer qualifiers than its slots, its market-cap floor is lowered in steps
   ($20B -> $10B -> $2B) for that theme only, and the output says so; leftover slots then go to the other wanted
   themes. If nothing qualifies at all, the output shows the funnel, names the rule that removed the most stocks
   and suggests a change.
 - Equal weight, capped at 15% each; if there are too few names to reach 100% under the cap, the rest is cash.
-- The final basket is re-checked from scratch with Way 1 (run_screen): stocks picked for a theme must show as
-  business-linked High/Moderate for it, and nothing may be High/Moderate on an avoided theme.
+- The final basket is re-checked from scratch with Way 1 (run_screen): stocks picked for a theme must be rated
+  High/Moderate for it, and nothing may be High, Moderate, Business only or Market-driven on an avoided theme.
 """
 
 from __future__ import annotations
@@ -43,6 +48,7 @@ import pandas as pd
 
 from engine import screen
 from engine.build_table import load_table
+from engine.rating import NOT_EXPOSED
 from engine.regression import HIGH, MODERATE
 from engine.theme_loader import load_all
 
@@ -154,12 +160,11 @@ def theme_candidates(table: pd.DataFrame, k: str, n: int = TOP_N, well_known: bo
     """One theme's qualifying stocks in ranking order, with no avoids and no industry limit (used to pick the
     League's stock pool). Same tests and ranking as build(): High/Moderate + business-linked, well-known floor
     lowered in steps until at least n qualify."""
-    tier = table.pivot(index="ticker", columns="theme", values="tier")
-    linked = table.pivot(index="ticker", columns="theme", values="business_linked").astype(bool)
+    tier = table.pivot(index="ticker", columns="theme", values="final_rating")
     tstat = table.pivot(index="ticker", columns="theme", values="strength_t")
     ref = table.pivot(index="ticker", columns="theme", values="reference").astype(bool)
     mcap = table.groupby("ticker")["market_cap"].first().reindex(tier.index).astype(float).fillna(0.0)
-    fit = [x for x in tier.index if tier.loc[x, k] in WANT_OK and linked.loc[x, k]]
+    fit = [x for x in tier.index if tier.loc[x, k] in WANT_OK]
     chosen = fit
     for floor in WELL_KNOWN_FLOORS if well_known else []:
         chosen = [x for x in fit if ref.loc[x, k] or mcap[x] >= floor]
@@ -177,8 +182,8 @@ def build(prefs: dict[str, str], region: str = "all", table: pd.DataFrame | None
     avoid = [k for k, v in prefs.items() if v == "avoid"]
     dont_care = [k for k, v in prefs.items() if v == "dont_care"]
 
-    tier = t.pivot(index="ticker", columns="theme", values="tier")
-    linked = t.pivot(index="ticker", columns="theme", values="business_linked").astype(bool)
+    tier = t.pivot(index="ticker", columns="theme", values="final_rating")  # the final rating
+    reg_tier = t.pivot(index="ticker", columns="theme", values="tier")  # the regression tier, for display
     strength = t.pivot(index="ticker", columns="theme", values="strength")
     tstat = t.pivot(index="ticker", columns="theme", values="strength_t")
     ref = t.pivot(index="ticker", columns="theme", values="reference").astype(bool)
@@ -198,9 +203,11 @@ def build(prefs: dict[str, str], region: str = "all", table: pd.DataFrame | None
     for k in avoid:
         name = themes[k]["name"]
         alive &= ~tier[k].isin(AVOID_FAIL)
-        funnel.append({"step": f"Avoid {name}: not flagged High or Moderate", "left": int(alive.sum())})
-        alive &= ~linked[k]
-        funnel.append({"step": f"Avoid {name}: not in the {name} business", "left": int(alive.sum())})
+        funnel.append({"step": f"Avoid {name}: not rated High or Moderate", "left": int(alive.sum())})
+        alive &= tier[k].ne("Business only")
+        funnel.append({"step": f"Avoid {name}: not in the {name} business (Business only)", "left": int(alive.sum())})
+        alive &= tier[k].eq(NOT_EXPOSED)
+        funnel.append({"step": f"Avoid {name}: not market-driven", "left": int(alive.sum())})
     if dont_care:
         funnel.append({"step": "Don't care: " + ", ".join(themes[k]["name"] for k in dont_care) + " (no rule)",
                        "left": int(alive.sum())})
@@ -219,8 +226,8 @@ def build(prefs: dict[str, str], region: str = "all", table: pd.DataFrame | None
     if want:
         for k, n in zip(want, split_slots(TOP_N, len(want)), strict=True):
             name = themes[k]["name"]
-            fit = [x for x in base if tier.loc[x, k] in WANT_OK and linked.loc[x, k]]
-            funnel.append({"step": f"Want {name}: High/Moderate and in the {name} business", "left": len(fit)})
+            fit = [x for x in base if tier.loc[x, k] in WANT_OK]
+            funnel.append({"step": f"Want {name}: rated High or Moderate", "left": len(fit)})
             chosen, used = [], None
             for floor in WELL_KNOWN_FLOORS if well_known else [0.0]:
                 chosen, used = qualifiers(fit, floor, k), floor
@@ -253,6 +260,12 @@ def build(prefs: dict[str, str], region: str = "all", table: pd.DataFrame | None
     pos = dict.fromkeys(lists, 0)
     capped = set()
 
+    own = {k: set(themes[k].get("allowed_industries", [])) for k in want}
+
+    def counts(x: str, k: str) -> bool:
+        """Does this pick count toward the industry limit? Not when it's in the theme's own industry."""
+        return not (k in own and industry[x] in own[k])
+
     def next_pick(k: str) -> str | None:
         lst = lists[k]
         while pos[k] < len(lst):
@@ -260,7 +273,7 @@ def build(prefs: dict[str, str], region: str = "all", table: pd.DataFrame | None
             pos[k] += 1
             if x in picked_for:
                 continue
-            if per_industry.get(industry[x], 0) >= MAX_PER_INDUSTRY:
+            if counts(x, k) and per_industry.get(industry[x], 0) >= MAX_PER_INDUSTRY:
                 capped.add(x)
                 continue
             return x
@@ -279,7 +292,8 @@ def build(prefs: dict[str, str], region: str = "all", table: pd.DataFrame | None
                 continue
             picked_for[x] = k
             taken[k] += 1
-            per_industry[industry[x]] = per_industry.get(industry[x], 0) + 1
+            if counts(x, k):
+                per_industry[industry[x]] = per_industry.get(industry[x], 0) + 1
             progress = True
     # leftover slots from themes that ran out -> the other wanted themes
     short = {k: slots[k] - taken[k] for k in order if taken[k] < slots[k]}
@@ -296,11 +310,12 @@ def build(prefs: dict[str, str], region: str = "all", table: pd.DataFrame | None
                 x = next_pick(k)
                 if x is not None:
                     picked_for[x], taken[k] = k, taken[k] + 1
-                    per_industry[industry[x]] = per_industry.get(industry[x], 0) + 1
+                    if counts(x, k):
+                        per_industry[industry[x]] = per_industry.get(industry[x], 0) + 1
                     progress = True
     if capped:
-        notes.append(f"Industry limit: at most {MAX_PER_INDUSTRY} stocks per industry, so "
-                     f"{len(capped)} otherwise-qualifying stock(s) were skipped.")
+        notes.append(f"Industry limit: at most {MAX_PER_INDUSTRY} stocks per industry (a theme's own industries "
+                     f"don't count), so {len(capped)} otherwise-qualifying stock(s) were skipped.")
 
     # in pick order: grouped by theme (the order of the wants), each theme's list in rank order
     rank_pos = {x: (order.index(picked_for[x]), lists[picked_for[x]].index(x)) for x in picked_for}
@@ -336,6 +351,7 @@ def build(prefs: dict[str, str], region: str = "all", table: pd.DataFrame | None
         return {"ticker": p, "weight_pct": round(wt, 2), "name": info.loc[p, "name"], "industry": industry[p],
                 "market_cap": float(mcap[p]), "picked_for": theme_name,
                 "picked_tier": tier.loc[p, k] if k != "_cap" else None,
+                "regression_tiers": {themes[w]["name"]: reg_tier.loc[p, w] for w in want + avoid},
                 "want_tiers": {themes[w]["name"]: tier.loc[p, w] for w in want},
                 "avoid_tiers": {themes[a]["name"]: tier.loc[p, a] for a in avoid},
                 "strength": {themes[w]["name"]: nan(strength.loc[p, w]) for w in want},
@@ -344,9 +360,9 @@ def build(prefs: dict[str, str], region: str = "all", table: pd.DataFrame | None
                 # Kept for the dashboard and assistant (app.py, engine/assistant.py): all scored tiers + notes.
                 "tiers": {themes[w]["name"]: tier.loc[p, w] for w in want + avoid},
                 "labels": ([f"picked for {theme_name}"] if theme_name else []) +
-                          [f"{themes[a]['name']}: " + ("lower confidence" if tier.loc[p, a] == "Limited (lower confidence)"
-                                                       else "the data can't tell")
-                           for a in avoid if tier.loc[p, a] in ("Limited (lower confidence)", "Not determined")]}
+                          [f"{themes[a]['name']}: regression " + ("lower confidence" if reg_tier.loc[p, a] == "Limited (lower confidence)"
+                                                                  else "can't tell")
+                           for a in avoid if reg_tier.loc[p, a] in ("Limited (lower confidence)", "Not determined")]}
 
     invested = 100.0 - (cash if picks else 100.0)
     theme_share = {themes[k]["name"]: round(sum(weights[p] for p in picks if picked_for[p] == k), 2) for k in want}
@@ -389,13 +405,13 @@ def _verify(basket: dict[str, float], prefs: dict[str, str], themes: dict[str, d
         f = report["fingerprint"][k]
         if prefs[k] == "want":
             need = sum(w for p, w in basket.items() if picked_for.get(p) == k)
-            ok = f["business_linked_pct"] >= need - 0.01
-            goal = f"the {need:.0f}% picked for it is business-linked High/Moderate"
+            ok = f["exposure_pct"] >= need - 0.01
+            goal = f"the {need:.0f}% picked for it is rated High/Moderate"
         else:
-            ok = f["high_moderate_pct"] < 0.01
-            goal = "0% High or Moderate"
+            ok = f["exposure_pct"] + f["business_only_pct"] + f["market_driven_pct"] < 0.01
+            goal = "0% High, Moderate, Business only or Market-driven"
         checks[k] = {"theme": themes[k]["name"], "choice": prefs[k], "goal": goal, "pass": ok,
-                     "high_moderate_pct": f["high_moderate_pct"], "business_linked_pct": f["business_linked_pct"],
+                     "high_moderate_pct": f["high_moderate_pct"], "exposure_pct": f["exposure_pct"],
                      "by_tier_pct": f["by_tier_pct"], "sentence": f["sentence"]}
     return {"all_pass": all(c["pass"] for c in checks.values()), "checks": checks}
 
@@ -412,7 +428,7 @@ def summary_text(out: dict) -> str:
     else:
         n = sum(1 for h in out["holdings"] if h["ticker"] != screen.CASH)
         lines.append(f"Basket ({n} holdings; ranked by {out['ranked_by']}):")
-        lines.append(f"  {'Ticker':6} {'Weight':>6}  {'Company':28} {'Industry':30} {'Mkt cap':>8}  {'Picked for':24} Tier")
+        lines.append(f"  {'Ticker':6} {'Weight':>6}  {'Company':28} {'Industry':30} {'Mkt cap':>8}  {'Picked for':24} Rating")
         for h in out["holdings"]:
             if h["ticker"] == screen.CASH:
                 lines.append(f"  {'CASH':6} {h['weight_pct']:5.2f}%")

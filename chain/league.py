@@ -268,11 +268,15 @@ def build_pool() -> tuple[list[str], dict, list]:
         r = rows[rows["ticker"] == t].set_index("theme")
         stocks.append({"ticker": t, "name": info.loc[t, "name"], "industry": info.loc[t, "industry"],
                        "country": info.loc[t, "country"], "market_cap": float(info.loc[t, "market_cap"] or 0),
-                       "themes": {k: {"tier": r.loc[k, "tier"], "linked": bool(r.loc[k, "business_linked"]),
+                       "themes": {k: {"tier": r.loc[k, "tier"], "rating": r.loc[k, "final_rating"],
+                                      "revenue_pct": None if r.loc[k, "revenue_pct"] != r.loc[k, "revenue_pct"]
+                                      else r.loc[k, "revenue_pct"],
+                                      "linked": bool(r.loc[k, "business_linked"]),
                                       "t": None if r.loc[k, "strength_t"] != r.loc[k, "strength_t"] else round(float(r.loc[k, "strength_t"]), 2),
                                       "ref": bool(r.loc[k, "reference"])} for k in keys}})
     pool_data = {"about": "Stock pool for the Fantasy Funds League, with each stock's engine result per theme.",
-                 "themes": [{"key": k, "name": themes[k]["name"]} for k in keys],
+                 "themes": [{"key": k, "name": themes[k]["name"],
+                             "industries": themes[k].get("allowed_industries", [])} for k in keys],
                  "rules": {"min_stocks": 3, "max_stocks": 8, "min_weight_pct": 5, "default_picks": DEFAULT_PICKS,
                            "well_known_floors": builder.WELL_KNOWN_FLOORS, "max_per_industry": builder.MAX_PER_INDUSTRY},
                  "stocks": stocks}

@@ -24,6 +24,7 @@ from scipy import stats
 from engine import data, screen
 from engine.business import business_linked
 from engine.controls import SPREADS
+from engine.rating import final_rating, rating_sentence
 from engine.regression import (
     ALPHA,
     GROUPS,
@@ -35,6 +36,7 @@ from engine.regression import (
     reference_names,
     sentence,
 )
+from engine.revenue import revenue_pct
 
 START, END = data.DEFAULT_START, data.DEFAULT_END
 
@@ -215,10 +217,17 @@ def score_theme(theme: dict, tickers: list[str], meta: dict[str, dict], store: P
     for t in tickers:
         m = meta.get(t, {})
         strength, tstat, basis = _strength(t, theme, rows[t], listed)
+        linked = business_linked(t, m.get("industry"), theme)
+        rev = revenue_pct(t, theme["key"]) if linked else None  # revenue only matters for business-linked stocks
+        rating = final_rating(linked, rev["pct"] if rev else None, rows[t]["tier"], t in listed)
         row = {"ticker": t, "theme": theme["key"], "name": m.get("name"), **rows[t],
+               "regression_tier": rows[t]["tier"], "revenue_pct": rev["pct"] if rev else None,
+               "revenue_fy": rev["fiscal_year"] if rev else None, "revenue_source": rev["source"] if rev else None,
+               "final_rating": rating,
+               "rating_sentence": rating_sentence(t, rating, theme["name"], theme.get("plain"), rev["pct"] if rev else None),
                "strength": strength, "strength_t": tstat, "strength_basis": basis,
                "reference": any(x["ticker"] == t for g in GROUPS for x in theme["references"].get(g, [])),
-               "business_linked": business_linked(t, m.get("industry"), theme),
+               "business_linked": linked,
                "country": m.get("country"), "sector": m.get("sector"), "industry": m.get("industry"),
                "market_cap": float(m.get("market_cap") or 0), "references_used": refs_used,
                "controls_used": ",".join(list(theme["controls"]) + (["INTL"] if m.get("country") not in ("US", "", None) else [])),
