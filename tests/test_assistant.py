@@ -42,6 +42,29 @@ def test_fund_facts_carry_what_questions_need_and_drop_raw_arrays():
     assert facts["on_chain"]["launched"] is False
 
 
+def test_company_names_and_industries_go_into_the_facts():
+    facts = assistant.fund_facts(BUILD, RISK, companies={"NVDA": {"name": "NVIDIA Corporation",
+                                                                  "industry": "Semiconductors",
+                                                                  "sector": "Technology"}})
+    nvda = facts["holdings"][0]
+    assert nvda["name"] == "NVIDIA Corporation" and nvda["industry"] == "Semiconductors"
+    assert "name" not in facts["holdings"][1]  # cash has no company info
+    assert "Never invent a business link" in assistant.SYSTEM_RULES
+
+
+def test_company_info_from_fmp_profiles(monkeypatch):
+    from engine import fmp
+
+    def fake_profile(t):
+        if t == "BAD":
+            raise fmp.FMPError("no data")
+        return [] if t == "EMPTY" else [{"companyName": f"{t} Inc", "industry": "Gold", "sector": "Basic Materials"}]
+
+    monkeypatch.setattr(fmp, "profile", fake_profile)
+    info = assistant.company_info(["NEM", "CASH", "BAD", "EMPTY"])
+    assert info == {"NEM": {"name": "NEM Inc", "industry": "Gold", "sector": "Basic Materials"}}
+
+
 def test_fund_facts_without_a_fund():
     facts = assistant.fund_facts(None)
     assert facts["fund_built"] is False and "holdings" not in facts and "monte_carlo" not in facts
@@ -144,14 +167,16 @@ def test_request_shape_and_streamed_answer():
                                 client=fake_client(handler)))
     assert "".join(chunks) == "Your fund holds NVDA."
     body = seen["body"]
-    assert body["model"] == "claude-opus-5-5" and body["stream"] is True
-    assert body["fallbacks"] == "default"
+    assert body["model"] == "claude-haiku-5-5" and body["stream"] is True
+    assert "fallbacks" not in body  # Haiku 5.5 only: never handed to another model
     assert body["output_config"] == {"effort": "low"}
     assert body["max_tokens"] == assistant.MAX_TOKENS
     assert body["system"][1]["cache_control"] == {"type": "ephemeral"}
     assert body["messages"][-1] == {"role": "user", "content": "What do I hold?"}
-    assert "thinking" not in body  # Claude Opus 5.5 always thinks; effort controls depth
-    assert assistant.FALLBACK_BETA in seen["headers"]["anthropic-beta"]
+    assert "thinking" not in body  # Haiku 5.5 thinks adaptively by default; effort controls depth
+    assert "server-side-fallback" not in seen["headers"].get("anthropic-beta", "")
+    for sampling in ("temperature", "top_p", "top_k"):  # Haiku 5.5 rejects these
+        assert sampling not in body
     assert "test-key" in seen["headers"]["authorization"]  # the key travels in a header only
 
 

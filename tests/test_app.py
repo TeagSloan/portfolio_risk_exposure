@@ -61,6 +61,7 @@ def app(monkeypatch):
     monkeypatch.setattr(builder, "build", fake_build)
     monkeypatch.setattr(builder, "prescreen", fake_table)
     monkeypatch.setattr(risk, "run_risk", fake_risk)
+    monkeypatch.setattr(assistant, "company_info", lambda tickers: {t: {"name": f"{t} Corp"} for t in tickers})
     monkeypatch.setattr(screen, "_screen_one", lambda t, th, s, e: {"tier": MODERATE if th["key"] == "oil"
                                                                     else LIMITED_LOW})
     at = AppTest.from_file(APP, default_timeout=60)
@@ -148,6 +149,7 @@ def test_chat_streams_an_answer(app, monkeypatch):
     assert not app.exception
     assert seen["question"] == "What do I hold?"
     assert seen["facts"]["holdings"][0]["ticker"] == "AAA" and "monte_carlo" in seen["facts"]
+    assert seen["facts"]["holdings"][0]["name"] == "AAA Corp"
     texts = [m.value for msg in app.chat_message for m in msg.markdown]
     assert "What do I hold?" in texts and "Your fund holds AAA and BBB." in texts
 

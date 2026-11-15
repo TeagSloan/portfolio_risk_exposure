@@ -57,6 +57,11 @@ def run_risk(holdings: tuple[tuple[str, float], ...]):
 
 
 @st.cache_data(show_spinner=False)
+def companies(tickers: tuple[str, ...]) -> dict[str, dict]:
+    return assistant.company_info(list(tickers))
+
+
+@st.cache_data(show_spinner=False)
 def screen_ticker(ticker: str, theme_keys: tuple[str, ...]) -> dict[str, dict]:
     """Tier results for a ticker outside the pre-screened universe."""
     all_themes = themes()
@@ -223,7 +228,8 @@ def risk_tab(report: dict | None, figures: dict | None) -> None:
 def chat_tab(build: dict, report: dict | None) -> None:
     st.subheader("Ask about your fund")
     st.caption("Answers come only from this fund's data. No predictions and no buy/sell advice.")
-    facts = assistant.fund_facts(build, report, dashboard.chain_status())
+    held = tuple(sorted(dashboard.holdings_from_build(build)))
+    facts = assistant.fund_facts(build, report, dashboard.chain_status(), companies(held))
     history = st.session_state.setdefault("chat", [])
     cols = st.columns(len(EXAMPLE_QUESTIONS))
     for col, q in zip(cols, EXAMPLE_QUESTIONS, strict=True):
