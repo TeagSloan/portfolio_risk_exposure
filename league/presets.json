@@ -1,0 +1,779 @@
+{
+ "about": "Engine builder suggestions restricted to the League pool.",
+ "presets": [
+  {
+   "key": "ai:want",
+   "preferences": {
+    "ai": "want"
+   },
+   "ranked": [
+    "VRT",
+    "NVDA",
+    "AVGO",
+    "MU",
+    "TSM",
+    "VST",
+    "GEN",
+    "CRWD"
+   ],
+   "picks": [
+    "VRT",
+    "NVDA",
+    "AVGO",
+    "MU",
+    "TSM"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "bank_lending:want",
+   "preferences": {
+    "bank_lending": "want"
+   },
+   "ranked": [
+    "RF",
+    "CFG",
+    "MTB",
+    "ZION",
+    "BAC",
+    "WFC"
+   ],
+   "picks": [
+    "RF",
+    "CFG",
+    "MTB",
+    "ZION",
+    "BAC"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "clean_energy:want",
+   "preferences": {
+    "clean_energy": "want"
+   },
+   "ranked": [
+    "RUN",
+    "FSLR",
+    "SEDG",
+    "NEE",
+    "ENPH",
+    "BEP"
+   ],
+   "picks": [
+    "RUN",
+    "FSLR",
+    "SEDG",
+    "NEE",
+    "ENPH"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "consumer_disc:want",
+   "preferences": {
+    "consumer_disc": "want"
+   },
+   "ranked": [
+    "TJX",
+    "HD",
+    "NKE",
+    "RCL",
+    "COST",
+    "DG"
+   ],
+   "picks": [
+    "TJX",
+    "HD",
+    "NKE",
+    "RCL",
+    "COST"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "cyber:want",
+   "preferences": {
+    "cyber": "want"
+   },
+   "ranked": [
+    "PANW",
+    "CRWD",
+    "FTNT",
+    "CHKP",
+    "CSCO",
+    "GEN"
+   ],
+   "picks": [
+    "PANW",
+    "CRWD",
+    "FTNT",
+    "CHKP",
+    "CSCO"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "defense:want",
+   "preferences": {
+    "defense": "want"
+   },
+   "ranked": [
+    "GD",
+    "HII",
+    "LMT",
+    "NOC",
+    "RTX",
+    "GE"
+   ],
+   "picks": [
+    "GD",
+    "HII",
+    "LMT",
+    "NOC",
+    "RTX"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "gold:want",
+   "preferences": {
+    "gold": "want"
+   },
+   "ranked": [
+    "PAAS",
+    "NEM",
+    "CDE",
+    "SSRM",
+    "AEM",
+    "WPM"
+   ],
+   "picks": [
+    "PAAS",
+    "NEM",
+    "CDE",
+    "SSRM",
+    "AEM"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "healthcare:want",
+   "preferences": {
+    "healthcare": "want"
+   },
+   "ranked": [
+    "MRK",
+    "PFE",
+    "LLY",
+    "GEHC",
+    "BMY",
+    "AMGN"
+   ],
+   "picks": [
+    "MRK",
+    "PFE",
+    "LLY",
+    "GEHC",
+    "BMY"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "metals:want",
+   "preferences": {
+    "metals": "want"
+   },
+   "ranked": [
+    "BHP",
+    "SCCO",
+    "SQM",
+    "FCX",
+    "ALB",
+    "RIO"
+   ],
+   "picks": [
+    "BHP",
+    "SCCO",
+    "SQM",
+    "FCX",
+    "ALB"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "oil:want",
+   "preferences": {
+    "oil": "want"
+   },
+   "ranked": [
+    "PR",
+    "FANG",
+    "EOG",
+    "COP",
+    "CVX",
+    "SHEL"
+   ],
+   "picks": [
+    "PR",
+    "FANG",
+    "EOG",
+    "COP",
+    "CVX"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "ai:want,oil:avoid",
+   "preferences": {
+    "ai": "want",
+    "oil": "avoid"
+   },
+   "ranked": [
+    "VRT",
+    "NVDA",
+    "AVGO",
+    "MU",
+    "VST",
+    "GEN",
+    "CRWD"
+   ],
+   "picks": [
+    "VRT",
+    "NVDA",
+    "AVGO",
+    "MU",
+    "VST"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "bank_lending:want,oil:avoid",
+   "preferences": {
+    "bank_lending": "want",
+    "oil": "avoid"
+   },
+   "ranked": [
+    "RF",
+    "CFG",
+    "MTB",
+    "ZION",
+    "BAC",
+    "WFC"
+   ],
+   "picks": [
+    "RF",
+    "CFG",
+    "MTB",
+    "ZION",
+    "BAC"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "clean_energy:want,oil:avoid",
+   "preferences": {
+    "clean_energy": "want",
+    "oil": "avoid"
+   },
+   "ranked": [
+    "RUN",
+    "FSLR",
+    "SEDG",
+    "NEE",
+    "ENPH",
+    "BEP"
+   ],
+   "picks": [
+    "RUN",
+    "FSLR",
+    "SEDG",
+    "NEE",
+    "ENPH"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "consumer_disc:want,oil:avoid",
+   "preferences": {
+    "consumer_disc": "want",
+    "oil": "avoid"
+   },
+   "ranked": [
+    "TJX",
+    "HD",
+    "NKE",
+    "RCL",
+    "COST",
+    "DG"
+   ],
+   "picks": [
+    "TJX",
+    "HD",
+    "NKE",
+    "RCL",
+    "COST"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "cyber:want,oil:avoid",
+   "preferences": {
+    "cyber": "want",
+    "oil": "avoid"
+   },
+   "ranked": [
+    "PANW",
+    "CRWD",
+    "FTNT",
+    "CHKP",
+    "CSCO",
+    "GEN"
+   ],
+   "picks": [
+    "PANW",
+    "CRWD",
+    "FTNT",
+    "CHKP",
+    "CSCO"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "defense:want,oil:avoid",
+   "preferences": {
+    "defense": "want",
+    "oil": "avoid"
+   },
+   "ranked": [
+    "GD",
+    "HII",
+    "LMT",
+    "NOC",
+    "RTX",
+    "GE"
+   ],
+   "picks": [
+    "GD",
+    "HII",
+    "LMT",
+    "NOC",
+    "RTX"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "gold:want,oil:avoid",
+   "preferences": {
+    "gold": "want",
+    "oil": "avoid"
+   },
+   "ranked": [
+    "PAAS",
+    "NEM",
+    "CDE",
+    "SSRM",
+    "AEM",
+    "WPM"
+   ],
+   "picks": [
+    "PAAS",
+    "NEM",
+    "CDE",
+    "SSRM",
+    "AEM"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "healthcare:want,oil:avoid",
+   "preferences": {
+    "healthcare": "want",
+    "oil": "avoid"
+   },
+   "ranked": [
+    "MRK",
+    "PFE",
+    "LLY",
+    "GEHC",
+    "BMY",
+    "AMGN"
+   ],
+   "picks": [
+    "MRK",
+    "PFE",
+    "LLY",
+    "GEHC",
+    "BMY"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "metals:want,oil:avoid",
+   "preferences": {
+    "metals": "want",
+    "oil": "avoid"
+   },
+   "ranked": [
+    "BHP",
+    "SQM",
+    "RIO"
+   ],
+   "picks": [
+    "BHP",
+    "SQM",
+    "RIO"
+   ],
+   "weights_bps": [
+    3334,
+    3333,
+    3333
+   ]
+  },
+  {
+   "key": "ai:avoid,bank_lending:want",
+   "preferences": {
+    "bank_lending": "want",
+    "ai": "avoid"
+   },
+   "ranked": [
+    "RF",
+    "CFG",
+    "MTB",
+    "ZION",
+    "BAC",
+    "WFC"
+   ],
+   "picks": [
+    "RF",
+    "CFG",
+    "MTB",
+    "ZION",
+    "BAC"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "ai:avoid,clean_energy:want",
+   "preferences": {
+    "clean_energy": "want",
+    "ai": "avoid"
+   },
+   "ranked": [
+    "RUN",
+    "FSLR",
+    "SEDG",
+    "NEE",
+    "ENPH",
+    "BEP"
+   ],
+   "picks": [
+    "RUN",
+    "FSLR",
+    "SEDG",
+    "NEE",
+    "ENPH"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "ai:avoid,consumer_disc:want",
+   "preferences": {
+    "consumer_disc": "want",
+    "ai": "avoid"
+   },
+   "ranked": [
+    "TJX",
+    "HD",
+    "NKE",
+    "RCL",
+    "COST",
+    "DG"
+   ],
+   "picks": [
+    "TJX",
+    "HD",
+    "NKE",
+    "RCL",
+    "COST"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "ai:avoid,cyber:want",
+   "preferences": {
+    "cyber": "want",
+    "ai": "avoid"
+   },
+   "ranked": [],
+   "picks": [],
+   "weights_bps": []
+  },
+  {
+   "key": "ai:avoid,defense:want",
+   "preferences": {
+    "defense": "want",
+    "ai": "avoid"
+   },
+   "ranked": [
+    "GD",
+    "LMT",
+    "NOC",
+    "RTX",
+    "GE"
+   ],
+   "picks": [
+    "GD",
+    "LMT",
+    "NOC",
+    "RTX",
+    "GE"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "ai:avoid,gold:want",
+   "preferences": {
+    "gold": "want",
+    "ai": "avoid"
+   },
+   "ranked": [
+    "PAAS",
+    "NEM",
+    "CDE",
+    "SSRM",
+    "AEM",
+    "WPM"
+   ],
+   "picks": [
+    "PAAS",
+    "NEM",
+    "CDE",
+    "SSRM",
+    "AEM"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "ai:avoid,healthcare:want",
+   "preferences": {
+    "healthcare": "want",
+    "ai": "avoid"
+   },
+   "ranked": [
+    "MRK",
+    "PFE",
+    "LLY",
+    "GEHC",
+    "BMY",
+    "AMGN"
+   ],
+   "picks": [
+    "MRK",
+    "PFE",
+    "LLY",
+    "GEHC",
+    "BMY"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "ai:avoid,metals:want",
+   "preferences": {
+    "metals": "want",
+    "ai": "avoid"
+   },
+   "ranked": [
+    "BHP",
+    "SCCO",
+    "SQM",
+    "FCX",
+    "ALB",
+    "RIO"
+   ],
+   "picks": [
+    "BHP",
+    "SCCO",
+    "SQM",
+    "FCX",
+    "ALB"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "ai:avoid,oil:want",
+   "preferences": {
+    "oil": "want",
+    "ai": "avoid"
+   },
+   "ranked": [
+    "FANG",
+    "EOG",
+    "CVX",
+    "SHEL"
+   ],
+   "picks": [
+    "FANG",
+    "EOG",
+    "CVX",
+    "SHEL"
+   ],
+   "weights_bps": [
+    2500,
+    2500,
+    2500,
+    2500
+   ]
+  }
+ ]
+}
