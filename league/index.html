@@ -541,7 +541,7 @@ $("addpick").onclick = () => {
 };
 $("equal").onclick = () => { const p = equalPcts(Math.max(picks.length, 1)); picks.forEach((x, i) => { x.pct = p[i]; }); renderPicks(); };
 
-// The QR code always shows the public page (GitHub Pages, fund_league branch) for the live network, so the big
+// The QR code always shows the public page (GitHub Pages, main branch) for the live network, so the big
 // screen shows the right link even when this page is opened locally.
 const PUBLIC_URL = "https://shannon-maccallum.github.io/portfolio_risk_exposure/league/?network=monad-testnet";
 const url = NETWORK === "monad-testnet" ? PUBLIC_URL : location.href;

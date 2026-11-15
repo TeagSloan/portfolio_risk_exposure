@@ -84,8 +84,8 @@ host it. These must be **committed and pushed** for the live round:
 - `league/index.html`, `league/pool.json`, `league/presets.json`, `league/replay_prices.json`
 - `deployments/monad-testnet-league.json` (written by `deploy`/`pool`/`open`)
 
-Then enable Pages for the repo (Settings → Pages → deploy from the branch, root folder). The link to share is
-`https://<owner>.github.io/<repo>/league/?network=monad-testnet`. Put it in the QR code on the big screen;
+Then enable Pages for the repo (Settings → Pages → Source: "Deploy from a branch" → Branch: `main`, folder `/ (root)` → Save). The link to share is
+`https://shannon-maccallum.github.io/portfolio_risk_exposure/league/?network=monad-testnet`. Put it in the QR code on the big screen;
 the page shows its own QR code too.
 
 Re-push `deployments/monad-testnet-league.json` and `league/replay_prices.json` after each `open`, because a new round
