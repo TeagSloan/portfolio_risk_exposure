@@ -187,6 +187,20 @@ def test_api_errors_become_plain_messages(status, error_type, message):
         list(assistant.ask("q", {}, client=fake_client(handler)))
 
 
+@pytest.mark.parametrize("api_message, expected", [
+    ("Your credit balance is too low to access the Anthropic API.", "out of credits"),
+    ("messages: text content blocks must be non-empty", "couldn't process the request: messages: text"),
+    ("", "couldn't process the request: bad request"),
+])
+def test_bad_request_explains_itself(api_message, expected):
+    def handler(request):
+        return httpx2.Response(400, json={"type": "error",
+                                          "error": {"type": "invalid_request_error", "message": api_message}})
+
+    with pytest.raises(AssistantError, match=expected):
+        list(assistant.ask("q", {}, client=fake_client(handler)))
+
+
 def test_network_failure_is_a_plain_message():
     def handler(request):
         raise httpx2.ConnectError("down")

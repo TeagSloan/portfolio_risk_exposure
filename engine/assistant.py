@@ -170,6 +170,13 @@ def _friendly(exc: Exception) -> AssistantError:
         return AssistantError("The Claude API key was rejected. Check ANTHROPIC_API_KEY in .env.")
     if isinstance(exc, anthropic.PermissionDeniedError):
         return AssistantError("This Claude API key isn't allowed to use this model.")
+    if isinstance(exc, anthropic.BadRequestError):
+        detail = ((getattr(exc, "body", None) or {}).get("error") or {}).get("message", "")
+        if "credit balance" in detail.lower():
+            return AssistantError("The Claude API account behind this key is out of credits. Add credits in the "
+                                  "Claude Console (Plans & Billing); API usage is billed separately from a "
+                                  "Claude.ai subscription.")
+        return AssistantError(f"Claude couldn't process the request: {detail or 'bad request'}")
     if isinstance(exc, anthropic.RateLimitError):
         return AssistantError("Claude is busy right now (rate limit). Try again in a minute.")
     if isinstance(exc, anthropic.APIStatusError):
