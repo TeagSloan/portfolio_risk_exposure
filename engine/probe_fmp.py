@@ -43,7 +43,8 @@ def main():
             ("profile", lambda s=sym: fmp.profile(s)),
             ("revenue-product-segmentation", lambda s=sym: fmp.revenue_product_segments(s)),
             ("income-statement", lambda s=sym: fmp.income_statement(s)),
-            ("company-screener", lambda: fmp.company_screener(industry=industry, limit=10)),
+            # Reads `industry` when called, i.e. after the profile check above has set it.
+            ("company-screener", lambda: fmp.company_screener(industry=industry, limit=10)),  # noqa: B023
             ("dividend-adjusted prices", lambda s=sym: fmp.dividend_adjusted_prices(s, start.isoformat(), end.isoformat())),
         ]
         for name, call in checks:
