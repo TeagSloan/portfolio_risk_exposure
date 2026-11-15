@@ -21,11 +21,11 @@ import statsmodels.api as sm
 from scipy import stats
 
 from engine import fmp
-from engine.builder import universe
 from engine.controls import SPREADS, intl_control
 from engine.data import get_returns
 from engine.regression import ALPHA, MIN_SUM, Z_ONE_SIDED_95, classify, reference_names
 from engine.theme_loader import load_all
+from engine.universe import load_universe
 
 ROOT = Path(__file__).resolve().parent.parent
 RNG = np.random.default_rng(2026)
@@ -44,7 +44,7 @@ NOISE = 0.015  # daily idiosyncratic noise for simulated holdings (1.5%, typical
 
 def big_frame(themes):
     """One table of returns for the universe, controls, ETFs (drops names with short history)."""
-    names = universe(themes) + ["SPY", "TLT", "IWD", "IWF"] + [t["ground_truth"] for t in themes.values() if t.get("ground_truth")]
+    names = [r['ticker'] for r in load_universe()] + ["SPY", "TLT", "IWD", "IWF"] + [t["ground_truth"] for t in themes.values() if t.get("ground_truth")]
     names += [t["control"]["ticker"] for t in themes.values()]
     names += [leg for legs in SPREADS.values() for leg in legs]
     names = list(dict.fromkeys(names))
@@ -217,13 +217,15 @@ SHORT = {"High": "High", "Moderate": "Mod", "Limited": "Lim", "Limited (lower co
 
 
 def sanity(themes):
-    cache = json.loads((ROOT / "data" / "cache" / "universe_screen.json").read_text())["results"]
-    return {t: {k: cache[t][k]["tier"] for k in themes} for t in SANITY}
+    from engine.build_table import load_table
+    t = load_table()
+    t = t[t["ticker"].isin(SANITY)].pivot(index="ticker", columns="theme", values="tier")
+    return {x: {k: t.loc[x, k] for k in themes} for x in SANITY if x in t.index}
 
 
 def main():
     themes = load_all()
-    univ = universe(themes)
+    univ = [r['ticker'] for r in load_universe()]
     r, dropped = big_frame(themes)
     print(f"frame: {len(r)} days x {r.shape[1]} series; dropped (short history/missing): {dropped}")
     results = {

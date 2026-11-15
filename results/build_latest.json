@@ -1,152 +1,231 @@
 {
  "preferences": {
-  "gold": "want"
+  "ai": "want",
+  "oil": "avoid"
  },
- "universe_size": 106,
+ "region": "all",
+ "universe_size": 666,
+ "funnel": [
+  {
+   "step": "Universe (scored stocks)",
+   "left": 666
+  },
+  {
+   "step": "Want AI: High or Moderate",
+   "left": 103
+  },
+  {
+   "step": "Want AI: business-linked",
+   "left": 68
+  },
+  {
+   "step": "Avoid Oil: Limited or Limited (lower confidence)",
+   "left": 15
+  }
+ ],
  "holdings": [
   {
-   "ticker": "ALB",
-   "weight_pct": 7.69,
-   "points": 1,
+   "ticker": "ADSK",
+   "weight_pct": 6.67,
    "tiers": {
-    "Gold & precious metals": "High"
+    "AI": "Moderate",
+    "Oil": "Limited (lower confidence)"
    },
-   "labels": []
+   "labels": [
+    "Oil: lower confidence"
+   ]
   },
   {
-   "ticker": "BHP",
-   "weight_pct": 7.69,
-   "points": 1,
+   "ticker": "CDNS",
+   "weight_pct": 6.67,
    "tiers": {
-    "Gold & precious metals": "High"
+    "AI": "Moderate",
+    "Oil": "Limited (lower confidence)"
    },
-   "labels": []
+   "labels": [
+    "Oil: lower confidence"
+   ]
   },
   {
-   "ticker": "CDE",
-   "weight_pct": 7.69,
-   "points": 1,
+   "ticker": "CRM",
+   "weight_pct": 6.67,
    "tiers": {
-    "Gold & precious metals": "High"
+    "AI": "High",
+    "Oil": "Limited (lower confidence)"
    },
-   "labels": []
+   "labels": [
+    "Oil: lower confidence"
+   ]
   },
   {
-   "ticker": "DG",
-   "weight_pct": 7.69,
-   "points": 1,
+   "ticker": "DASH",
+   "weight_pct": 6.67,
    "tiers": {
-    "Gold & precious metals": "High"
+    "AI": "Moderate",
+    "Oil": "Limited (lower confidence)"
    },
-   "labels": []
+   "labels": [
+    "Oil: lower confidence"
+   ]
   },
   {
-   "ticker": "FCX",
-   "weight_pct": 7.69,
-   "points": 1,
+   "ticker": "GOOGL",
+   "weight_pct": 6.67,
    "tiers": {
-    "Gold & precious metals": "High"
+    "AI": "High",
+    "Oil": "Limited (lower confidence)"
    },
-   "labels": []
+   "labels": [
+    "Oil: lower confidence"
+   ]
   },
   {
-   "ticker": "HII",
-   "weight_pct": 7.69,
-   "points": 1,
+   "ticker": "HUBB",
+   "weight_pct": 6.67,
    "tiers": {
-    "Gold & precious metals": "High"
+    "AI": "High",
+    "Oil": "Limited (lower confidence)"
    },
-   "labels": []
+   "labels": [
+    "Oil: lower confidence"
+   ]
   },
   {
-   "ticker": "NEM",
-   "weight_pct": 7.69,
-   "points": 1,
+   "ticker": "IOT",
+   "weight_pct": 6.67,
    "tiers": {
-    "Gold & precious metals": "High"
+    "AI": "Moderate",
+    "Oil": "Limited (lower confidence)"
    },
-   "labels": []
+   "labels": [
+    "Oil: lower confidence"
+   ]
   },
   {
-   "ticker": "PAAS",
-   "weight_pct": 7.69,
-   "points": 1,
+   "ticker": "IRM",
+   "weight_pct": 6.67,
    "tiers": {
-    "Gold & precious metals": "High"
+    "AI": "Moderate",
+    "Oil": "Limited (lower confidence)"
    },
-   "labels": []
+   "labels": [
+    "Oil: lower confidence"
+   ]
   },
   {
-   "ticker": "RIO",
-   "weight_pct": 7.69,
-   "points": 1,
+   "ticker": "JPM",
+   "weight_pct": 6.67,
    "tiers": {
-    "Gold & precious metals": "High"
+    "AI": "Moderate",
+    "Oil": "Limited (lower confidence)"
    },
-   "labels": []
+   "labels": [
+    "Oil: lower confidence"
+   ]
   },
   {
-   "ticker": "SCCO",
-   "weight_pct": 7.69,
-   "points": 1,
+   "ticker": "META",
+   "weight_pct": 6.67,
    "tiers": {
-    "Gold & precious metals": "High"
+    "AI": "Moderate",
+    "Oil": "Limited (lower confidence)"
    },
-   "labels": []
+   "labels": [
+    "Oil: lower confidence"
+   ]
   },
   {
-   "ticker": "SQM",
-   "weight_pct": 7.69,
-   "points": 1,
+   "ticker": "PTC",
+   "weight_pct": 6.67,
    "tiers": {
-    "Gold & precious metals": "High"
+    "AI": "Moderate",
+    "Oil": "Limited (lower confidence)"
    },
-   "labels": []
+   "labels": [
+    "Oil: lower confidence"
+   ]
   },
   {
-   "ticker": "SSRM",
-   "weight_pct": 7.69,
-   "points": 1,
+   "ticker": "ROP",
+   "weight_pct": 6.67,
    "tiers": {
-    "Gold & precious metals": "High"
+    "AI": "High",
+    "Oil": "Limited (lower confidence)"
    },
-   "labels": []
+   "labels": [
+    "Oil: lower confidence"
+   ]
   },
   {
-   "ticker": "VALE",
-   "weight_pct": 7.69,
-   "points": 1,
+   "ticker": "TOST",
+   "weight_pct": 6.67,
    "tiers": {
-    "Gold & precious metals": "High"
+    "AI": "Moderate",
+    "Oil": "Limited (lower confidence)"
    },
-   "labels": []
+   "labels": [
+    "Oil: lower confidence"
+   ]
+  },
+  {
+   "ticker": "TYL",
+   "weight_pct": 6.67,
+   "tiers": {
+    "AI": "Moderate",
+    "Oil": "Limited (lower confidence)"
+   },
+   "labels": [
+    "Oil: lower confidence"
+   ]
+  },
+  {
+   "ticker": "U",
+   "weight_pct": 6.67,
+   "tiers": {
+    "AI": "Moderate",
+    "Oil": "Limited (lower confidence)"
+   },
+   "labels": [
+    "Oil: lower confidence"
+   ]
   }
  ],
  "cash_pct": 0.0,
- "rejected_by_etf_check": [
-  "CEG",
-  "QCOM"
- ],
  "warnings": [
-  "2 regression pick(s) failed the theme-ETF confirmation: CEG, QCOM."
+  "15 pick(s) pass an 'avoid' rule only with lower confidence."
  ],
  "verification": {
   "all_pass": true,
   "checks": {
-   "gold": {
-    "theme": "Gold & precious metals",
+   "ai": {
+    "theme": "AI",
     "choice": "want",
     "goal": "all invested weight (100%) High or Moderate",
     "pass": true,
     "high_moderate_pct": 100.0,
     "by_tier_pct": {
-     "High": 100.0,
-     "Moderate": 0.0,
+     "High": 26.67,
+     "Moderate": 73.33,
      "Limited": 0.0,
      "Limited (lower confidence)": 0.0,
      "Not determined": 0.0
     },
-    "sentence": "100% of your portfolio is in stocks with High or Moderate Gold & precious metals exposure (ALB, BHP, CDE, DG, FCX, HII, NEM, PAAS, RIO, SCCO, SQM, SSRM, VALE)."
+    "sentence": "100% of your portfolio is in stocks with High or Moderate AI exposure (ADSK, CDNS, CRM, DASH, GOOGL, HUBB, IOT, IRM, JPM, META, PTC, ROP, TOST, TYL, U)."
+   },
+   "oil": {
+    "theme": "Oil",
+    "choice": "avoid",
+    "goal": "0% High, Moderate or Not determined",
+    "pass": true,
+    "high_moderate_pct": 0.0,
+    "by_tier_pct": {
+     "High": 0.0,
+     "Moderate": 0.0,
+     "Limited": 0.0,
+     "Limited (lower confidence)": 100.0,
+     "Not determined": 0.0
+    },
+    "sentence": "None of your portfolio is in stocks with High or Moderate Oil exposure."
    }
   }
  }
