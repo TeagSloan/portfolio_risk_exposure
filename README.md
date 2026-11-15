@@ -35,3 +35,26 @@ forge test
 ```
 
 Network: Monad testnet, chain ID 10143, RPC `https://testnet-rpc.monad.xyz`.
+
+## Putting it on Monad testnet (Phase 7)
+
+The contracts live in `contracts/src/` and the Python that talks to them in `chain/`.
+
+```bash
+# 1. Store the deployer wallet in a Foundry keystore (asks for the key and a password; never paste it elsewhere)
+cast wallet import deployer --interactive
+
+# 2. Deploy the oracle, exchange and factory, then copy the printed FACTORY_ADDRESS into .env
+cd contracts
+forge script script/Deploy.s.sol --rpc-url monad --account deployer --broadcast
+cd ..
+
+# 3. Publish the latest built fund's tiers and prices (plus XOM for the rejection demo)
+python -m chain.publish --extra XOM --dry-run     # shows what would be posted, sends nothing
+python -m chain.publish --extra XOM
+
+# Weekend demo: replay the last 20 trading days of real prices, one every 3 seconds
+python -m chain.publish --extra XOM --replay 20 --interval 3
+```
+
+On testnet the stocks are simulated tokens priced from our own data feed. In production this would plug into tokenized stocks.
