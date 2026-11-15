@@ -93,7 +93,6 @@ THEMES = [
         "key": "bank_lending", "name": "Bank lending / net interest income", "ground_truth": None,
         "plain": "banks that earn mostly from lending",
         "notes": "Validated by group consistency only (like AI). TLT was dropped as ground truth: over this window banks did not move opposite to long-term bonds beyond the market.",
-        "controls": ["SPY"],  # TLT stays out of the controls, as in the original interest-rates design
         "measures": "Net interest income as a share of revenue",
         "High": [
             ("MTB", ("ratio", "netInterestIncome"), "Regional bank; most revenue is lending spread, which widens as rates rise."),

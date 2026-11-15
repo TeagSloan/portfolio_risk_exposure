@@ -35,7 +35,7 @@ Measure: Crude-oil share of revenue (CVX: upstream oil & gas production share)
 | Tier 2 → Moderate | SLB | Slb N.V. | n/a | - | Oilfield services: revenue depends on drilling budgets; no disclosed oil-price share. |
 | Tier 2 → Moderate | HAL | Halliburton Company | n/a | - | Oilfield services: revenue depends on drilling budgets; no disclosed oil-price share. |
 
-### Bank lending / net interest income  (ground truth: none; controls: SPY)
+### Bank lending / net interest income  (ground truth: none; controls: SPY, TLT)
 Measure: Net interest income as a share of revenue  
 Note: Validated by group consistency only (like AI). TLT was dropped as ground truth: over this window banks did not move opposite to long-term bonds beyond the market.
 

@@ -5,6 +5,7 @@ plain: banks that earn mostly from lending
 measures: Net interest income as a share of revenue
 controls:
 - SPY
+- TLT
 ground_truth: null
 references:
   High:
