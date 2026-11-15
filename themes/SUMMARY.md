@@ -1,6 +1,6 @@
 # Theme summary
 
-### AI  (ground truth: none; controls: SPY, TLT, VALUE)
+### AI  (ground truth: none; controls: SPY, TLT)
 Measure: AI share of revenue
 
 | Group | Ticker | Company | Evidence | FY | Reason |
@@ -51,7 +51,8 @@ Note: Validated by group consistency only (like AI). TLT was dropped as ground t
 | Control | COST | Costco Wholesale Corporation | 0.2% | 2026 | Warehouse retailer with no lending or deposit business. |
 
 ### Gold & precious metals  (ground truth: GLD; controls: SPY, TLT, VALUE)
-Measure: Gold and silver share of revenue
+Measure: Gold and silver share of revenue  
+Note: Exception (approved): no Moderate references. FCX and SCCO (copper miners) were dropped.
 
 | Group | Ticker | Company | Evidence | FY | Reason |
 |---|---|---|---|---|---|
@@ -59,8 +60,6 @@ Measure: Gold and silver share of revenue
 | High | CDE | Coeur Mining, Inc. | 100.0% | 2025 | Gold and silver miner; all revenue is precious metals. |
 | High | PAAS | Pan American Silver Corp. | 83.8% | 2025 | Silver and gold miner. |
 | High | NEM | Newmont Corporation | 63.2% | 2025 | World's largest gold miner. Lower bound: gold inside concentrate isn't split out. |
-| Moderate | FCX | Freeport-McMoRan Inc. | 15.0% | 2025 | Copper miner with a large gold by-product from Grasberg. |
-| Moderate | SCCO | Southern Copper Corporation | 7.3% | 2025 | Copper miner with a silver by-product. |
 | Control | KO | The Coca-Cola Company | 0% | - | Soft-drink company; no metals revenue or link to gold prices. |
 | Tier 2 → High | WPM | Wheaton Precious Metals Corp. | n/a | - | Precious-metals streaming company; FMP has no segment data. |
 | Tier 2 → High | KGC | Kinross Gold Corporation | n/a | - | Gold miner; FMP has no segment data. |
@@ -111,18 +110,17 @@ Measure: Copper and lithium share of revenue
 | Tier 2 → High | HBM | Hudbay Minerals Inc. | n/a | - | Copper miner; FMP has no segment data. |
 | Tier 2 → High | LAC | Lithium Americas Corp. | n/a | - | Lithium developer; no meaningful revenue yet. |
 
-### Clean energy & uranium  (ground truth: ICLN; controls: SPY, TLT, VALUE)
-Measure: Solar, renewables and nuclear-fuel share of revenue
+### Clean energy (solar & renewables)  (ground truth: ICLN; controls: SPY, TLT, VALUE)
+Measure: Solar and renewable-energy share of revenue  
+Note: Exception (approved): 1 Moderate reference (NEE). Uranium/nuclear names (LEU, BWXT, CCJ) were dropped to keep the group to solar and renewables.
 
 | Group | Ticker | Company | Evidence | FY | Reason |
 |---|---|---|---|---|---|
 | High | FSLR | First Solar, Inc. | 100.0% | 2025 | US solar panel maker; all revenue is solar modules. |
 | High | SEDG | SolarEdge Technologies, Inc. | 93.5% | 2025 | Solar inverters and optimizers. |
-| High | LEU | Centrus Energy Corp. | 100.0% | 2025 | Nuclear fuel enrichment; all segments are nuclear fuel. |
+| High | RUN | Sunrun Inc. | 100.0% | 2025 | Residential solar installer; all segments are solar systems and contracts. |
 | Moderate | NEE | NextEra Energy, Inc. | 32.4% | 2025 | Utility; NextEra Energy Resources (renewables developer) is about a third. |
-| Moderate | BWXT | BWX Technologies, Inc. | 26.6% | 2025 | Mostly naval nuclear; commercial nuclear is about a quarter. |
 | Control | KO | The Coca-Cola Company | 0% | - | Soft-drink company; no energy-generation revenue. |
-| Tier 2 → High | CCJ | Cameco Corporation | n/a | - | Largest US-listed uranium miner; FMP has no segment data. |
 | Tier 2 → High | ENPH | Enphase Energy, Inc. | n/a | - | Solar microinverters; FMP reports a single segment with no product split. |
 | Tier 2 → High | BEP | Brookfield Renewable Partners  | n/a | - | Renewable power producer; FMP has no segment data. |
 
@@ -142,7 +140,7 @@ Measure: Discretionary-spending share of revenue
 | Tier 2 → High | MCD | McDonald's Corporation | n/a | - | Restaurants; FMP segments are geographic, not by spending type. |
 | Tier 2 → Moderate | AMZN | Amazon.com, Inc. | n/a | - | Online retail is large, but FMP doesn't split discretionary from essentials. |
 
-### Cybersecurity  (ground truth: CIBR; controls: SPY, TLT, VALUE)
+### Cybersecurity  (ground truth: CIBR; controls: SPY, TLT)
 Measure: Security share of revenue  
 Note: Exception (approved): only 1 Moderate reference instead of 2-4. FMP doesn't disclose a security share for any other company with partial exposure.
 

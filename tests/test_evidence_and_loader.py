@@ -79,8 +79,9 @@ def test_real_theme_files_are_valid():
     assert len(themes) == 10
     for t in themes.values():
         refs = [r["ticker"] for g in ("High", "Moderate") for r in t["references"][g]]
-        assert t["controls"] == ["SPY", "TLT", "VALUE"]
+        expected = ["SPY", "TLT"] if t["key"] in ("ai", "cyber") else ["SPY", "TLT", "VALUE"]
+        assert t["controls"] == expected
         assert t["control"]["ticker"] not in refs
         assert 3 <= len(t["references"]["High"]) <= 5
-        assert 1 <= len(t["references"]["Moderate"]) <= 4
+        assert 0 <= len(t["references"]["Moderate"]) <= 4
         assert "plain" in t

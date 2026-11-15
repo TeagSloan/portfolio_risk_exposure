@@ -1,7 +1,8 @@
 """Price check: do the theme's reference companies actually trade like the theme?
 
 For each theme:
-"Beyond the market" means after controlling for SPY and VALUE (IWD minus IWF, the value-vs-growth swing).
+"Beyond the market" means after controlling for SPY and VALUE (IWD minus IWF, the value-vs-growth swing);
+AI and Cybersecurity control for SPY only, matching their regression controls.
 - Each reference should move with its OWN group beyond the market: regress it on SPY, VALUE and the average
   return of the other members of its group. Pass = that coefficient is positive and significant
   (one-sided p < 0.05). If its group has no other members, the other group's average is used instead.
@@ -45,7 +46,8 @@ def check_theme(theme: dict) -> list[dict]:
     ctrl = theme["control"]["ticker"]
     tickers = ["SPY", "VALUE"] + refs["High"] + refs["Moderate"] + [ctrl] + ([gt] if gt else [])
     r = get_returns(tickers)
-    spy, value = r["SPY"], r["VALUE"]
+    spy = r["SPY"]
+    value = r["VALUE"] if "VALUE" in theme["controls"] else None  # AI and Cyber don't use the VALUE control
     all_refs = refs["High"] + refs["Moderate"]
     rows = []
 

@@ -6,7 +6,6 @@ measures: Security share of revenue
 controls:
 - SPY
 - TLT
-- VALUE
 ground_truth: CIBR
 references:
   High:

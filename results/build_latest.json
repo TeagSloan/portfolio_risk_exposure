@@ -3,23 +3,11 @@
   "ai": "want",
   "oil": "avoid"
  },
- "universe_size": 73,
+ "universe_size": 108,
  "holdings": [
   {
-   "ticker": "BWXT",
-   "weight_pct": 15.0,
-   "points": 1,
-   "tiers": {
-    "AI": "Moderate",
-    "Oil": "Limited (lower confidence)"
-   },
-   "labels": [
-    "Oil: lower confidence"
-   ]
-  },
-  {
-   "ticker": "XLK",
-   "weight_pct": 15.0,
+   "ticker": "ARM",
+   "weight_pct": 14.29,
    "points": 2,
    "tiers": {
     "AI": "High",
@@ -30,18 +18,105 @@
    ]
   },
   {
-   "ticker": "CASH",
-   "weight_pct": 70.0,
-   "points": null,
-   "tiers": null,
-   "labels": []
+   "ticker": "GOOGL",
+   "weight_pct": 14.29,
+   "points": 2,
+   "tiers": {
+    "AI": "High",
+    "Oil": "Limited (lower confidence)"
+   },
+   "labels": [
+    "Oil: lower confidence"
+   ]
+  },
+  {
+   "ticker": "INTC",
+   "weight_pct": 14.29,
+   "points": 2,
+   "tiers": {
+    "AI": "High",
+    "Oil": "Limited (lower confidence)"
+   },
+   "labels": [
+    "Oil: lower confidence"
+   ]
+  },
+  {
+   "ticker": "LRCX",
+   "weight_pct": 14.29,
+   "points": 2,
+   "tiers": {
+    "AI": "High",
+    "Oil": "Limited (lower confidence)"
+   },
+   "labels": [
+    "Oil: lower confidence"
+   ]
+  },
+  {
+   "ticker": "XLK",
+   "weight_pct": 14.29,
+   "points": 2,
+   "tiers": {
+    "AI": "High",
+    "Oil": "Limited (lower confidence)"
+   },
+   "labels": [
+    "Oil: lower confidence"
+   ]
+  },
+  {
+   "ticker": "AMZN",
+   "weight_pct": 7.14,
+   "points": 1,
+   "tiers": {
+    "AI": "Moderate",
+    "Oil": "Limited (lower confidence)"
+   },
+   "labels": [
+    "Oil: lower confidence"
+   ]
+  },
+  {
+   "ticker": "APH",
+   "weight_pct": 7.14,
+   "points": 1,
+   "tiers": {
+    "AI": "Moderate",
+    "Oil": "Limited (lower confidence)"
+   },
+   "labels": [
+    "Oil: lower confidence"
+   ]
+  },
+  {
+   "ticker": "CDNS",
+   "weight_pct": 7.14,
+   "points": 1,
+   "tiers": {
+    "AI": "Moderate",
+    "Oil": "Limited (lower confidence)"
+   },
+   "labels": [
+    "Oil: lower confidence"
+   ]
+  },
+  {
+   "ticker": "META",
+   "weight_pct": 7.14,
+   "points": 1,
+   "tiers": {
+    "AI": "Moderate",
+    "Oil": "Limited (lower confidence)"
+   },
+   "labels": [
+    "Oil: lower confidence"
+   ]
   }
  ],
- "cash_pct": 70.0,
+ "cash_pct": 0.0,
  "warnings": [
-  "Only 2 holding(s) pass every rule (target is at least 6). The basket is small and concentrated.",
-  "With 2 holding(s) and a 15% cap, only 30% can be invested; 70% is held as cash.",
-  "2 pick(s) pass an 'avoid' rule only with lower confidence: BWXT, XLK."
+  "9 pick(s) pass an 'avoid' rule only with lower confidence: AMZN, APH, ARM, CDNS, GOOGL, INTC, LRCX, META, XLK."
  ],
  "verification": {
   "all_pass": true,
@@ -49,17 +124,17 @@
    "ai": {
     "theme": "AI",
     "choice": "want",
-    "goal": "all invested weight (30%) High or Moderate",
+    "goal": "all invested weight (100%) High or Moderate",
     "pass": true,
-    "high_moderate_pct": 30.0,
+    "high_moderate_pct": 100.0,
     "by_tier_pct": {
-     "High": 15.0,
-     "Moderate": 15.0,
+     "High": 71.43,
+     "Moderate": 28.57,
      "Limited": 0.0,
      "Limited (lower confidence)": 0.0,
      "Not determined": 0.0
     },
-    "sentence": "30% of your portfolio is in stocks with High or Moderate AI exposure (BWXT, XLK)."
+    "sentence": "100% of your portfolio is in stocks with High or Moderate AI exposure (ARM, GOOGL, INTC, LRCX, XLK, AMZN, APH, CDNS, META)."
    },
    "oil": {
     "theme": "Oil",
@@ -71,7 +146,7 @@
      "High": 0.0,
      "Moderate": 0.0,
      "Limited": 0.0,
-     "Limited (lower confidence)": 30.0,
+     "Limited (lower confidence)": 100.0,
      "Not determined": 0.0
     },
     "sentence": "None of your portfolio is in stocks with High or Moderate Oil exposure."

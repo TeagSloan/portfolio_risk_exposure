@@ -47,6 +47,10 @@ AVOID_OK = {LIMITED, LIMITED_LOW}
 # Well-known names added on top of the theme references.
 EXTRAS = ["SMH", "AAPL", "KO", "PG", "WMT", "JNJ", "XOM",
           "XLK", "XLE", "XLF", "XLP", "XLU", "XLI"]
+# AI-adjacent, non-oil names: chips, chip equipment, software/cloud, data-center power and real estate.
+AI_ADJACENT = ["AMD", "INTC", "QCOM", "TXN", "ADI", "MRVL", "LRCX", "AMAT", "KLAC", "ASML", "ARM", "SNPS", "CDNS",
+               "ANET", "DELL", "HPE", "SMCI", "ORCL", "NOW", "PLTR", "ADBE", "INTU", "IBM", "AMZN", "GOOGL", "META",
+               "CRWV", "CRM", "APH", "ETN", "GEV", "CEG", "PWR", "DLR", "EQIX", "NFLX"]
 
 
 class BuildError(ValueError):
@@ -55,7 +59,7 @@ class BuildError(ValueError):
 
 def universe(themes: dict[str, dict]) -> list[str]:
     refs = [r["ticker"] for t in themes.values() for g in ("High", "Moderate") for r in t["references"][g]]
-    return sorted(set(refs) | set(EXTRAS))
+    return sorted(set(refs) | set(EXTRAS) | set(AI_ADJACENT))
 
 
 def _cache_key(themes: dict[str, dict], tickers: list[str]) -> str:

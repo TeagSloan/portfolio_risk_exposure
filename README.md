@@ -10,8 +10,9 @@ Everything in this repository was built at **Monad Blitz Oregon (Nov 15, 2026)**
 
 ## How it works
 
-1. **Themes.** Each theme (AI, Oil, Interest rates, …) has reference companies with a disclosed exposure number, such as AI's share of revenue.
-2. **Exposure engine.** For each stock, a regression measures how much its daily returns move with each reference group, after controlling for the overall market (SPY) and bonds (TLT). The stock gets a tier: High / Moderate / Limited / Limited (lower confidence) / Not determined.
+1. **Themes.** Each theme (AI, Oil, Bank lending, …) has reference companies with a disclosed exposure number, such as AI's share of revenue.
+2. **Exposure engine.** For each stock, a regression measures how much its daily returns move with each reference group, after controlling for the overall market (SPY), bonds (TLT) and the value-vs-growth swing (IWD minus IWF). The stock gets a tier: High / Moderate / Limited / Limited (lower confidence) / Not determined.
+   - *Why AI and Cybersecurity skip the value-vs-growth control:* the growth index is mostly these themes' own stocks, so controlling for it removes the very signal being measured. With it, oil producers wrongly came out "AI High"; without it, they don't.
 3. **Portfolio.** Your choices (want / avoid per theme) become a weighted basket, which is screened again to confirm it matches.
 4. **Risk.** A Monte Carlo simulation shows the range of outcomes and theme shocks (e.g. oil +30%).
 5. **On-chain fund.** The basket launches as an ERC-20 fund token on Monad testnet. Deposits mint at NAV, redemptions burn, and the mandate rules can't be broken.

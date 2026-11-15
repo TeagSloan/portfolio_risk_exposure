@@ -38,21 +38,7 @@ references:
     fiscal_year: 2025
     source: 'FMP revenue-product-segmentation FY2025: Gold Dore / sum of all product segments'
     reason: 'World''s largest gold miner. Lower bound: gold inside concentrate isn''t split out.'
-  Moderate:
-  - ticker: FCX
-    name: Freeport-McMoRan Inc.
-    evidence_pct: 15.0
-    measures: Gold and silver share of revenue
-    fiscal_year: 2025
-    source: 'FMP revenue-product-segmentation FY2025: Gold / sum of all product segments'
-    reason: Copper miner with a large gold by-product from Grasberg.
-  - ticker: SCCO
-    name: Southern Copper Corporation
-    evidence_pct: 7.3
-    measures: Gold and silver share of revenue
-    fiscal_year: 2025
-    source: 'FMP revenue-product-segmentation FY2025: Silver / sum of all product segments'
-    reason: Copper miner with a silver by-product.
+  Moderate: []
 control:
   ticker: KO
   name: The Coca-Cola Company
@@ -80,3 +66,4 @@ direct_classification:
   evidence_pct: null
   source: No disclosed number (Tier 2)
   reason: Gold miner; FMP's latest segment data is from 2013, too old to cite.
+notes: 'Exception (approved): no Moderate references. FCX and SCCO (copper miners) were dropped.'

@@ -36,7 +36,7 @@ AI = {
     "key": "ai",
     "name": "AI",
     "measures": "AI share of revenue",
-    "controls": ["SPY", "TLT", "VALUE"],
+    "controls": ["SPY", "TLT"],  # no VALUE: the growth index (IWF) is mostly AI stocks
     "ground_truth": None,
     "references": {
         "High": [
@@ -117,10 +117,11 @@ THEMES = [
             ("PAAS", ["Refined Silver and Gold", "Silver Concentrate"], "Silver and gold miner."),
             ("NEM", ["Gold Dore"], "World's largest gold miner. Lower bound: gold inside concentrate isn't split out."),
         ],
-        "Moderate": [
-            ("FCX", ["Gold"], "Copper miner with a large gold by-product from Grasberg."),
-            ("SCCO", ["Silver"], "Copper miner with a silver by-product."),
-        ],
+        # FCX and SCCO were dropped: they're copper miners, and copper co-moves with unrelated themes.
+        # No real partial precious-metals company found (SBSW and HL are mostly precious metals -> High-level;
+        # BVN's FMP segment labels are unclear), so Moderate is empty.
+        "Moderate": [],
+        "notes": "Exception (approved): no Moderate references. FCX and SCCO (copper miners) were dropped.",
         "control": ("KO", "Soft-drink company; no metals revenue or link to gold prices."),
         "direct": [
             ("WPM", "High", "Precious-metals streaming company; FMP has no segment data."),
@@ -190,20 +191,21 @@ THEMES = [
         ],
     },
     {
-        "key": "clean_energy", "plain": "clean-energy and nuclear-fuel companies", "name": "Clean energy & uranium", "ground_truth": "ICLN",
-        "measures": "Solar, renewables and nuclear-fuel share of revenue",
+        "key": "clean_energy", "plain": "solar and renewable-energy companies", "name": "Clean energy (solar & renewables)",
+        "ground_truth": "ICLN",
+        "measures": "Solar and renewable-energy share of revenue",
+        "notes": "Exception (approved): 1 Moderate reference (NEE). Uranium/nuclear names (LEU, BWXT, CCJ) were "
+                 "dropped to keep the group to solar and renewables.",
         "High": [
             ("FSLR", ALL, "US solar panel maker; all revenue is solar modules."),
             ("SEDG", ["Optimizers", "Inverters", "Energy Storage Systems"], "Solar inverters and optimizers."),
-            ("LEU", ALL, "Nuclear fuel enrichment; all segments are nuclear fuel."),
+            ("RUN", ALL, "Residential solar installer; all segments are solar systems and contracts."),
         ],
         "Moderate": [
             ("NEE", ["NEER"], "Utility; NextEra Energy Resources (renewables developer) is about a third."),
-            ("BWXT", ["Commercial Operations Segment"], "Mostly naval nuclear; commercial nuclear is about a quarter."),
         ],
         "control": ("KO", "Soft-drink company; no energy-generation revenue."),
         "direct": [
-            ("CCJ", "High", "Largest US-listed uranium miner; FMP has no segment data."),
             ("ENPH", "High", "Solar microinverters; FMP reports a single segment with no product split."),
             ("BEP", "High", "Renewable power producer; FMP has no segment data."),
         ],
@@ -233,6 +235,7 @@ THEMES = [
     },
     {
         "key": "cyber", "plain": "cybersecurity companies", "name": "Cybersecurity", "ground_truth": "CIBR",
+        "controls": ["SPY", "TLT"],  # no VALUE: growth stocks dominate IWF, so the control removes the signal
         "measures": "Security share of revenue",
         "notes": "Exception (approved): only 1 Moderate reference instead of 2-4. FMP doesn't disclose a "
                  "security share for any other company with partial exposure.",
