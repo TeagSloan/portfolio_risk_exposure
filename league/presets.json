@@ -6,22 +6,39 @@
    "preferences": {
     "ai": "want"
    },
-   "ranked": [
-    "VRT",
-    "NVDA",
-    "AVGO",
-    "MU",
+   "picks": [
     "TSM",
+    "NVDA",
+    "MSFT",
     "VST",
-    "GEN",
+    "AVGO"
+   ],
+   "picked_for": [
+    "AI",
+    "AI",
+    "AI",
+    "AI",
+    "AI"
+   ],
+   "ranked": [
+    "TSM",
+    "NVDA",
+    "MSFT",
+    "VST",
+    "AVGO",
+    "VRT",
+    "ORCL",
     "CRWD"
    ],
-   "picks": [
-    "VRT",
-    "NVDA",
-    "AVGO",
-    "MU",
-    "TSM"
+   "ranked_for": [
+    "AI",
+    "AI",
+    "AI",
+    "AI",
+    "AI",
+    "AI",
+    "AI",
+    "AI"
    ],
    "weights_bps": [
     2000,
@@ -36,20 +53,35 @@
    "preferences": {
     "bank_lending": "want"
    },
-   "ranked": [
-    "RF",
-    "CFG",
-    "MTB",
-    "ZION",
-    "BAC",
-    "WFC"
-   ],
    "picks": [
-    "RF",
+    "BAC",
     "CFG",
+    "RF",
+    "WFC",
+    "MTB"
+   ],
+   "picked_for": [
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income"
+   ],
+   "ranked": [
+    "BAC",
+    "CFG",
+    "RF",
+    "WFC",
     "MTB",
-    "ZION",
-    "BAC"
+    "C"
+   ],
+   "ranked_for": [
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income"
    ],
    "weights_bps": [
     2000,
@@ -64,20 +96,33 @@
    "preferences": {
     "clean_energy": "want"
    },
-   "ranked": [
-    "RUN",
+   "picks": [
     "FSLR",
-    "SEDG",
+    "RUN",
     "NEE",
-    "ENPH",
+    "SEDG",
     "BEP"
    ],
-   "picks": [
-    "RUN",
+   "picked_for": [
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)"
+   ],
+   "ranked": [
     "FSLR",
-    "SEDG",
+    "RUN",
     "NEE",
-    "ENPH"
+    "SEDG",
+    "BEP"
+   ],
+   "ranked_for": [
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)"
    ],
    "weights_bps": [
     2000,
@@ -92,20 +137,35 @@
    "preferences": {
     "consumer_disc": "want"
    },
-   "ranked": [
-    "TJX",
+   "picks": [
+    "COST",
     "HD",
+    "TJX",
+    "NKE",
+    "RCL"
+   ],
+   "picked_for": [
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary"
+   ],
+   "ranked": [
+    "COST",
+    "HD",
+    "TJX",
     "NKE",
     "RCL",
-    "COST",
     "DG"
    ],
-   "picks": [
-    "TJX",
-    "HD",
-    "NKE",
-    "RCL",
-    "COST"
+   "ranked_for": [
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary"
    ],
    "weights_bps": [
     2000,
@@ -120,27 +180,35 @@
    "preferences": {
     "cyber": "want"
    },
-   "ranked": [
-    "PANW",
-    "CRWD",
-    "FTNT",
-    "CHKP",
-    "CSCO",
-    "GEN"
-   ],
    "picks": [
     "PANW",
     "CRWD",
     "FTNT",
-    "CHKP",
     "CSCO"
    ],
+   "picked_for": [
+    "Cybersecurity",
+    "Cybersecurity",
+    "Cybersecurity",
+    "Cybersecurity"
+   ],
+   "ranked": [
+    "PANW",
+    "CRWD",
+    "FTNT",
+    "CSCO"
+   ],
+   "ranked_for": [
+    "Cybersecurity",
+    "Cybersecurity",
+    "Cybersecurity",
+    "Cybersecurity"
+   ],
    "weights_bps": [
-    2000,
-    2000,
-    2000,
-    2000,
-    2000
+    2500,
+    2500,
+    2500,
+    2500
    ]
   },
   {
@@ -148,27 +216,30 @@
    "preferences": {
     "defense": "want"
    },
-   "ranked": [
-    "GD",
-    "HII",
-    "LMT",
-    "NOC",
-    "RTX",
-    "GE"
-   ],
    "picks": [
-    "GD",
-    "HII",
-    "LMT",
-    "NOC",
-    "RTX"
+    "RTX",
+    "GE",
+    "LMT"
+   ],
+   "picked_for": [
+    "Aerospace & defense",
+    "Aerospace & defense",
+    "Aerospace & defense"
+   ],
+   "ranked": [
+    "RTX",
+    "GE",
+    "LMT"
+   ],
+   "ranked_for": [
+    "Aerospace & defense",
+    "Aerospace & defense",
+    "Aerospace & defense"
    ],
    "weights_bps": [
-    2000,
-    2000,
-    2000,
-    2000,
-    2000
+    3334,
+    3333,
+    3333
    ]
   },
   {
@@ -176,27 +247,30 @@
    "preferences": {
     "gold": "want"
    },
-   "ranked": [
-    "PAAS",
-    "NEM",
-    "CDE",
-    "SSRM",
-    "AEM",
-    "WPM"
-   ],
    "picks": [
-    "PAAS",
     "NEM",
-    "CDE",
-    "SSRM",
-    "AEM"
+    "PAAS",
+    "CDE"
+   ],
+   "picked_for": [
+    "Gold & precious metals",
+    "Gold & precious metals",
+    "Gold & precious metals"
+   ],
+   "ranked": [
+    "NEM",
+    "PAAS",
+    "CDE"
+   ],
+   "ranked_for": [
+    "Gold & precious metals",
+    "Gold & precious metals",
+    "Gold & precious metals"
    ],
    "weights_bps": [
-    2000,
-    2000,
-    2000,
-    2000,
-    2000
+    3334,
+    3333,
+    3333
    ]
   },
   {
@@ -204,27 +278,35 @@
    "preferences": {
     "healthcare": "want"
    },
-   "ranked": [
-    "MRK",
-    "PFE",
-    "LLY",
-    "GEHC",
-    "BMY",
-    "AMGN"
-   ],
    "picks": [
     "MRK",
-    "PFE",
     "LLY",
-    "GEHC",
-    "BMY"
+    "PFE",
+    "GEHC"
+   ],
+   "picked_for": [
+    "Healthcare",
+    "Healthcare",
+    "Healthcare",
+    "Healthcare"
+   ],
+   "ranked": [
+    "MRK",
+    "LLY",
+    "PFE",
+    "GEHC"
+   ],
+   "ranked_for": [
+    "Healthcare",
+    "Healthcare",
+    "Healthcare",
+    "Healthcare"
    ],
    "weights_bps": [
-    2000,
-    2000,
-    2000,
-    2000,
-    2000
+    2500,
+    2500,
+    2500,
+    2500
    ]
   },
   {
@@ -232,20 +314,35 @@
    "preferences": {
     "metals": "want"
    },
-   "ranked": [
-    "BHP",
-    "SCCO",
-    "SQM",
-    "FCX",
-    "ALB",
-    "RIO"
-   ],
    "picks": [
     "BHP",
+    "RIO",
     "SCCO",
-    "SQM",
     "FCX",
-    "ALB"
+    "SQM"
+   ],
+   "picked_for": [
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)"
+   ],
+   "ranked": [
+    "BHP",
+    "RIO",
+    "SCCO",
+    "FCX",
+    "SQM",
+    "VALE"
+   ],
+   "ranked_for": [
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)"
    ],
    "weights_bps": [
     2000,
@@ -260,20 +357,33 @@
    "preferences": {
     "oil": "want"
    },
-   "ranked": [
-    "PR",
-    "FANG",
-    "EOG",
-    "COP",
+   "picks": [
     "CVX",
+    "PR",
+    "COP",
+    "EOG",
     "SHEL"
    ],
-   "picks": [
+   "picked_for": [
+    "Oil",
+    "Oil",
+    "Oil",
+    "Oil",
+    "Oil"
+   ],
+   "ranked": [
+    "CVX",
     "PR",
-    "FANG",
-    "EOG",
     "COP",
-    "CVX"
+    "EOG",
+    "SHEL"
+   ],
+   "ranked_for": [
+    "Oil",
+    "Oil",
+    "Oil",
+    "Oil",
+    "Oil"
    ],
    "weights_bps": [
     2000,
@@ -289,21 +399,37 @@
     "ai": "want",
     "oil": "avoid"
    },
-   "ranked": [
-    "VRT",
+   "picks": [
     "NVDA",
-    "AVGO",
-    "MU",
     "VST",
-    "GEN",
+    "AVGO",
+    "VRT",
+    "MSFT"
+   ],
+   "picked_for": [
+    "AI",
+    "AI",
+    "AI",
+    "AI",
+    "AI"
+   ],
+   "ranked": [
+    "NVDA",
+    "VST",
+    "AVGO",
+    "VRT",
+    "MSFT",
+    "ORCL",
     "CRWD"
    ],
-   "picks": [
-    "VRT",
-    "NVDA",
-    "AVGO",
-    "MU",
-    "VST"
+   "ranked_for": [
+    "AI",
+    "AI",
+    "AI",
+    "AI",
+    "AI",
+    "AI",
+    "AI"
    ],
    "weights_bps": [
     2000,
@@ -319,20 +445,35 @@
     "bank_lending": "want",
     "oil": "avoid"
    },
-   "ranked": [
-    "RF",
-    "CFG",
-    "MTB",
-    "ZION",
-    "BAC",
-    "WFC"
-   ],
    "picks": [
-    "RF",
+    "BAC",
     "CFG",
+    "RF",
+    "WFC",
+    "MTB"
+   ],
+   "picked_for": [
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income"
+   ],
+   "ranked": [
+    "BAC",
+    "CFG",
+    "RF",
+    "WFC",
     "MTB",
-    "ZION",
-    "BAC"
+    "C"
+   ],
+   "ranked_for": [
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income"
    ],
    "weights_bps": [
     2000,
@@ -348,20 +489,33 @@
     "clean_energy": "want",
     "oil": "avoid"
    },
-   "ranked": [
-    "RUN",
+   "picks": [
     "FSLR",
-    "SEDG",
+    "RUN",
     "NEE",
-    "ENPH",
+    "SEDG",
     "BEP"
    ],
-   "picks": [
-    "RUN",
+   "picked_for": [
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)"
+   ],
+   "ranked": [
     "FSLR",
-    "SEDG",
+    "RUN",
     "NEE",
-    "ENPH"
+    "SEDG",
+    "BEP"
+   ],
+   "ranked_for": [
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)"
    ],
    "weights_bps": [
     2000,
@@ -377,20 +531,35 @@
     "consumer_disc": "want",
     "oil": "avoid"
    },
-   "ranked": [
-    "TJX",
+   "picks": [
+    "COST",
     "HD",
+    "TJX",
+    "NKE",
+    "RCL"
+   ],
+   "picked_for": [
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary"
+   ],
+   "ranked": [
+    "COST",
+    "HD",
+    "TJX",
     "NKE",
     "RCL",
-    "COST",
     "DG"
    ],
-   "picks": [
-    "TJX",
-    "HD",
-    "NKE",
-    "RCL",
-    "COST"
+   "ranked_for": [
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary"
    ],
    "weights_bps": [
     2000,
@@ -406,27 +575,35 @@
     "cyber": "want",
     "oil": "avoid"
    },
-   "ranked": [
-    "PANW",
-    "CRWD",
-    "FTNT",
-    "CHKP",
-    "CSCO",
-    "GEN"
-   ],
    "picks": [
     "PANW",
     "CRWD",
     "FTNT",
-    "CHKP",
     "CSCO"
    ],
+   "picked_for": [
+    "Cybersecurity",
+    "Cybersecurity",
+    "Cybersecurity",
+    "Cybersecurity"
+   ],
+   "ranked": [
+    "PANW",
+    "CRWD",
+    "FTNT",
+    "CSCO"
+   ],
+   "ranked_for": [
+    "Cybersecurity",
+    "Cybersecurity",
+    "Cybersecurity",
+    "Cybersecurity"
+   ],
    "weights_bps": [
-    2000,
-    2000,
-    2000,
-    2000,
-    2000
+    2500,
+    2500,
+    2500,
+    2500
    ]
   },
   {
@@ -435,102 +612,25 @@
     "defense": "want",
     "oil": "avoid"
    },
-   "ranked": [
-    "GD",
-    "HII",
-    "LMT",
-    "NOC",
+   "picks": [
     "RTX",
-    "GE"
+    "GE",
+    "LMT"
    ],
-   "picks": [
-    "GD",
-    "HII",
-    "LMT",
-    "NOC",
-    "RTX"
+   "picked_for": [
+    "Aerospace & defense",
+    "Aerospace & defense",
+    "Aerospace & defense"
    ],
-   "weights_bps": [
-    2000,
-    2000,
-    2000,
-    2000,
-    2000
-   ]
-  },
-  {
-   "key": "gold:want,oil:avoid",
-   "preferences": {
-    "gold": "want",
-    "oil": "avoid"
-   },
    "ranked": [
-    "PAAS",
-    "NEM",
-    "CDE",
-    "SSRM",
-    "AEM",
-    "WPM"
+    "RTX",
+    "GE",
+    "LMT"
    ],
-   "picks": [
-    "PAAS",
-    "NEM",
-    "CDE",
-    "SSRM",
-    "AEM"
-   ],
-   "weights_bps": [
-    2000,
-    2000,
-    2000,
-    2000,
-    2000
-   ]
-  },
-  {
-   "key": "healthcare:want,oil:avoid",
-   "preferences": {
-    "healthcare": "want",
-    "oil": "avoid"
-   },
-   "ranked": [
-    "MRK",
-    "PFE",
-    "LLY",
-    "GEHC",
-    "BMY",
-    "AMGN"
-   ],
-   "picks": [
-    "MRK",
-    "PFE",
-    "LLY",
-    "GEHC",
-    "BMY"
-   ],
-   "weights_bps": [
-    2000,
-    2000,
-    2000,
-    2000,
-    2000
-   ]
-  },
-  {
-   "key": "metals:want,oil:avoid",
-   "preferences": {
-    "metals": "want",
-    "oil": "avoid"
-   },
-   "ranked": [
-    "BHP",
-    "SQM",
-    "RIO"
-   ],
-   "picks": [
-    "BHP",
-    "SQM",
-    "RIO"
+   "ranked_for": [
+    "Aerospace & defense",
+    "Aerospace & defense",
+    "Aerospace & defense"
    ],
    "weights_bps": [
     3334,
@@ -539,25 +639,146 @@
    ]
   },
   {
+   "key": "gold:want,oil:avoid",
+   "preferences": {
+    "gold": "want",
+    "oil": "avoid"
+   },
+   "picks": [
+    "NEM",
+    "PAAS",
+    "CDE"
+   ],
+   "picked_for": [
+    "Gold & precious metals",
+    "Gold & precious metals",
+    "Gold & precious metals"
+   ],
+   "ranked": [
+    "NEM",
+    "PAAS",
+    "CDE"
+   ],
+   "ranked_for": [
+    "Gold & precious metals",
+    "Gold & precious metals",
+    "Gold & precious metals"
+   ],
+   "weights_bps": [
+    3334,
+    3333,
+    3333
+   ]
+  },
+  {
+   "key": "healthcare:want,oil:avoid",
+   "preferences": {
+    "healthcare": "want",
+    "oil": "avoid"
+   },
+   "picks": [
+    "MRK",
+    "LLY",
+    "PFE",
+    "GEHC"
+   ],
+   "picked_for": [
+    "Healthcare",
+    "Healthcare",
+    "Healthcare",
+    "Healthcare"
+   ],
+   "ranked": [
+    "MRK",
+    "LLY",
+    "PFE",
+    "GEHC"
+   ],
+   "ranked_for": [
+    "Healthcare",
+    "Healthcare",
+    "Healthcare",
+    "Healthcare"
+   ],
+   "weights_bps": [
+    2500,
+    2500,
+    2500,
+    2500
+   ]
+  },
+  {
+   "key": "metals:want,oil:avoid",
+   "preferences": {
+    "metals": "want",
+    "oil": "avoid"
+   },
+   "picks": [
+    "BHP",
+    "RIO",
+    "SQM",
+    "VALE"
+   ],
+   "picked_for": [
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)"
+   ],
+   "ranked": [
+    "BHP",
+    "RIO",
+    "SQM",
+    "VALE"
+   ],
+   "ranked_for": [
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)"
+   ],
+   "weights_bps": [
+    2500,
+    2500,
+    2500,
+    2500
+   ]
+  },
+  {
    "key": "ai:avoid,bank_lending:want",
    "preferences": {
     "bank_lending": "want",
     "ai": "avoid"
    },
-   "ranked": [
-    "RF",
-    "CFG",
-    "MTB",
-    "ZION",
-    "BAC",
-    "WFC"
-   ],
    "picks": [
-    "RF",
+    "BAC",
     "CFG",
+    "RF",
+    "WFC",
+    "MTB"
+   ],
+   "picked_for": [
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income"
+   ],
+   "ranked": [
+    "BAC",
+    "CFG",
+    "RF",
+    "WFC",
     "MTB",
-    "ZION",
-    "BAC"
+    "C"
+   ],
+   "ranked_for": [
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income"
    ],
    "weights_bps": [
     2000,
@@ -573,20 +794,33 @@
     "clean_energy": "want",
     "ai": "avoid"
    },
-   "ranked": [
-    "RUN",
+   "picks": [
     "FSLR",
-    "SEDG",
+    "RUN",
     "NEE",
-    "ENPH",
+    "SEDG",
     "BEP"
    ],
-   "picks": [
-    "RUN",
+   "picked_for": [
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)"
+   ],
+   "ranked": [
     "FSLR",
-    "SEDG",
+    "RUN",
     "NEE",
-    "ENPH"
+    "SEDG",
+    "BEP"
+   ],
+   "ranked_for": [
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)"
    ],
    "weights_bps": [
     2000,
@@ -602,20 +836,35 @@
     "consumer_disc": "want",
     "ai": "avoid"
    },
-   "ranked": [
-    "TJX",
+   "picks": [
+    "COST",
     "HD",
+    "TJX",
+    "NKE",
+    "RCL"
+   ],
+   "picked_for": [
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary"
+   ],
+   "ranked": [
+    "COST",
+    "HD",
+    "TJX",
     "NKE",
     "RCL",
-    "COST",
     "DG"
    ],
-   "picks": [
-    "TJX",
-    "HD",
-    "NKE",
-    "RCL",
-    "COST"
+   "ranked_for": [
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary"
    ],
    "weights_bps": [
     2000,
@@ -631,8 +880,10 @@
     "cyber": "want",
     "ai": "avoid"
    },
-   "ranked": [],
    "picks": [],
+   "picked_for": [],
+   "ranked": [],
+   "ranked_for": [],
    "weights_bps": []
   },
   {
@@ -641,26 +892,30 @@
     "defense": "want",
     "ai": "avoid"
    },
-   "ranked": [
-    "GD",
-    "LMT",
-    "NOC",
-    "RTX",
-    "GE"
-   ],
    "picks": [
-    "GD",
-    "LMT",
-    "NOC",
     "RTX",
-    "GE"
+    "GE",
+    "LMT"
+   ],
+   "picked_for": [
+    "Aerospace & defense",
+    "Aerospace & defense",
+    "Aerospace & defense"
+   ],
+   "ranked": [
+    "RTX",
+    "GE",
+    "LMT"
+   ],
+   "ranked_for": [
+    "Aerospace & defense",
+    "Aerospace & defense",
+    "Aerospace & defense"
    ],
    "weights_bps": [
-    2000,
-    2000,
-    2000,
-    2000,
-    2000
+    3334,
+    3333,
+    3333
    ]
   },
   {
@@ -669,27 +924,30 @@
     "gold": "want",
     "ai": "avoid"
    },
-   "ranked": [
-    "PAAS",
-    "NEM",
-    "CDE",
-    "SSRM",
-    "AEM",
-    "WPM"
-   ],
    "picks": [
-    "PAAS",
     "NEM",
-    "CDE",
-    "SSRM",
-    "AEM"
+    "PAAS",
+    "CDE"
+   ],
+   "picked_for": [
+    "Gold & precious metals",
+    "Gold & precious metals",
+    "Gold & precious metals"
+   ],
+   "ranked": [
+    "NEM",
+    "PAAS",
+    "CDE"
+   ],
+   "ranked_for": [
+    "Gold & precious metals",
+    "Gold & precious metals",
+    "Gold & precious metals"
    ],
    "weights_bps": [
-    2000,
-    2000,
-    2000,
-    2000,
-    2000
+    3334,
+    3333,
+    3333
    ]
   },
   {
@@ -698,27 +956,35 @@
     "healthcare": "want",
     "ai": "avoid"
    },
-   "ranked": [
-    "MRK",
-    "PFE",
-    "LLY",
-    "GEHC",
-    "BMY",
-    "AMGN"
-   ],
    "picks": [
     "MRK",
-    "PFE",
     "LLY",
-    "GEHC",
-    "BMY"
+    "PFE",
+    "GEHC"
+   ],
+   "picked_for": [
+    "Healthcare",
+    "Healthcare",
+    "Healthcare",
+    "Healthcare"
+   ],
+   "ranked": [
+    "MRK",
+    "LLY",
+    "PFE",
+    "GEHC"
+   ],
+   "ranked_for": [
+    "Healthcare",
+    "Healthcare",
+    "Healthcare",
+    "Healthcare"
    ],
    "weights_bps": [
-    2000,
-    2000,
-    2000,
-    2000,
-    2000
+    2500,
+    2500,
+    2500,
+    2500
    ]
   },
   {
@@ -727,20 +993,35 @@
     "metals": "want",
     "ai": "avoid"
    },
-   "ranked": [
-    "BHP",
-    "SCCO",
-    "SQM",
-    "FCX",
-    "ALB",
-    "RIO"
-   ],
    "picks": [
     "BHP",
+    "RIO",
     "SCCO",
-    "SQM",
     "FCX",
-    "ALB"
+    "SQM"
+   ],
+   "picked_for": [
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)"
+   ],
+   "ranked": [
+    "BHP",
+    "RIO",
+    "SCCO",
+    "FCX",
+    "SQM",
+    "VALE"
+   ],
+   "ranked_for": [
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)"
    ],
    "weights_bps": [
     2000,
@@ -756,23 +1037,2179 @@
     "oil": "want",
     "ai": "avoid"
    },
-   "ranked": [
-    "FANG",
-    "EOG",
+   "picks": [
     "CVX",
+    "EOG",
+    "FANG",
     "SHEL"
    ],
-   "picks": [
-    "FANG",
-    "EOG",
+   "picked_for": [
+    "Oil",
+    "Oil",
+    "Oil",
+    "Oil"
+   ],
+   "ranked": [
     "CVX",
+    "EOG",
+    "FANG",
     "SHEL"
+   ],
+   "ranked_for": [
+    "Oil",
+    "Oil",
+    "Oil",
+    "Oil"
    ],
    "weights_bps": [
     2500,
     2500,
     2500,
     2500
+   ]
+  },
+  {
+   "key": "ai:want,bank_lending:want",
+   "preferences": {
+    "ai": "want",
+    "bank_lending": "want"
+   },
+   "picks": [
+    "TSM",
+    "NVDA",
+    "MSFT",
+    "BAC",
+    "CFG"
+   ],
+   "picked_for": [
+    "AI",
+    "AI",
+    "AI",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income"
+   ],
+   "ranked": [
+    "TSM",
+    "NVDA",
+    "MSFT",
+    "VST",
+    "BAC",
+    "CFG",
+    "RF",
+    "WFC"
+   ],
+   "ranked_for": [
+    "AI",
+    "AI",
+    "AI",
+    "AI",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "ai:want,clean_energy:want",
+   "preferences": {
+    "ai": "want",
+    "clean_energy": "want"
+   },
+   "picks": [
+    "TSM",
+    "NVDA",
+    "MSFT",
+    "FSLR",
+    "RUN"
+   ],
+   "picked_for": [
+    "AI",
+    "AI",
+    "AI",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)"
+   ],
+   "ranked": [
+    "TSM",
+    "NVDA",
+    "MSFT",
+    "VST",
+    "FSLR",
+    "RUN",
+    "NEE",
+    "SEDG"
+   ],
+   "ranked_for": [
+    "AI",
+    "AI",
+    "AI",
+    "AI",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "ai:want,consumer_disc:want",
+   "preferences": {
+    "ai": "want",
+    "consumer_disc": "want"
+   },
+   "picks": [
+    "TSM",
+    "NVDA",
+    "MSFT",
+    "COST",
+    "HD"
+   ],
+   "picked_for": [
+    "AI",
+    "AI",
+    "AI",
+    "Consumer discretionary",
+    "Consumer discretionary"
+   ],
+   "ranked": [
+    "TSM",
+    "NVDA",
+    "MSFT",
+    "VST",
+    "COST",
+    "HD",
+    "TJX",
+    "NKE"
+   ],
+   "ranked_for": [
+    "AI",
+    "AI",
+    "AI",
+    "AI",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "ai:want,cyber:want",
+   "preferences": {
+    "ai": "want",
+    "cyber": "want"
+   },
+   "picks": [
+    "TSM",
+    "NVDA",
+    "MSFT",
+    "PANW",
+    "CRWD"
+   ],
+   "picked_for": [
+    "AI",
+    "AI",
+    "AI",
+    "Cybersecurity",
+    "Cybersecurity"
+   ],
+   "ranked": [
+    "TSM",
+    "NVDA",
+    "MSFT",
+    "VST",
+    "AVGO",
+    "PANW",
+    "CRWD",
+    "CSCO"
+   ],
+   "ranked_for": [
+    "AI",
+    "AI",
+    "AI",
+    "AI",
+    "AI",
+    "Cybersecurity",
+    "Cybersecurity",
+    "Cybersecurity"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "ai:want,defense:want",
+   "preferences": {
+    "ai": "want",
+    "defense": "want"
+   },
+   "picks": [
+    "TSM",
+    "NVDA",
+    "MSFT",
+    "RTX",
+    "GE"
+   ],
+   "picked_for": [
+    "AI",
+    "AI",
+    "AI",
+    "Aerospace & defense",
+    "Aerospace & defense"
+   ],
+   "ranked": [
+    "TSM",
+    "NVDA",
+    "MSFT",
+    "VST",
+    "AVGO",
+    "RTX",
+    "GE",
+    "LMT"
+   ],
+   "ranked_for": [
+    "AI",
+    "AI",
+    "AI",
+    "AI",
+    "AI",
+    "Aerospace & defense",
+    "Aerospace & defense",
+    "Aerospace & defense"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "ai:want,gold:want",
+   "preferences": {
+    "ai": "want",
+    "gold": "want"
+   },
+   "picks": [
+    "TSM",
+    "NVDA",
+    "MSFT",
+    "NEM",
+    "PAAS"
+   ],
+   "picked_for": [
+    "AI",
+    "AI",
+    "AI",
+    "Gold & precious metals",
+    "Gold & precious metals"
+   ],
+   "ranked": [
+    "TSM",
+    "NVDA",
+    "MSFT",
+    "VST",
+    "AVGO",
+    "NEM",
+    "PAAS",
+    "CDE"
+   ],
+   "ranked_for": [
+    "AI",
+    "AI",
+    "AI",
+    "AI",
+    "AI",
+    "Gold & precious metals",
+    "Gold & precious metals",
+    "Gold & precious metals"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "ai:want,healthcare:want",
+   "preferences": {
+    "ai": "want",
+    "healthcare": "want"
+   },
+   "picks": [
+    "TSM",
+    "NVDA",
+    "MSFT",
+    "MRK",
+    "LLY"
+   ],
+   "picked_for": [
+    "AI",
+    "AI",
+    "AI",
+    "Healthcare",
+    "Healthcare"
+   ],
+   "ranked": [
+    "TSM",
+    "NVDA",
+    "MSFT",
+    "VST",
+    "MRK",
+    "LLY",
+    "PFE",
+    "GEHC"
+   ],
+   "ranked_for": [
+    "AI",
+    "AI",
+    "AI",
+    "AI",
+    "Healthcare",
+    "Healthcare",
+    "Healthcare",
+    "Healthcare"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "ai:want,metals:want",
+   "preferences": {
+    "ai": "want",
+    "metals": "want"
+   },
+   "picks": [
+    "TSM",
+    "NVDA",
+    "MSFT",
+    "BHP",
+    "RIO"
+   ],
+   "picked_for": [
+    "AI",
+    "AI",
+    "AI",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)"
+   ],
+   "ranked": [
+    "TSM",
+    "NVDA",
+    "MSFT",
+    "VST",
+    "BHP",
+    "RIO",
+    "SCCO",
+    "FCX"
+   ],
+   "ranked_for": [
+    "AI",
+    "AI",
+    "AI",
+    "AI",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "ai:want,oil:want",
+   "preferences": {
+    "ai": "want",
+    "oil": "want"
+   },
+   "picks": [
+    "TSM",
+    "NVDA",
+    "MSFT",
+    "CVX",
+    "PR"
+   ],
+   "picked_for": [
+    "AI",
+    "AI",
+    "AI",
+    "Oil",
+    "Oil"
+   ],
+   "ranked": [
+    "TSM",
+    "NVDA",
+    "MSFT",
+    "VST",
+    "CVX",
+    "PR",
+    "COP",
+    "EOG"
+   ],
+   "ranked_for": [
+    "AI",
+    "AI",
+    "AI",
+    "AI",
+    "Oil",
+    "Oil",
+    "Oil",
+    "Oil"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "bank_lending:want,clean_energy:want",
+   "preferences": {
+    "bank_lending": "want",
+    "clean_energy": "want"
+   },
+   "picks": [
+    "BAC",
+    "CFG",
+    "RF",
+    "FSLR",
+    "RUN"
+   ],
+   "picked_for": [
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)"
+   ],
+   "ranked": [
+    "BAC",
+    "CFG",
+    "RF",
+    "WFC",
+    "FSLR",
+    "RUN",
+    "NEE",
+    "SEDG"
+   ],
+   "ranked_for": [
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "bank_lending:want,consumer_disc:want",
+   "preferences": {
+    "bank_lending": "want",
+    "consumer_disc": "want"
+   },
+   "picks": [
+    "BAC",
+    "CFG",
+    "RF",
+    "COST",
+    "HD"
+   ],
+   "picked_for": [
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Consumer discretionary",
+    "Consumer discretionary"
+   ],
+   "ranked": [
+    "BAC",
+    "CFG",
+    "RF",
+    "WFC",
+    "COST",
+    "HD",
+    "TJX",
+    "NKE"
+   ],
+   "ranked_for": [
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "bank_lending:want,cyber:want",
+   "preferences": {
+    "bank_lending": "want",
+    "cyber": "want"
+   },
+   "picks": [
+    "BAC",
+    "CFG",
+    "RF",
+    "PANW",
+    "CRWD"
+   ],
+   "picked_for": [
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Cybersecurity",
+    "Cybersecurity"
+   ],
+   "ranked": [
+    "BAC",
+    "CFG",
+    "RF",
+    "WFC",
+    "PANW",
+    "CRWD",
+    "FTNT",
+    "CSCO"
+   ],
+   "ranked_for": [
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Cybersecurity",
+    "Cybersecurity",
+    "Cybersecurity",
+    "Cybersecurity"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "bank_lending:want,defense:want",
+   "preferences": {
+    "bank_lending": "want",
+    "defense": "want"
+   },
+   "picks": [
+    "BAC",
+    "CFG",
+    "RF",
+    "RTX",
+    "GE"
+   ],
+   "picked_for": [
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Aerospace & defense",
+    "Aerospace & defense"
+   ],
+   "ranked": [
+    "BAC",
+    "CFG",
+    "RF",
+    "WFC",
+    "MTB",
+    "RTX",
+    "GE",
+    "LMT"
+   ],
+   "ranked_for": [
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Aerospace & defense",
+    "Aerospace & defense",
+    "Aerospace & defense"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "bank_lending:want,gold:want",
+   "preferences": {
+    "bank_lending": "want",
+    "gold": "want"
+   },
+   "picks": [
+    "BAC",
+    "CFG",
+    "RF",
+    "NEM",
+    "PAAS"
+   ],
+   "picked_for": [
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Gold & precious metals",
+    "Gold & precious metals"
+   ],
+   "ranked": [
+    "BAC",
+    "CFG",
+    "RF",
+    "WFC",
+    "MTB",
+    "NEM",
+    "PAAS",
+    "CDE"
+   ],
+   "ranked_for": [
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Gold & precious metals",
+    "Gold & precious metals",
+    "Gold & precious metals"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "bank_lending:want,healthcare:want",
+   "preferences": {
+    "bank_lending": "want",
+    "healthcare": "want"
+   },
+   "picks": [
+    "BAC",
+    "CFG",
+    "RF",
+    "MRK",
+    "LLY"
+   ],
+   "picked_for": [
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Healthcare",
+    "Healthcare"
+   ],
+   "ranked": [
+    "BAC",
+    "CFG",
+    "RF",
+    "WFC",
+    "MRK",
+    "LLY",
+    "PFE",
+    "GEHC"
+   ],
+   "ranked_for": [
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Healthcare",
+    "Healthcare",
+    "Healthcare",
+    "Healthcare"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "bank_lending:want,metals:want",
+   "preferences": {
+    "bank_lending": "want",
+    "metals": "want"
+   },
+   "picks": [
+    "BAC",
+    "CFG",
+    "RF",
+    "BHP",
+    "RIO"
+   ],
+   "picked_for": [
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)"
+   ],
+   "ranked": [
+    "BAC",
+    "CFG",
+    "RF",
+    "WFC",
+    "BHP",
+    "RIO",
+    "SCCO",
+    "FCX"
+   ],
+   "ranked_for": [
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "bank_lending:want,oil:want",
+   "preferences": {
+    "bank_lending": "want",
+    "oil": "want"
+   },
+   "picks": [
+    "BAC",
+    "CFG",
+    "RF",
+    "CVX",
+    "PR"
+   ],
+   "picked_for": [
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Oil",
+    "Oil"
+   ],
+   "ranked": [
+    "BAC",
+    "CFG",
+    "RF",
+    "WFC",
+    "CVX",
+    "PR",
+    "COP",
+    "EOG"
+   ],
+   "ranked_for": [
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Bank lending / net interest income",
+    "Oil",
+    "Oil",
+    "Oil",
+    "Oil"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "clean_energy:want,consumer_disc:want",
+   "preferences": {
+    "clean_energy": "want",
+    "consumer_disc": "want"
+   },
+   "picks": [
+    "FSLR",
+    "RUN",
+    "NEE",
+    "COST",
+    "HD"
+   ],
+   "picked_for": [
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Consumer discretionary",
+    "Consumer discretionary"
+   ],
+   "ranked": [
+    "FSLR",
+    "RUN",
+    "NEE",
+    "SEDG",
+    "COST",
+    "HD",
+    "TJX",
+    "NKE"
+   ],
+   "ranked_for": [
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "clean_energy:want,cyber:want",
+   "preferences": {
+    "clean_energy": "want",
+    "cyber": "want"
+   },
+   "picks": [
+    "FSLR",
+    "RUN",
+    "NEE",
+    "PANW",
+    "CRWD"
+   ],
+   "picked_for": [
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Cybersecurity",
+    "Cybersecurity"
+   ],
+   "ranked": [
+    "FSLR",
+    "RUN",
+    "NEE",
+    "SEDG",
+    "PANW",
+    "CRWD",
+    "FTNT",
+    "CSCO"
+   ],
+   "ranked_for": [
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Cybersecurity",
+    "Cybersecurity",
+    "Cybersecurity",
+    "Cybersecurity"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "clean_energy:want,defense:want",
+   "preferences": {
+    "clean_energy": "want",
+    "defense": "want"
+   },
+   "picks": [
+    "FSLR",
+    "RUN",
+    "NEE",
+    "RTX",
+    "GE"
+   ],
+   "picked_for": [
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Aerospace & defense",
+    "Aerospace & defense"
+   ],
+   "ranked": [
+    "FSLR",
+    "RUN",
+    "NEE",
+    "SEDG",
+    "RTX",
+    "GE",
+    "LMT"
+   ],
+   "ranked_for": [
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Aerospace & defense",
+    "Aerospace & defense",
+    "Aerospace & defense"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "clean_energy:want,gold:want",
+   "preferences": {
+    "clean_energy": "want",
+    "gold": "want"
+   },
+   "picks": [
+    "FSLR",
+    "RUN",
+    "NEE",
+    "NEM",
+    "PAAS"
+   ],
+   "picked_for": [
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Gold & precious metals",
+    "Gold & precious metals"
+   ],
+   "ranked": [
+    "FSLR",
+    "RUN",
+    "NEE",
+    "SEDG",
+    "NEM",
+    "PAAS",
+    "CDE"
+   ],
+   "ranked_for": [
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Gold & precious metals",
+    "Gold & precious metals",
+    "Gold & precious metals"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "clean_energy:want,healthcare:want",
+   "preferences": {
+    "clean_energy": "want",
+    "healthcare": "want"
+   },
+   "picks": [
+    "FSLR",
+    "RUN",
+    "NEE",
+    "MRK",
+    "LLY"
+   ],
+   "picked_for": [
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Healthcare",
+    "Healthcare"
+   ],
+   "ranked": [
+    "FSLR",
+    "RUN",
+    "NEE",
+    "SEDG",
+    "MRK",
+    "LLY",
+    "PFE",
+    "GEHC"
+   ],
+   "ranked_for": [
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Healthcare",
+    "Healthcare",
+    "Healthcare",
+    "Healthcare"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "clean_energy:want,metals:want",
+   "preferences": {
+    "clean_energy": "want",
+    "metals": "want"
+   },
+   "picks": [
+    "FSLR",
+    "RUN",
+    "NEE",
+    "BHP",
+    "RIO"
+   ],
+   "picked_for": [
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)"
+   ],
+   "ranked": [
+    "FSLR",
+    "RUN",
+    "NEE",
+    "SEDG",
+    "BHP",
+    "RIO",
+    "SCCO",
+    "FCX"
+   ],
+   "ranked_for": [
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "clean_energy:want,oil:want",
+   "preferences": {
+    "clean_energy": "want",
+    "oil": "want"
+   },
+   "picks": [
+    "FSLR",
+    "RUN",
+    "NEE",
+    "CVX",
+    "PR"
+   ],
+   "picked_for": [
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Oil",
+    "Oil"
+   ],
+   "ranked": [
+    "FSLR",
+    "RUN",
+    "NEE",
+    "SEDG",
+    "CVX",
+    "PR",
+    "COP",
+    "EOG"
+   ],
+   "ranked_for": [
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Clean energy (solar & renewables)",
+    "Oil",
+    "Oil",
+    "Oil",
+    "Oil"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "consumer_disc:want,cyber:want",
+   "preferences": {
+    "consumer_disc": "want",
+    "cyber": "want"
+   },
+   "picks": [
+    "COST",
+    "HD",
+    "TJX",
+    "PANW",
+    "CRWD"
+   ],
+   "picked_for": [
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Cybersecurity",
+    "Cybersecurity"
+   ],
+   "ranked": [
+    "COST",
+    "HD",
+    "TJX",
+    "NKE",
+    "PANW",
+    "CRWD",
+    "FTNT",
+    "CSCO"
+   ],
+   "ranked_for": [
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Cybersecurity",
+    "Cybersecurity",
+    "Cybersecurity",
+    "Cybersecurity"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "consumer_disc:want,defense:want",
+   "preferences": {
+    "consumer_disc": "want",
+    "defense": "want"
+   },
+   "picks": [
+    "COST",
+    "HD",
+    "TJX",
+    "RTX",
+    "GE"
+   ],
+   "picked_for": [
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Aerospace & defense",
+    "Aerospace & defense"
+   ],
+   "ranked": [
+    "COST",
+    "HD",
+    "TJX",
+    "NKE",
+    "RCL",
+    "RTX",
+    "GE",
+    "LMT"
+   ],
+   "ranked_for": [
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Aerospace & defense",
+    "Aerospace & defense",
+    "Aerospace & defense"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "consumer_disc:want,gold:want",
+   "preferences": {
+    "consumer_disc": "want",
+    "gold": "want"
+   },
+   "picks": [
+    "COST",
+    "HD",
+    "TJX",
+    "NEM",
+    "PAAS"
+   ],
+   "picked_for": [
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Gold & precious metals",
+    "Gold & precious metals"
+   ],
+   "ranked": [
+    "COST",
+    "HD",
+    "TJX",
+    "NKE",
+    "RCL",
+    "NEM",
+    "PAAS",
+    "CDE"
+   ],
+   "ranked_for": [
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Gold & precious metals",
+    "Gold & precious metals",
+    "Gold & precious metals"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "consumer_disc:want,healthcare:want",
+   "preferences": {
+    "consumer_disc": "want",
+    "healthcare": "want"
+   },
+   "picks": [
+    "COST",
+    "HD",
+    "TJX",
+    "MRK",
+    "LLY"
+   ],
+   "picked_for": [
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Healthcare",
+    "Healthcare"
+   ],
+   "ranked": [
+    "COST",
+    "HD",
+    "TJX",
+    "NKE",
+    "MRK",
+    "LLY",
+    "PFE",
+    "GEHC"
+   ],
+   "ranked_for": [
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Healthcare",
+    "Healthcare",
+    "Healthcare",
+    "Healthcare"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "consumer_disc:want,metals:want",
+   "preferences": {
+    "consumer_disc": "want",
+    "metals": "want"
+   },
+   "picks": [
+    "COST",
+    "HD",
+    "TJX",
+    "BHP",
+    "RIO"
+   ],
+   "picked_for": [
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)"
+   ],
+   "ranked": [
+    "COST",
+    "HD",
+    "TJX",
+    "NKE",
+    "BHP",
+    "RIO",
+    "SCCO",
+    "FCX"
+   ],
+   "ranked_for": [
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "consumer_disc:want,oil:want",
+   "preferences": {
+    "consumer_disc": "want",
+    "oil": "want"
+   },
+   "picks": [
+    "COST",
+    "HD",
+    "TJX",
+    "CVX",
+    "PR"
+   ],
+   "picked_for": [
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Oil",
+    "Oil"
+   ],
+   "ranked": [
+    "COST",
+    "HD",
+    "TJX",
+    "NKE",
+    "CVX",
+    "PR",
+    "COP",
+    "EOG"
+   ],
+   "ranked_for": [
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Consumer discretionary",
+    "Oil",
+    "Oil",
+    "Oil",
+    "Oil"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "cyber:want,defense:want",
+   "preferences": {
+    "cyber": "want",
+    "defense": "want"
+   },
+   "picks": [
+    "PANW",
+    "CRWD",
+    "FTNT",
+    "RTX",
+    "GE"
+   ],
+   "picked_for": [
+    "Cybersecurity",
+    "Cybersecurity",
+    "Cybersecurity",
+    "Aerospace & defense",
+    "Aerospace & defense"
+   ],
+   "ranked": [
+    "PANW",
+    "CRWD",
+    "FTNT",
+    "CSCO",
+    "RTX",
+    "GE",
+    "LMT"
+   ],
+   "ranked_for": [
+    "Cybersecurity",
+    "Cybersecurity",
+    "Cybersecurity",
+    "Cybersecurity",
+    "Aerospace & defense",
+    "Aerospace & defense",
+    "Aerospace & defense"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "cyber:want,gold:want",
+   "preferences": {
+    "cyber": "want",
+    "gold": "want"
+   },
+   "picks": [
+    "PANW",
+    "CRWD",
+    "FTNT",
+    "NEM",
+    "PAAS"
+   ],
+   "picked_for": [
+    "Cybersecurity",
+    "Cybersecurity",
+    "Cybersecurity",
+    "Gold & precious metals",
+    "Gold & precious metals"
+   ],
+   "ranked": [
+    "PANW",
+    "CRWD",
+    "FTNT",
+    "CSCO",
+    "NEM",
+    "PAAS",
+    "CDE"
+   ],
+   "ranked_for": [
+    "Cybersecurity",
+    "Cybersecurity",
+    "Cybersecurity",
+    "Cybersecurity",
+    "Gold & precious metals",
+    "Gold & precious metals",
+    "Gold & precious metals"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "cyber:want,healthcare:want",
+   "preferences": {
+    "cyber": "want",
+    "healthcare": "want"
+   },
+   "picks": [
+    "PANW",
+    "CRWD",
+    "FTNT",
+    "MRK",
+    "LLY"
+   ],
+   "picked_for": [
+    "Cybersecurity",
+    "Cybersecurity",
+    "Cybersecurity",
+    "Healthcare",
+    "Healthcare"
+   ],
+   "ranked": [
+    "PANW",
+    "CRWD",
+    "FTNT",
+    "CSCO",
+    "MRK",
+    "LLY",
+    "PFE",
+    "GEHC"
+   ],
+   "ranked_for": [
+    "Cybersecurity",
+    "Cybersecurity",
+    "Cybersecurity",
+    "Cybersecurity",
+    "Healthcare",
+    "Healthcare",
+    "Healthcare",
+    "Healthcare"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "cyber:want,metals:want",
+   "preferences": {
+    "cyber": "want",
+    "metals": "want"
+   },
+   "picks": [
+    "PANW",
+    "CRWD",
+    "FTNT",
+    "BHP",
+    "RIO"
+   ],
+   "picked_for": [
+    "Cybersecurity",
+    "Cybersecurity",
+    "Cybersecurity",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)"
+   ],
+   "ranked": [
+    "PANW",
+    "CRWD",
+    "FTNT",
+    "CSCO",
+    "BHP",
+    "RIO",
+    "SCCO",
+    "FCX"
+   ],
+   "ranked_for": [
+    "Cybersecurity",
+    "Cybersecurity",
+    "Cybersecurity",
+    "Cybersecurity",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "cyber:want,oil:want",
+   "preferences": {
+    "cyber": "want",
+    "oil": "want"
+   },
+   "picks": [
+    "PANW",
+    "CRWD",
+    "FTNT",
+    "CVX",
+    "PR"
+   ],
+   "picked_for": [
+    "Cybersecurity",
+    "Cybersecurity",
+    "Cybersecurity",
+    "Oil",
+    "Oil"
+   ],
+   "ranked": [
+    "PANW",
+    "CRWD",
+    "FTNT",
+    "CSCO",
+    "CVX",
+    "PR",
+    "COP",
+    "EOG"
+   ],
+   "ranked_for": [
+    "Cybersecurity",
+    "Cybersecurity",
+    "Cybersecurity",
+    "Cybersecurity",
+    "Oil",
+    "Oil",
+    "Oil",
+    "Oil"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "defense:want,gold:want",
+   "preferences": {
+    "defense": "want",
+    "gold": "want"
+   },
+   "picks": [
+    "RTX",
+    "GE",
+    "LMT",
+    "NEM",
+    "PAAS"
+   ],
+   "picked_for": [
+    "Aerospace & defense",
+    "Aerospace & defense",
+    "Aerospace & defense",
+    "Gold & precious metals",
+    "Gold & precious metals"
+   ],
+   "ranked": [
+    "RTX",
+    "GE",
+    "LMT",
+    "NEM",
+    "PAAS",
+    "CDE"
+   ],
+   "ranked_for": [
+    "Aerospace & defense",
+    "Aerospace & defense",
+    "Aerospace & defense",
+    "Gold & precious metals",
+    "Gold & precious metals",
+    "Gold & precious metals"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "defense:want,healthcare:want",
+   "preferences": {
+    "defense": "want",
+    "healthcare": "want"
+   },
+   "picks": [
+    "RTX",
+    "GE",
+    "LMT",
+    "MRK",
+    "LLY"
+   ],
+   "picked_for": [
+    "Aerospace & defense",
+    "Aerospace & defense",
+    "Aerospace & defense",
+    "Healthcare",
+    "Healthcare"
+   ],
+   "ranked": [
+    "RTX",
+    "GE",
+    "LMT",
+    "MRK",
+    "LLY",
+    "PFE",
+    "GEHC"
+   ],
+   "ranked_for": [
+    "Aerospace & defense",
+    "Aerospace & defense",
+    "Aerospace & defense",
+    "Healthcare",
+    "Healthcare",
+    "Healthcare",
+    "Healthcare"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "defense:want,metals:want",
+   "preferences": {
+    "defense": "want",
+    "metals": "want"
+   },
+   "picks": [
+    "RTX",
+    "GE",
+    "LMT",
+    "BHP",
+    "RIO"
+   ],
+   "picked_for": [
+    "Aerospace & defense",
+    "Aerospace & defense",
+    "Aerospace & defense",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)"
+   ],
+   "ranked": [
+    "RTX",
+    "GE",
+    "LMT",
+    "BHP",
+    "RIO",
+    "SCCO",
+    "FCX",
+    "SQM"
+   ],
+   "ranked_for": [
+    "Aerospace & defense",
+    "Aerospace & defense",
+    "Aerospace & defense",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "defense:want,oil:want",
+   "preferences": {
+    "defense": "want",
+    "oil": "want"
+   },
+   "picks": [
+    "RTX",
+    "GE",
+    "LMT",
+    "CVX",
+    "PR"
+   ],
+   "picked_for": [
+    "Aerospace & defense",
+    "Aerospace & defense",
+    "Aerospace & defense",
+    "Oil",
+    "Oil"
+   ],
+   "ranked": [
+    "RTX",
+    "GE",
+    "LMT",
+    "CVX",
+    "PR",
+    "COP",
+    "EOG",
+    "SHEL"
+   ],
+   "ranked_for": [
+    "Aerospace & defense",
+    "Aerospace & defense",
+    "Aerospace & defense",
+    "Oil",
+    "Oil",
+    "Oil",
+    "Oil",
+    "Oil"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "gold:want,healthcare:want",
+   "preferences": {
+    "gold": "want",
+    "healthcare": "want"
+   },
+   "picks": [
+    "NEM",
+    "PAAS",
+    "CDE",
+    "MRK",
+    "LLY"
+   ],
+   "picked_for": [
+    "Gold & precious metals",
+    "Gold & precious metals",
+    "Gold & precious metals",
+    "Healthcare",
+    "Healthcare"
+   ],
+   "ranked": [
+    "NEM",
+    "PAAS",
+    "CDE",
+    "MRK",
+    "LLY",
+    "PFE",
+    "GEHC"
+   ],
+   "ranked_for": [
+    "Gold & precious metals",
+    "Gold & precious metals",
+    "Gold & precious metals",
+    "Healthcare",
+    "Healthcare",
+    "Healthcare",
+    "Healthcare"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "gold:want,metals:want",
+   "preferences": {
+    "gold": "want",
+    "metals": "want"
+   },
+   "picks": [
+    "NEM",
+    "PAAS",
+    "CDE",
+    "BHP",
+    "RIO"
+   ],
+   "picked_for": [
+    "Gold & precious metals",
+    "Gold & precious metals",
+    "Gold & precious metals",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)"
+   ],
+   "ranked": [
+    "NEM",
+    "PAAS",
+    "CDE",
+    "BHP",
+    "RIO",
+    "SCCO",
+    "FCX",
+    "SQM"
+   ],
+   "ranked_for": [
+    "Gold & precious metals",
+    "Gold & precious metals",
+    "Gold & precious metals",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "gold:want,oil:want",
+   "preferences": {
+    "gold": "want",
+    "oil": "want"
+   },
+   "picks": [
+    "NEM",
+    "PAAS",
+    "CDE",
+    "CVX",
+    "PR"
+   ],
+   "picked_for": [
+    "Gold & precious metals",
+    "Gold & precious metals",
+    "Gold & precious metals",
+    "Oil",
+    "Oil"
+   ],
+   "ranked": [
+    "NEM",
+    "PAAS",
+    "CDE",
+    "CVX",
+    "PR",
+    "COP",
+    "EOG",
+    "SHEL"
+   ],
+   "ranked_for": [
+    "Gold & precious metals",
+    "Gold & precious metals",
+    "Gold & precious metals",
+    "Oil",
+    "Oil",
+    "Oil",
+    "Oil",
+    "Oil"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "healthcare:want,metals:want",
+   "preferences": {
+    "healthcare": "want",
+    "metals": "want"
+   },
+   "picks": [
+    "MRK",
+    "LLY",
+    "PFE",
+    "BHP",
+    "RIO"
+   ],
+   "picked_for": [
+    "Healthcare",
+    "Healthcare",
+    "Healthcare",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)"
+   ],
+   "ranked": [
+    "MRK",
+    "LLY",
+    "PFE",
+    "GEHC",
+    "BHP",
+    "RIO",
+    "SCCO",
+    "FCX"
+   ],
+   "ranked_for": [
+    "Healthcare",
+    "Healthcare",
+    "Healthcare",
+    "Healthcare",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "healthcare:want,oil:want",
+   "preferences": {
+    "healthcare": "want",
+    "oil": "want"
+   },
+   "picks": [
+    "MRK",
+    "LLY",
+    "PFE",
+    "CVX",
+    "PR"
+   ],
+   "picked_for": [
+    "Healthcare",
+    "Healthcare",
+    "Healthcare",
+    "Oil",
+    "Oil"
+   ],
+   "ranked": [
+    "MRK",
+    "LLY",
+    "PFE",
+    "GEHC",
+    "CVX",
+    "PR",
+    "COP",
+    "EOG"
+   ],
+   "ranked_for": [
+    "Healthcare",
+    "Healthcare",
+    "Healthcare",
+    "Healthcare",
+    "Oil",
+    "Oil",
+    "Oil",
+    "Oil"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
+   ]
+  },
+  {
+   "key": "metals:want,oil:want",
+   "preferences": {
+    "metals": "want",
+    "oil": "want"
+   },
+   "picks": [
+    "BHP",
+    "RIO",
+    "SCCO",
+    "CVX",
+    "PR"
+   ],
+   "picked_for": [
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Oil",
+    "Oil"
+   ],
+   "ranked": [
+    "BHP",
+    "RIO",
+    "SCCO",
+    "FCX",
+    "CVX",
+    "PR",
+    "COP",
+    "EOG"
+   ],
+   "ranked_for": [
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Industrial / EV metals (copper + lithium)",
+    "Oil",
+    "Oil",
+    "Oil",
+    "Oil"
+   ],
+   "weights_bps": [
+    2000,
+    2000,
+    2000,
+    2000,
+    2000
    ]
   }
  ]

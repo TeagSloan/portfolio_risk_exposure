@@ -7,9 +7,10 @@
     python -m chain.league status --network anvil
     python -m chain.league demo   --network anvil           # deploy + pool + open + run (rehearsals)
 
-Separate deployment: the League deploys its own ExposureOracle (prices only) and FundLeague and writes them under
-"league" in deployments/<network>.json. It never touches the main demo's contracts, so replaying old prices can't
-change the dashboard or the "try adding XOM" demo.
+Separate deployment: the League deploys its own ExposureOracle (prices only) and FundLeague from its own operator
+wallet and writes them to their OWN file, deployments/<network>-league.json (the main contracts live in
+deployments/<network>.json, written by the main deploy). It never touches the main demo's contracts, so replaying old
+prices can't change the dashboard or the "try adding XOM" demo.
 
 Pool: the ~60 stocks that appear most across the engine's theme baskets (each theme's top picks first, so every
 theme has enough stocks to build from), limited to stocks with a long enough price history.
@@ -27,8 +28,10 @@ Replay (markets are closed, so it's replay only):
 - One postPrices transaction per replayed day for the pool, every DAY_SECONDS, including the last day before settle.
 
 Gas: every transaction asks for the estimate x 1.15 (Monad charges the gas limit, not the gas used).
-Wallets: Anvil uses the node's own unlocked dev accounts (no keys). Monad testnet uses a Foundry keystore
-(DEPLOYER_KEYSTORE, default "deployer"); its password is asked for and never stored.
+Wallets: Anvil uses the node's own unlocked dev accounts (no keys). Monad testnet uses the League's own operator
+wallet, a Foundry keystore (LEAGUE_KEYSTORE, default "league-operator" in ~/.foundry/keystores), never the main
+deployer's wallet. Its password is read from LEAGUE_KEYSTORE_PASSWORD_FILE (default
+~/.foundry/keystores/.league-operator.password) if that file exists, otherwise asked for. Keys are never printed.
 """
 
 from __future__ import annotations
@@ -92,6 +95,12 @@ def artifact(name: str) -> dict:
     return json.loads(path.read_text())
 
 
+def _keystore_password() -> str | None:
+    """The League keystore's password from its file (never printed), or None to ask for it."""
+    p = Path(os.environ.get("LEAGUE_KEYSTORE_PASSWORD_FILE", KEYSTORE_DIR / ".league-operator.password")).expanduser()
+    return p.read_text().strip() if p.exists() else None
+
+
 class Chain:
     """Sends transactions as one wallet and records what each one cost."""
 
@@ -112,7 +121,8 @@ class Chain:
         elif network == "anvil":
             self.account, self.address = None, address or self.w3.eth.accounts[0]  # unlocked dev account
         else:
-            self.account = load_account(self.w3, keystore or os.environ.get("DEPLOYER_KEYSTORE", "deployer"))
+            self.account = load_account(self.w3, keystore or os.environ.get("LEAGUE_KEYSTORE", "league-operator"),
+                                        _keystore_password())
             self.address = self.account.address
         self.costs: list[dict] = []
         self.phase = "setup"
@@ -168,11 +178,15 @@ class Chain:
 
 
 # ---------------------------------------------------------------------------------------------
-# deployments/<network>.json ("league" section only)
+# deployments/<network>-league.json (the League's own file; never the main deployments/<network>.json)
 # ---------------------------------------------------------------------------------------------
 
+def deployment_file(network: str) -> Path:
+    return DEPLOYMENTS / f"{network}-league.json"
+
+
 def read_deployment(network: str) -> dict:
-    p = DEPLOYMENTS / f"{network}.json"
+    p = deployment_file(network)
     return json.loads(p.read_text()) if p.exists() else {}
 
 
@@ -186,13 +200,14 @@ def write_league_section(network: str, league: dict) -> None:
     if cfg["explorer"]:
         data.setdefault("explorer", cfg["explorer"])
     data["league"] = league
-    (DEPLOYMENTS / f"{network}.json").write_text(json.dumps(data, indent=2) + "\n")
+    deployment_file(network).write_text(json.dumps(data, indent=2) + "\n")
 
 
 def league_section(network: str) -> dict:
     lg = read_deployment(network).get("league")
     if not lg:
-        raise LeagueError(f"No League deployment in deployments/{network}.json. Run: python -m chain.league deploy --network {network}")
+        raise LeagueError(f"No League deployment in deployments/{network}-league.json. "
+                          f"Run: python -m chain.league deploy --network {network}")
     return lg
 
 
@@ -223,8 +238,9 @@ def build_pool() -> tuple[list[str], dict, list]:
         except Exception:  # noqa: BLE001 - no prices -> not in the pool
             return False
 
-    baskets = {k: [h["ticker"] for h in builder.build({k: "want"}, table=table)["holdings"] if h["ticker"] != "CASH"]
-               for k in keys}
+    # Each theme's ranked qualifiers (same tests and ranking as the builder, without the per-ETF industry limit,
+    # so single-industry themes like Gold still get enough pool stocks).
+    baskets = {k: builder.theme_candidates(table, k, n=builder.TOP_N)[:builder.TOP_N] for k in keys}
     counts = Counter(t for b in baskets.values() for t in b)
     ok: dict[str, bool] = {}
     pool: list[str] = []
@@ -246,18 +262,19 @@ def build_pool() -> tuple[list[str], dict, list]:
             pool.append(t)
 
     rows = table[table["ticker"].isin(pool)]
-    info = rows.groupby("ticker")[["name", "industry", "country"]].first()
+    info = rows.groupby("ticker")[["name", "industry", "country", "market_cap"]].first()
     stocks = []
     for t in pool:
         r = rows[rows["ticker"] == t].set_index("theme")
         stocks.append({"ticker": t, "name": info.loc[t, "name"], "industry": info.loc[t, "industry"],
-                       "country": info.loc[t, "country"],
+                       "country": info.loc[t, "country"], "market_cap": float(info.loc[t, "market_cap"] or 0),
                        "themes": {k: {"tier": r.loc[k, "tier"], "linked": bool(r.loc[k, "business_linked"]),
                                       "t": None if r.loc[k, "strength_t"] != r.loc[k, "strength_t"] else round(float(r.loc[k, "strength_t"]), 2),
                                       "ref": bool(r.loc[k, "reference"])} for k in keys}})
     pool_data = {"about": "Stock pool for the Fantasy Funds League, with each stock's engine result per theme.",
                  "themes": [{"key": k, "name": themes[k]["name"]} for k in keys],
-                 "rules": {"min_stocks": 3, "max_stocks": 8, "min_weight_pct": 5, "default_picks": DEFAULT_PICKS},
+                 "rules": {"min_stocks": 3, "max_stocks": 8, "min_weight_pct": 5, "default_picks": DEFAULT_PICKS,
+                           "well_known_floors": builder.WELL_KNOWN_FLOORS, "max_per_industry": builder.MAX_PER_INDUSTRY},
                  "stocks": stocks}
     PAGE.mkdir(exist_ok=True)
     POOL_FILE.write_text(json.dumps(pool_data, indent=1))
@@ -266,14 +283,23 @@ def build_pool() -> tuple[list[str], dict, list]:
     combos += [{k: "want", "oil": "avoid"} for k in keys if k != "oil"]
     combos += [{k: "want", "ai": "avoid"} for k in keys if k != "ai"]
     pool_table = table[table["ticker"].isin(pool)]
+    combos += [{k: "want", j: "want"} for i, k in enumerate(keys) for j in keys[i + 1:]]  # two wants
     presets = []
-    for prefs in combos:
-        b = builder.build(prefs, table=pool_table)
-        ranked = [h["ticker"] for h in b["holdings"] if h["ticker"] != "CASH"][:8]
-        picks = ranked[:DEFAULT_PICKS]
-        presets.append({"key": ",".join(f"{k}:{v}" for k, v in sorted(prefs.items())), "preferences": prefs,
-                        "ranked": ranked, "picks": picks,
-                        "weights_bps": equal_weights(len(picks)) if len(picks) >= 3 else []})
+    saved_top = builder.TOP_N
+    try:
+        for prefs in combos:
+            out = {}
+            for n in (DEFAULT_PICKS, 8):  # the page's default ETF size and its maximum
+                builder.TOP_N = n
+                b = builder.build(prefs, table=pool_table)
+                out[n] = [(h["ticker"], h.get("picked_for")) for h in b["holdings"] if h["ticker"] != "CASH"]
+            picks = [t for t, _ in out[DEFAULT_PICKS]]
+            presets.append({"key": ",".join(f"{k}:{v}" for k, v in sorted(prefs.items())), "preferences": prefs,
+                            "picks": picks, "picked_for": [f for _, f in out[DEFAULT_PICKS]],
+                            "ranked": [t for t, _ in out[8]], "ranked_for": [f for _, f in out[8]],
+                            "weights_bps": equal_weights(len(picks)) if len(picks) >= 3 else []})
+    finally:
+        builder.TOP_N = saved_top
     PRESETS_FILE.write_text(json.dumps({"about": "Engine builder suggestions restricted to the League pool.",
                                         "presets": presets}, indent=1))
     return pool, pool_data, presets
@@ -482,7 +508,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("command", choices=["deploy", "pool", "open", "run", "status", "demo"])
     ap.add_argument("--network", default="anvil", choices=list(NETWORKS))
     ap.add_argument("--rpc", help="override the RPC URL")
-    ap.add_argument("--keystore", help=f"Foundry keystore for the operator (Monad testnet), in {KEYSTORE_DIR}")
+    ap.add_argument("--keystore", help=f"League operator keystore (Monad testnet), default league-operator in {KEYSTORE_DIR}")
     ap.add_argument("--round", type=int, help="round id (default: the latest)")
     ap.add_argument("--entry-seconds", type=int, default=300, help="how long entries stay open")
     ap.add_argument("--stake", type=float, default=1.0, help="entry stake in MON (default 1)")

@@ -16,7 +16,7 @@ split it). With fewer than 2 entries, or if the round stalls, everyone gets thei
 | `league/pool.json` | The 60 pool stocks with each stock's engine result per theme (powers "Build your ETF") |
 | `league/presets.json` | The engine builder's suggestions for common Want/Avoid combos, restricted to the pool |
 | `league/replay_prices.json` | Real past closes for the pool; its hash is fixed on-chain before anyone enters |
-| `deployments/<network>.json` | Addresses. The League writes only its own `"league"` section |
+| `deployments/<network>-league.json` | League addresses, in their **own** file (`deployments/<network>.json` belongs to the main deploy) |
 
 The League never uses the main demo's contracts (it has its own oracle), so replaying old prices can't change
 the dashboard or the "try adding XOM" demo.
@@ -44,7 +44,7 @@ python -m chain.league open   --network anvil --entry-seconds 300 --stake 1
 python -m http.server 8000
 #   laptop: http://localhost:8000/league/?network=anvil
 #   phone on the same Wi-Fi: http://<laptop-ip>:8000/league/?network=anvil
-#   (for phones on Anvil, set "rpc" in deployments/anvil.json to http://<laptop-ip>:8545)
+#   (for phones on Anvil, set "rpc" in deployments/anvil-league.json to http://<laptop-ip>:8545)
 
 # backup entries, if needed: 4 sample ETFs from 4 test wallets
 python -m chain.league_bets enter --network anvil --count 4
@@ -62,10 +62,11 @@ All in one go for a rehearsal: `python -m chain.league demo --network anvil --en
 ### Live on Monad testnet
 
 ```bash
-# once: the operator wallet in a Foundry keystore (asks for the key and a password; never paste it anywhere else)
-cast wallet import deployer --interactive
+# The League has its OWN operator wallet (never the main deployer's): Foundry keystore "league-operator" in
+# ~/.foundry/keystores, password in ~/.foundry/keystores/.league-operator.password (both chmod 600, outside the repo).
+# Override with LEAGUE_KEYSTORE / LEAGUE_KEYSTORE_PASSWORD_FILE. Fund it with 20 MON first.
 
-python -m chain.league deploy --network monad-testnet      # -> deployments/monad-testnet.json "league"
+python -m chain.league deploy --network monad-testnet      # -> deployments/monad-testnet-league.json
 python -m chain.league pool   --network monad-testnet
 python -m chain.league open   --network monad-testnet --entry-seconds 300 --stake 1
 python -m chain.league run    --network monad-testnet      # start right away and leave it running (see "Timing")
@@ -81,15 +82,15 @@ The page is static: it reads everything from the chain plus a few JSON files nex
 host it. These must be **committed and pushed** for the live round:
 
 - `league/index.html`, `league/pool.json`, `league/presets.json`, `league/replay_prices.json`
-- `deployments/monad-testnet.json` (with the `"league"` section written by `deploy`/`pool`/`open`)
+- `deployments/monad-testnet-league.json` (written by `deploy`/`pool`/`open`)
 
 Then enable Pages for the repo (Settings → Pages → deploy from the branch, root folder). The link to share is
 `https://<owner>.github.io/<repo>/league/?network=monad-testnet`. Put it in the QR code on the big screen;
 the page shows its own QR code too.
 
-Re-push `deployments/monad-testnet.json` and `league/replay_prices.json` after each `open`, because a new round
+Re-push `deployments/monad-testnet-league.json` and `league/replay_prices.json` after each `open`, because a new round
 writes a new replay file. The live leaderboard and the replay day come from the chain, so nothing needs pushing
-during the race. Don't push `deployments/anvil.json`, `league/live.json` or `league/cost_report.json`; they're
+during the race. Don't push `deployments/anvil-league.json`, `league/live.json` or `league/cost_report.json`; they're
 local only.
 
 ## Testnet MON budget

@@ -13,7 +13,7 @@ different theme and slightly different weights, so they don't tie.
 Wallets:
 - Anvil: the node's own unlocked dev accounts 1..9 (no keys anywhere).
 - Monad testnet: throwaway test wallets created on first use and saved in data/cache/league_wallets.json
-  (gitignored; testnet only). The operator's keystore wallet tops each one up with the stake + 0.05 MON for gas.
+  (gitignored; testnet only). The League operator wallet tops each one up with the stake + 0.05 MON for gas.
 """
 
 from __future__ import annotations
@@ -117,7 +117,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("command", choices=["enter", "claim", "show"])
     ap.add_argument("--network", default="anvil", choices=list(NETWORKS))
     ap.add_argument("--rpc")
-    ap.add_argument("--keystore", help="operator keystore (Monad testnet: tops up the test wallets)")
+    ap.add_argument("--keystore", help="League operator keystore (Monad testnet: tops up the test wallets)")
     ap.add_argument("--round", type=int)
     ap.add_argument("--count", type=int, default=4, help="how many sample ETFs to enter (1-5)")
     args = ap.parse_args(argv)

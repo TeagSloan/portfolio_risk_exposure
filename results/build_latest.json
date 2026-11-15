@@ -1,8 +1,10 @@
 {
  "preferences": {
-  "healthcare": "want"
+  "oil": "avoid",
+  "gold": "avoid"
  },
  "region": "all",
+ "well_known_only": true,
  "universe_size": 666,
  "funnel": [
   {
@@ -10,341 +12,446 @@
    "left": 666
   },
   {
-   "step": "Want Healthcare: High or Moderate",
-   "left": 69
+   "step": "Avoid Oil: not flagged High or Moderate",
+   "left": 604
   },
   {
-   "step": "Want Healthcare: business-linked",
-   "left": 54
+   "step": "Avoid Oil: not in the Oil business",
+   "left": 604
   },
   {
-   "step": "Ranked by Tier 1 references first, then High before Moderate, then t-statistic: top 15",
+   "step": "Avoid Gold & precious metals: not flagged High or Moderate",
+   "left": 553
+  },
+  {
+   "step": "Avoid Gold & precious metals: not in the Gold & precious metals business",
+   "left": 553
+  },
+  {
+   "step": "Well-known (\u2265 $20B)",
+   "left": 488
+  },
+  {
+   "step": "Basket",
    "left": 15
   }
  ],
- "ranked_by": "Tier 1 references first, then High before Moderate, then t-statistic",
- "survivors": 54,
+ "survivors": 553,
+ "ranked_by": "market cap (no want theme)",
+ "theme_share_pct": {},
+ "floors": {
+  "all": 20000000000.0
+ },
  "holdings": [
   {
-   "ticker": "MRK",
+   "ticker": "AAPL",
    "weight_pct": 6.67,
-   "name": "Merck & Co., Inc.",
-   "industry": "Drug Manufacturers - General",
-   "want_tiers": {
-    "Healthcare": "High"
+   "name": "Apple Inc.",
+   "industry": "Consumer Electronics",
+   "market_cap": 5177386894000.0,
+   "picked_for": null,
+   "picked_tier": null,
+   "want_tiers": {},
+   "avoid_tiers": {
+    "Oil": "Limited (lower confidence)",
+    "Gold & precious metals": "Limited"
    },
-   "avoid_tiers": {},
-   "strength": {
-    "Healthcare": 0.6658311697530166
+   "strength": {},
+   "t_stat": {},
+   "reference": {},
+   "tiers": {
+    "Oil": "Limited (lower confidence)",
+    "Gold & precious metals": "Limited"
    },
-   "t_stat": {
-    "Healthcare": 10.642622713930566
-   },
-   "reference": {
-    "Healthcare": true
-   },
-   "rank_score": 1.0
+   "labels": [
+    "Oil: lower confidence"
+   ]
   },
   {
-   "ticker": "PFE",
+   "ticker": "NVDA",
    "weight_pct": 6.67,
-   "name": "Pfizer Inc.",
-   "industry": "Drug Manufacturers - General",
-   "want_tiers": {
-    "Healthcare": "High"
+   "name": "NVIDIA Corporation",
+   "industry": "Semiconductors",
+   "market_cap": 3924685000000.0,
+   "picked_for": null,
+   "picked_tier": null,
+   "want_tiers": {},
+   "avoid_tiers": {
+    "Oil": "Not determined",
+    "Gold & precious metals": "Limited (lower confidence)"
    },
-   "avoid_tiers": {},
-   "strength": {
-    "Healthcare": 0.41704109317895677
+   "strength": {},
+   "t_stat": {},
+   "reference": {},
+   "tiers": {
+    "Oil": "Not determined",
+    "Gold & precious metals": "Limited (lower confidence)"
    },
-   "t_stat": {
-    "Healthcare": 9.861073121122331
+   "labels": [
+    "Oil: the data can't tell",
+    "Gold & precious metals: lower confidence"
+   ]
+  },
+  {
+   "ticker": "MSFT",
+   "weight_pct": 6.67,
+   "name": "Microsoft Corporation",
+   "industry": "Software - Infrastructure",
+   "market_cap": 3890432417200.0,
+   "picked_for": null,
+   "picked_tier": null,
+   "want_tiers": {},
+   "avoid_tiers": {
+    "Oil": "Not determined",
+    "Gold & precious metals": "Not determined"
    },
-   "reference": {
-    "Healthcare": true
+   "strength": {},
+   "t_stat": {},
+   "reference": {},
+   "tiers": {
+    "Oil": "Not determined",
+    "Gold & precious metals": "Not determined"
    },
-   "rank_score": 0.9814814814814815
+   "labels": [
+    "Oil: the data can't tell",
+    "Gold & precious metals: the data can't tell"
+   ]
+  },
+  {
+   "ticker": "GOOGL",
+   "weight_pct": 6.67,
+   "name": "Alphabet Inc.",
+   "industry": "Internet Content & Information",
+   "market_cap": 3596862995430.0,
+   "picked_for": null,
+   "picked_tier": null,
+   "want_tiers": {},
+   "avoid_tiers": {
+    "Oil": "Limited (lower confidence)",
+    "Gold & precious metals": "Limited (lower confidence)"
+   },
+   "strength": {},
+   "t_stat": {},
+   "reference": {},
+   "tiers": {
+    "Oil": "Limited (lower confidence)",
+    "Gold & precious metals": "Limited (lower confidence)"
+   },
+   "labels": [
+    "Oil: lower confidence",
+    "Gold & precious metals: lower confidence"
+   ]
+  },
+  {
+   "ticker": "AMZN",
+   "weight_pct": 6.67,
+   "name": "Amazon.com, Inc.",
+   "industry": "Specialty Retail",
+   "market_cap": 2883421246000.0,
+   "picked_for": null,
+   "picked_tier": null,
+   "want_tiers": {},
+   "avoid_tiers": {
+    "Oil": "Not determined",
+    "Gold & precious metals": "Limited"
+   },
+   "strength": {},
+   "t_stat": {},
+   "reference": {},
+   "tiers": {
+    "Oil": "Not determined",
+    "Gold & precious metals": "Limited"
+   },
+   "labels": [
+    "Oil: the data can't tell"
+   ]
+  },
+  {
+   "ticker": "SPCX",
+   "weight_pct": 6.67,
+   "name": "Space Exploration Technologies Corp.",
+   "industry": "Aerospace & Defense",
+   "market_cap": 1832661195025.0,
+   "picked_for": null,
+   "picked_tier": null,
+   "want_tiers": {},
+   "avoid_tiers": {
+    "Oil": "Not determined",
+    "Gold & precious metals": "Not determined"
+   },
+   "strength": {},
+   "t_stat": {},
+   "reference": {},
+   "tiers": {
+    "Oil": "Not determined",
+    "Gold & precious metals": "Not determined"
+   },
+   "labels": [
+    "Oil: the data can't tell",
+    "Gold & precious metals: the data can't tell"
+   ]
+  },
+  {
+   "ticker": "AVGO",
+   "weight_pct": 6.67,
+   "name": "Broadcom Inc.",
+   "industry": "Semiconductors",
+   "market_cap": 1656497299454.0,
+   "picked_for": null,
+   "picked_tier": null,
+   "want_tiers": {},
+   "avoid_tiers": {
+    "Oil": "Not determined",
+    "Gold & precious metals": "Limited (lower confidence)"
+   },
+   "strength": {},
+   "t_stat": {},
+   "reference": {},
+   "tiers": {
+    "Oil": "Not determined",
+    "Gold & precious metals": "Limited (lower confidence)"
+   },
+   "labels": [
+    "Oil: the data can't tell",
+    "Gold & precious metals: lower confidence"
+   ]
+  },
+  {
+   "ticker": "META",
+   "weight_pct": 6.67,
+   "name": "Meta Platforms, Inc.",
+   "industry": "Internet Content & Information",
+   "market_cap": 1640314437445.0,
+   "picked_for": null,
+   "picked_tier": null,
+   "want_tiers": {},
+   "avoid_tiers": {
+    "Oil": "Limited (lower confidence)",
+    "Gold & precious metals": "Limited"
+   },
+   "strength": {},
+   "t_stat": {},
+   "reference": {},
+   "tiers": {
+    "Oil": "Limited (lower confidence)",
+    "Gold & precious metals": "Limited"
+   },
+   "labels": [
+    "Oil: lower confidence"
+   ]
+  },
+  {
+   "ticker": "TSLA",
+   "weight_pct": 6.67,
+   "name": "Tesla, Inc.",
+   "industry": "Auto - Manufacturers",
+   "market_cap": 1542445205688.0,
+   "picked_for": null,
+   "picked_tier": null,
+   "want_tiers": {},
+   "avoid_tiers": {
+    "Oil": "Not determined",
+    "Gold & precious metals": "Limited (lower confidence)"
+   },
+   "strength": {},
+   "t_stat": {},
+   "reference": {},
+   "tiers": {
+    "Oil": "Not determined",
+    "Gold & precious metals": "Limited (lower confidence)"
+   },
+   "labels": [
+    "Oil: the data can't tell",
+    "Gold & precious metals: lower confidence"
+   ]
   },
   {
    "ticker": "LLY",
    "weight_pct": 6.67,
    "name": "Eli Lilly and Company",
    "industry": "Drug Manufacturers - General",
-   "want_tiers": {
-    "Healthcare": "High"
+   "market_cap": 1357965407500.0,
+   "picked_for": null,
+   "picked_tier": null,
+   "want_tiers": {},
+   "avoid_tiers": {
+    "Oil": "Limited (lower confidence)",
+    "Gold & precious metals": "Limited (lower confidence)"
    },
-   "avoid_tiers": {},
-   "strength": {
-    "Healthcare": 0.7642743680898244
+   "strength": {},
+   "t_stat": {},
+   "reference": {},
+   "tiers": {
+    "Oil": "Limited (lower confidence)",
+    "Gold & precious metals": "Limited (lower confidence)"
    },
-   "t_stat": {
-    "Healthcare": 8.284928103802772
-   },
-   "reference": {
-    "Healthcare": true
-   },
-   "rank_score": 0.962962962962963
+   "labels": [
+    "Oil: lower confidence",
+    "Gold & precious metals: lower confidence"
+   ]
   },
   {
-   "ticker": "GEHC",
+   "ticker": "BRK-B",
    "weight_pct": 6.67,
-   "name": "GE HealthCare Technologies Inc.",
-   "industry": "Medical - Devices",
-   "want_tiers": {
-    "Healthcare": "High"
+   "name": "Berkshire Hathaway Inc.",
+   "industry": "Insurance - Diversified",
+   "market_cap": 1259712413262.0,
+   "picked_for": null,
+   "picked_tier": null,
+   "want_tiers": {},
+   "avoid_tiers": {
+    "Oil": "Limited (lower confidence)",
+    "Gold & precious metals": "Limited"
    },
-   "avoid_tiers": {},
-   "strength": {
-    "Healthcare": 0.17011543886943678
+   "strength": {},
+   "t_stat": {},
+   "reference": {},
+   "tiers": {
+    "Oil": "Limited (lower confidence)",
+    "Gold & precious metals": "Limited"
    },
-   "t_stat": {
-    "Healthcare": 2.5954941212443394
-   },
-   "reference": {
-    "Healthcare": true
-   },
-   "rank_score": 0.9444444444444444
+   "labels": [
+    "Oil: lower confidence"
+   ]
   },
   {
-   "ticker": "BMY",
+   "ticker": "WMT",
    "weight_pct": 6.67,
-   "name": "Bristol-Myers Squibb Company",
-   "industry": "Drug Manufacturers - General",
-   "want_tiers": {
-    "Healthcare": "High"
+   "name": "Walmart Inc.",
+   "industry": "Discount Stores",
+   "market_cap": 1019350358964.0,
+   "picked_for": null,
+   "picked_tier": null,
+   "want_tiers": {},
+   "avoid_tiers": {
+    "Oil": "Limited (lower confidence)",
+    "Gold & precious metals": "Limited"
    },
-   "avoid_tiers": {},
-   "strength": {
-    "Healthcare": 0.7173871179272495
+   "strength": {},
+   "t_stat": {},
+   "reference": {},
+   "tiers": {
+    "Oil": "Limited (lower confidence)",
+    "Gold & precious metals": "Limited"
    },
-   "t_stat": {
-    "Healthcare": 12.937158501631057
-   },
-   "reference": {
-    "Healthcare": false
-   },
-   "rank_score": 0.9259259259259259
+   "labels": [
+    "Oil: lower confidence"
+   ]
   },
   {
-   "ticker": "AMGN",
+   "ticker": "SKHY",
    "weight_pct": 6.67,
-   "name": "Amgen Inc.",
-   "industry": "Drug Manufacturers - General",
-   "want_tiers": {
-    "Healthcare": "High"
+   "name": "SK hynix Inc.",
+   "industry": "Semiconductors",
+   "market_cap": 935517760849.0,
+   "picked_for": null,
+   "picked_tier": null,
+   "want_tiers": {},
+   "avoid_tiers": {
+    "Oil": "Not determined",
+    "Gold & precious metals": "Limited (lower confidence)"
    },
-   "avoid_tiers": {},
-   "strength": {
-    "Healthcare": 0.7233436161267686
+   "strength": {},
+   "t_stat": {},
+   "reference": {},
+   "tiers": {
+    "Oil": "Not determined",
+    "Gold & precious metals": "Limited (lower confidence)"
    },
-   "t_stat": {
-    "Healthcare": 12.436137991435421
-   },
-   "reference": {
-    "Healthcare": false
-   },
-   "rank_score": 0.9074074074074074
+   "labels": [
+    "Oil: the data can't tell",
+    "Gold & precious metals: lower confidence"
+   ]
   },
   {
-   "ticker": "GSK",
+   "ticker": "JPM",
    "weight_pct": 6.67,
-   "name": "GSK plc",
-   "industry": "Drug Manufacturers - General",
-   "want_tiers": {
-    "Healthcare": "High"
+   "name": "JPMorgan Chase & Co.",
+   "industry": "Banks - Diversified",
+   "market_cap": 919345625900.0,
+   "picked_for": null,
+   "picked_tier": null,
+   "want_tiers": {},
+   "avoid_tiers": {
+    "Oil": "Limited (lower confidence)",
+    "Gold & precious metals": "Limited"
    },
-   "avoid_tiers": {},
-   "strength": {
-    "Healthcare": 0.596497143780101
+   "strength": {},
+   "t_stat": {},
+   "reference": {},
+   "tiers": {
+    "Oil": "Limited (lower confidence)",
+    "Gold & precious metals": "Limited"
    },
-   "t_stat": {
-    "Healthcare": 10.272891738111433
-   },
-   "reference": {
-    "Healthcare": false
-   },
-   "rank_score": 0.8888888888888888
+   "labels": [
+    "Oil: lower confidence"
+   ]
   },
   {
-   "ticker": "BIIB",
+   "ticker": "V",
    "weight_pct": 6.67,
-   "name": "Biogen Inc.",
-   "industry": "Drug Manufacturers - General",
-   "want_tiers": {
-    "Healthcare": "High"
+   "name": "Visa Inc.",
+   "industry": "Financial - Credit Services",
+   "market_cap": 794383023753.0,
+   "picked_for": null,
+   "picked_tier": null,
+   "want_tiers": {},
+   "avoid_tiers": {
+    "Oil": "Limited (lower confidence)",
+    "Gold & precious metals": "Limited"
    },
-   "avoid_tiers": {},
-   "strength": {
-    "Healthcare": 0.7395234048491625
+   "strength": {},
+   "t_stat": {},
+   "reference": {},
+   "tiers": {
+    "Oil": "Limited (lower confidence)",
+    "Gold & precious metals": "Limited"
    },
-   "t_stat": {
-    "Healthcare": 10.077826319891631
-   },
-   "reference": {
-    "Healthcare": false
-   },
-   "rank_score": 0.8703703703703703
-  },
-  {
-   "ticker": "ABBV",
-   "weight_pct": 6.67,
-   "name": "AbbVie Inc.",
-   "industry": "Drug Manufacturers - General",
-   "want_tiers": {
-    "Healthcare": "High"
-   },
-   "avoid_tiers": {},
-   "strength": {
-    "Healthcare": 0.5596321268114963
-   },
-   "t_stat": {
-    "Healthcare": 10.043037107863572
-   },
-   "reference": {
-    "Healthcare": false
-   },
-   "rank_score": 0.8518518518518519
-  },
-  {
-   "ticker": "NVS",
-   "weight_pct": 6.67,
-   "name": "Novartis AG",
-   "industry": "Drug Manufacturers - General",
-   "want_tiers": {
-    "Healthcare": "High"
-   },
-   "avoid_tiers": {},
-   "strength": {
-    "Healthcare": 0.5099878525220247
-   },
-   "t_stat": {
-    "Healthcare": 9.952688122675383
-   },
-   "reference": {
-    "Healthcare": false
-   },
-   "rank_score": 0.8333333333333334
-  },
-  {
-   "ticker": "REGN",
-   "weight_pct": 6.67,
-   "name": "Regeneron Pharmaceuticals, Inc.",
-   "industry": "Biotechnology",
-   "want_tiers": {
-    "Healthcare": "High"
-   },
-   "avoid_tiers": {},
-   "strength": {
-    "Healthcare": 0.7968349217434407
-   },
-   "t_stat": {
-    "Healthcare": 8.615063554641845
-   },
-   "reference": {
-    "Healthcare": false
-   },
-   "rank_score": 0.8148148148148149
-  },
-  {
-   "ticker": "TMO",
-   "weight_pct": 6.67,
-   "name": "Thermo Fisher Scientific Inc.",
-   "industry": "Medical - Diagnostics & Research",
-   "want_tiers": {
-    "Healthcare": "High"
-   },
-   "avoid_tiers": {},
-   "strength": {
-    "Healthcare": 0.5756428301184863
-   },
-   "t_stat": {
-    "Healthcare": 8.308899219630984
-   },
-   "reference": {
-    "Healthcare": false
-   },
-   "rank_score": 0.7962962962962963
-  },
-  {
-   "ticker": "DHR",
-   "weight_pct": 6.67,
-   "name": "Danaher Corporation",
-   "industry": "Medical - Diagnostics & Research",
-   "want_tiers": {
-    "Healthcare": "High"
-   },
-   "avoid_tiers": {},
-   "strength": {
-    "Healthcare": 0.5665362196546804
-   },
-   "t_stat": {
-    "Healthcare": 8.180771065701549
-   },
-   "reference": {
-    "Healthcare": false
-   },
-   "rank_score": 0.7777777777777778
-  },
-  {
-   "ticker": "A",
-   "weight_pct": 6.67,
-   "name": "Agilent Technologies, Inc.",
-   "industry": "Medical - Diagnostics & Research",
-   "want_tiers": {
-    "Healthcare": "High"
-   },
-   "avoid_tiers": {},
-   "strength": {
-    "Healthcare": 0.5521507340854407
-   },
-   "t_stat": {
-    "Healthcare": 8.084155422462802
-   },
-   "reference": {
-    "Healthcare": false
-   },
-   "rank_score": 0.7592592592592593
-  },
-  {
-   "ticker": "JNJ",
-   "weight_pct": 6.67,
-   "name": "Johnson & Johnson",
-   "industry": "Drug Manufacturers - General",
-   "want_tiers": {
-    "Healthcare": "High"
-   },
-   "avoid_tiers": {},
-   "strength": {
-    "Healthcare": 0.3261005999713181
-   },
-   "t_stat": {
-    "Healthcare": 7.5219806170965935
-   },
-   "reference": {
-    "Healthcare": false
-   },
-   "rank_score": 0.7407407407407407
+   "labels": [
+    "Oil: lower confidence"
+   ]
   }
  ],
  "cash_pct": 0.0,
- "warnings": [],
+ "invested_pct": 100.0,
+ "warnings": [
+  "Industry limit: at most 3 stocks per industry, so 2 otherwise-qualifying stock(s) were skipped."
+ ],
+ "diagnosis": null,
  "verification": {
   "all_pass": true,
   "checks": {
-   "healthcare": {
-    "theme": "Healthcare",
-    "choice": "want",
-    "goal": "all invested weight (100%) High or Moderate",
+   "oil": {
+    "theme": "Oil",
+    "choice": "avoid",
+    "goal": "0% High or Moderate",
     "pass": true,
-    "high_moderate_pct": 100.0,
+    "high_moderate_pct": 0,
+    "business_linked_pct": 0,
     "by_tier_pct": {
-     "High": 100.0,
+     "High": 0.0,
      "Moderate": 0.0,
      "Limited": 0.0,
-     "Limited (lower confidence)": 0.0,
-     "Not determined": 0.0
+     "Limited (lower confidence)": 53.33,
+     "Not determined": 46.67
     },
-    "sentence": "Business-linked exposure: 100% of your portfolio (MRK, PFE, LLY, GEHC, BMY, AMGN, GSK, BIIB, ABBV, NVS, REGN, TMO, DHR, A, JNJ)."
+    "sentence": "Business-linked exposure: none of your portfolio has High or Moderate Oil exposure. For 47% the data can't tell."
+   },
+   "gold": {
+    "theme": "Gold & precious metals",
+    "choice": "avoid",
+    "goal": "0% High or Moderate",
+    "pass": true,
+    "high_moderate_pct": 0,
+    "business_linked_pct": 0,
+    "by_tier_pct": {
+     "High": 0.0,
+     "Moderate": 0.0,
+     "Limited": 46.67,
+     "Limited (lower confidence)": 40.0,
+     "Not determined": 13.33
+    },
+    "sentence": "Business-linked exposure: none of your portfolio has High or Moderate Gold & precious metals exposure. For 13% the data can't tell."
    }
   }
  }

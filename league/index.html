@@ -119,6 +119,8 @@
     <h2>Build your ETF</h2>
     <p class="status">1. Choose what you want and what to avoid. We suggest stocks from the pool.</p>
     <div id="themes"></div>
+    <label class="theme" style="border:0"><span class="tn">Well-known names only (reference or ≥ $20B)</span>
+      <input id="wellknown" type="checkbox" checked style="width:28px;height:28px"></label>
     <p class="status" style="margin-top:14px">2. Adjust it: 3 to 8 stocks, each at least 5%, adding up to 100%.</p>
     <div id="picks"></div>
     <div class="row">
@@ -184,35 +186,108 @@ const byTicker = () => Object.fromEntries(pool.stocks.map((s) => [s.ticker, s]))
 
 // ───────────── builder (same rules as the engine's Way 2 builder, applied to the pool) ─────────────
 
-function suggest() {
+// Mirrors engine/builder.py on the pool: avoids first; several wants are combined (slots split across them);
+// well-known names only (reference or market cap >= $20B, lowered $20B -> $10B -> $2B per theme if needed);
+// ranking = references first, then 50% t-stat percentile + 50% market-cap percentile, High before Moderate;
+// picks alternate across wanted themes, at most 3 per industry; leftover slots go to the other wanted themes.
+let wellKnown = true;
+function pctRank(values) { // pandas rank(pct=True) with average ties
+  const idx = values.map((v, i) => [v, i]).sort((a, b) => a[0] - b[0]), out = new Array(values.length);
+  for (let i = 0; i < idx.length;) {
+    let j = i; while (j + 1 < idx.length && idx[j + 1][0] === idx[i][0]) j++;
+    const r = (i + j + 2) / 2 / values.length; for (let k = i; k <= j; k++) out[idx[k][1]] = r; i = j + 1;
+  }
+  return out;
+}
+function suggest(n = pool.rules.default_picks) {
   const key = Object.keys(prefs).sort().map((k) => `${k}:${prefs[k]}`).join(",");
-  if (!key) return [];
-  const pre = presets.find((p) => p.key === key);
-  if (pre) return pre.ranked;
-  const want = Object.keys(prefs).filter((k) => prefs[k] === "want");
-  const avoid = Object.keys(prefs).filter((k) => prefs[k] === "avoid");
-  const ok = pool.stocks.filter((s) =>
-    want.every((k) => ["High", "Moderate"].includes(s.themes[k].tier) && s.themes[k].linked) &&
-    avoid.every((k) => !["High", "Moderate"].includes(s.themes[k].tier) && !s.themes[k].linked));
-  const order = (k) => [...ok].sort((a, b) =>
-    (b.themes[k].ref - a.themes[k].ref) || ((b.themes[k].tier === "High") - (a.themes[k].tier === "High")) ||
-    ((b.themes[k].t ?? -99) - (a.themes[k].t ?? -99)));
-  if (!want.length) return [...ok].map((s) => s.ticker); // avoid only: pool order (largest first)
-  const n = ok.length, score = {};
-  for (const k of want) order(k).forEach((s, i) => { score[s.ticker] = (score[s.ticker] || 0) + (1 - i / n); });
-  return ok.map((s) => s.ticker).sort((a, b) => score[b] - score[a]);
+  if (!key) return { picks: [], notes: [] };
+  const pre = wellKnown && presets.find((p) => p.key === key);
+  if (pre && (n === pool.rules.default_picks || n === 8)) {
+    const t = n === 8 ? pre.ranked : pre.picks, f = n === 8 ? pre.ranked_for : pre.picked_for;
+    return { picks: t.map((x, i) => ({ ticker: x, theme: f[i] })), notes: [] };
+  }
+  const R = pool.rules, floors = wellKnown ? R.well_known_floors : [0], notes = [];
+  const want = pool.themes.map((t) => t.key).filter((k) => prefs[k] === "want");
+  const avoid = pool.themes.map((t) => t.key).filter((k) => prefs[k] === "avoid");
+  const name = Object.fromEntries(pool.themes.map((t) => [t.key, t.name]));
+  const all = [...pool.stocks].sort((a, b) => (a.ticker < b.ticker ? -1 : 1));
+  const base = all.filter((s) => avoid.every((k) => !["High", "Moderate"].includes(s.themes[k].tier) && !s.themes[k].linked));
+  const rank = (cands, k) => {
+    const t = pctRank(cands.map((s) => s.themes[k].t ?? -99)), m = pctRank(cands.map((s) => s.market_cap || 0));
+    return cands.map((s, i) => ({ s, sc: 0.5 * t[i] + 0.5 * m[i] })).sort((a, b) =>
+      (b.s.themes[k].ref - a.s.themes[k].ref) || (b.sc - a.sc) ||
+      ((a.s.themes[k].tier !== "High") - (b.s.themes[k].tier !== "High")) || (a.s.ticker < b.s.ticker ? -1 : 1)).map((x) => x.s.ticker);
+  };
+  const lists = {}, slots = {};
+  if (want.length) {
+    const baseN = Math.floor(n / want.length), extra = n % want.length;
+    want.forEach((k, i) => {
+      slots[k] = baseN + (i < extra ? 1 : 0);
+      const fit = base.filter((s) => ["High", "Moderate"].includes(s.themes[k].tier) && s.themes[k].linked);
+      let chosen = fit, used = floors[0];
+      for (const f of floors) {
+        used = f;
+        chosen = wellKnown ? fit.filter((s) => s.themes[k].ref || (s.market_cap || 0) >= f) : fit;
+        if (chosen.length >= slots[k]) break;
+      }
+      if (wellKnown && used < floors[0]) notes.push(`${name[k]}: floor lowered to $${used / 1e9}B to find enough stocks.`);
+      lists[k] = rank(chosen, k);
+    });
+  } else {
+    let chosen = base;
+    for (const f of floors) { chosen = wellKnown ? base.filter((s) => (s.market_cap || 0) >= f) : base; if (chosen.length >= n) break; }
+    lists._cap = [...chosen].sort((a, b) => (b.market_cap - a.market_cap) || (a.ticker < b.ticker ? -1 : 1)).map((s) => s.ticker);
+    slots._cap = n;
+  }
+  const ind = Object.fromEntries(pool.stocks.map((s) => [s.ticker, s.industry]));
+  const order = Object.keys(lists);
+  const pos = Object.fromEntries(order.map((k) => [k, 0])), taken = Object.fromEntries(order.map((k) => [k, 0]));
+  const pickedFor = new Map(), perInd = {};
+  const next = (k) => {
+    while (pos[k] < lists[k].length) {
+      const x = lists[k][pos[k]++];
+      if (pickedFor.has(x)) continue;
+      if ((perInd[ind[x]] || 0) >= R.max_per_industry) continue;
+      return x;
+    }
+    return null;
+  };
+  const take = (k, x) => { pickedFor.set(x, k); taken[k]++; perInd[ind[x]] = (perInd[ind[x]] || 0) + 1; };
+  let progress = true;
+  while (progress && pickedFor.size < n) {
+    progress = false;
+    for (const k of order) {
+      if (taken[k] >= slots[k] || pickedFor.size >= n) continue;
+      const x = next(k); if (x) { take(k, x); progress = true; }
+    }
+  }
+  if (want.length && order.some((k) => taken[k] < slots[k])) {
+    order.filter((k) => taken[k] < slots[k]).forEach((k) =>
+      notes.push(`${name[k]}: only ${taken[k]} of ${slots[k]} slots filled; the rest went to your other theme(s).`));
+    progress = true;
+    while (progress && pickedFor.size < n) {
+      progress = false;
+      for (const k of order) { if (pickedFor.size >= n) break; const x = next(k); if (x) { take(k, x); progress = true; } }
+    }
+  }
+  const picks = [...pickedFor.keys()].sort((a, b) =>
+    (order.indexOf(pickedFor.get(a)) - order.indexOf(pickedFor.get(b))) ||
+    (lists[pickedFor.get(a)].indexOf(a) - lists[pickedFor.get(b)].indexOf(b)));
+  return { picks: picks.map((x) => ({ ticker: x, theme: pickedFor.get(x) === "_cap" ? null : name[pickedFor.get(x)] })), notes };
 }
 
 function equalPcts(n) { const base = Math.floor(100 / n); return Array.from({ length: n }, (_, i) => base + (i < 100 - base * n ? 1 : 0)); }
 
 function applySuggestion() {
-  const ranked = suggest();
-  const n = Math.min(pool.rules.default_picks, ranked.length);
-  if (Object.keys(prefs).length && n < 3) {
-    msg(`Only ${ranked.length} pool stock(s) fit those choices. Loosen a rule, or add stocks yourself below.`);
-  } else { msg(""); }
-  const p = equalPcts(Math.max(n, 1));
-  picks = ranked.slice(0, n).map((t, i) => ({ ticker: t, pct: p[i] }));
+  const { picks: sug, notes } = suggest();
+  if (Object.keys(prefs).length && sug.length < 3) {
+    const tip = Object.values(prefs).includes("avoid") ? " Try switching an Avoid to —." :
+      (wellKnown ? ' Try turning off "Well-known names only".' : "");
+    msg(`Only ${sug.length} pool stock(s) fit those choices.${tip} You can also add stocks yourself below.`);
+  } else { msg(notes.length ? notes.map(esc).join("<br>") : "", "ok"); }
+  const p = equalPcts(Math.max(sug.length, 1));
+  picks = sug.map((x, i) => ({ ticker: x.ticker, pct: p[i], theme: x.theme }));
   renderPicks();
 }
 
@@ -231,12 +306,13 @@ function renderPicks() {
   $("picks").innerHTML = picks.map((p, i) => `<div class="pick">
       <select onchange="setPick(${i}, this.value)">${opts(p.ticker)}</select>
       <input inputmode="numeric" value="${p.pct}" oninput="setPct(${i}, this.value)" aria-label="weight %"><span>%</span>
-      <button class="x" onclick="dropPick(${i})" aria-label="remove">×</button></div>`).join("") ||
+      <button class="x" onclick="dropPick(${i})" aria-label="remove">×</button></div>
+      ${p.theme ? `<div class="small" style="margin:-4px 0 6px">picked for ${esc(p.theme)}</div>` : ""}`).join("") ||
     `<p class="status">No stocks yet. Choose a theme above or tap "+ Add stock".</p>`;
   validate();
 }
 
-window.setPick = (i, t) => { picks[i].ticker = t; validate(); };
+window.setPick = (i, t) => { picks[i].ticker = t; picks[i].theme = null; renderPicks(); };
 window.setPct = (i, v) => { picks[i].pct = Number(v); validate(); };
 window.dropPick = (i) => { picks.splice(i, 1); renderPicks(); };
 
@@ -270,9 +346,9 @@ function entryThemes(tickers, weights) {
 
 async function load() {
   const get = async (p) => { const r = await fetch(p, { cache: "no-store" }); if (!r.ok) throw new Error(`Missing ${p}`); return r.json(); };
-  dep = await get(`../deployments/${NETWORK}.json`);
+  dep = await get(`../deployments/${NETWORK}-league.json`);
   cfg = dep.league;
-  if (!cfg || !cfg.fundLeague) throw new Error(`deployments/${NETWORK}.json has no "league" section yet.`);
+  if (!cfg || !cfg.fundLeague) throw new Error(`deployments/${NETWORK}-league.json has no League deployment yet.`);
   pool = await get("pool.json");
   presets = (await get("presets.json")).presets;
   try { replay = await get("replay_prices.json"); } catch { replay = null; }
@@ -451,15 +527,20 @@ $("addnet").onclick = addNetwork;
 $("claim").onclick = claim;
 $("enter").onclick = enter;
 $("etfname").oninput = validate;
+$("wellknown").onchange = (e) => { wellKnown = e.target.checked; applySuggestion(); };
 $("addpick").onclick = () => {
   if (picks.length >= 8) { msg("At most 8 stocks."); return; }
   const used = new Set(picks.map((p) => p.ticker));
-  const next = (suggest().find((t) => !used.has(t))) || pool.stocks.map((s) => s.ticker).find((t) => !used.has(t));
-  picks.push({ ticker: next, pct: 5 }); renderPicks();
+  const more = suggest(8).picks.find((x) => !used.has(x.ticker));
+  const next = more || { ticker: pool.stocks.map((s) => s.ticker).find((t) => !used.has(t)), theme: null };
+  picks.push({ ticker: next.ticker, pct: 5, theme: next.theme }); renderPicks();
 };
 $("equal").onclick = () => { const p = equalPcts(Math.max(picks.length, 1)); picks.forEach((x, i) => { x.pct = p[i]; }); renderPicks(); };
 
-const url = location.href;
+// The QR code always shows the public page (GitHub Pages, fund_league branch) for the live network, so the big
+// screen shows the right link even when this page is opened locally.
+const PUBLIC_URL = "https://shannon-maccallum.github.io/portfolio_risk_exposure/league/?network=monad-testnet";
+const url = NETWORK === "monad-testnet" ? PUBLIC_URL : location.href;
 $("link").textContent = url;
 if (!window.ethereum) {
   const mm = $("openmm");

@@ -27,5 +27,6 @@ results/*.html
 
 # Fantasy Funds League: local-only files
 deployments/anvil.json
+deployments/anvil-league.json
 league/live.json
 league/cost_report.json
