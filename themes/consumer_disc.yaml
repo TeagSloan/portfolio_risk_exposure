@@ -3,10 +3,6 @@ key: consumer_disc
 name: Consumer discretionary
 plain: consumer discretionary companies
 measures: Discretionary-spending share of revenue
-controls:
-- SPY
-- TLT
-- VALUE
 ground_truth: XLY
 references:
   High:
@@ -46,14 +42,6 @@ references:
     fiscal_year: 2026
     source: 'FMP revenue-product-segmentation FY2026: Non-Foods / sum of all product segments'
     reason: Warehouse club; non-food goods are about a quarter, the rest is groceries.
-  - ticker: DIS
-    name: The Walt Disney Company
-    evidence_pct: 32.4
-    measures: Discretionary-spending share of revenue
-    fiscal_year: 2025
-    source: 'FMP revenue-product-segmentation FY2025: Resorts and vacations + Retail and wholesale sales of merchandise, food
-      and beverage + Theme park admissions / sum of all product segments'
-    reason: Media company; parks, resorts and merchandise are about a third, the rest is TV and streaming.
   - ticker: DG
     name: Dollar General Corporation
     evidence_pct: 18.0
@@ -83,3 +71,13 @@ direct_classification:
   evidence_pct: null
   source: No disclosed number (Tier 2)
   reason: Online retail is large, but FMP doesn't split discretionary from essentials.
+controls:
+- SPY
+- TLT
+- VALUE
+- SIZE
+- MOM
+- LOWVOL
+style_skips: {}
+sector_skips: {}
+use_sector_control: false

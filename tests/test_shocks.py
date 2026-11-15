@@ -171,3 +171,43 @@ def test_reference_data_failure_is_a_clear_error(monkeypatch):
     monkeypatch.setattr(shocks, "load_theme", lambda key: THEME)
     with pytest.raises(ShockError, match="Couldn't load the Oil reference data"):
         shocks.shock_portfolio({"HOLD": 1.0}, "oil", 0.3)
+
+
+# ---- sector control (used only when a theme turns it on, like the classification) ----
+
+def test_sector_control_is_used_when_the_theme_turns_it_on(monkeypatch):
+    """HOLD here moves with its sector spread, not the theme. Without the sector control the
+    theme basket would soak some of that up; with it, the theme beta is the true 0.3."""
+    table = returns_table()
+    rng = np.random.default_rng(9)
+    table["SEC_XLK"] = rng.normal(0, 0.01, len(table)) + 0.5 * table[["R2", "R3", "R4"]].mean(axis=1)
+    basket = table[["R1", "R2", "R3", "R4"]].mean(axis=1)
+    table["HOLD"] = 0.3 * basket + 1.0 * table["SEC_XLK"] + 1.1 * table["SPY"] + rng.normal(0, 0.003, len(table))
+    seen = []
+
+    def fake_get(tickers, start, end):
+        seen.append(tickers)
+        return table
+
+    theme = {**THEME, "use_sector_control": True}
+    monkeypatch.setattr(shocks, "get_returns", fake_get)
+    monkeypatch.setattr(shocks, "load_theme", lambda key: theme)
+    monkeypatch.setattr(shocks, "sector_control", lambda t, th: "SEC_XLK" if th.get("use_sector_control") else None)
+    res = shocks.shock_portfolio({"HOLD": 1.0}, "oil", 0.3)
+    assert "SEC_XLK" in seen[0]
+    assert res.holdings[0].beta == pytest.approx(0.3, abs=0.05)
+    without = shocks.theme_beta("HOLD", THEME, table)[0]
+    assert without > 0.5  # leaving the sector out would overstate the theme beta
+
+
+def test_sector_control_off_by_default(monkeypatch):
+    seen = []
+
+    def fake_get(tickers, start, end):
+        seen.append(tickers)
+        return returns_table()
+
+    monkeypatch.setattr(shocks, "get_returns", fake_get)
+    monkeypatch.setattr(shocks, "load_theme", lambda key: THEME)
+    shocks.shock_portfolio({"HOLD": 1.0}, "oil", 0.3)
+    assert not any(t.startswith("SEC_") for t in seen[0])

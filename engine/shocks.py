@@ -6,7 +6,8 @@ How it works, in plain terms:
 - Each theme has reference companies (e.g. Oil: FANG, CHRD, COP, EOG, CVX, ...). Their average daily
   return is the theme's "basket".
 - For each holding, a regression measures how much it moved with that basket over the last ~2 years,
-  after removing the same market controls the classification uses (SPY, TLT and, for most themes, VALUE).
+  after removing the same controls the classification uses (SPY, TLT, the theme's style controls, and
+  the holding's sector control when a theme turns that on).
   That slope is the holding's beta to the theme: beta 0.5 means "when the theme's basket rose 1% more
   than the market explained, this stock tended to rise 0.5%".
 - A shock of +30% means: the theme's basket rises 30% while the market controls stay flat. Each holding
@@ -27,6 +28,7 @@ import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 
+from engine.controls import sector_control
 from engine.data import DEFAULT_END, DEFAULT_START, DataError, get_returns
 from engine.theme_loader import load_theme
 
@@ -74,13 +76,17 @@ def reference_tickers(theme: dict) -> list[str]:
     return [r["ticker"] for g in ("High", "Moderate") for r in theme["references"].get(g, [])]
 
 
-def theme_beta(ticker: str, theme: dict, returns: pd.DataFrame) -> tuple[float, float, int]:
-    """(beta, standard error, days used) of one holding to the theme's equal-weighted reference basket."""
+def theme_beta(ticker: str, theme: dict, returns: pd.DataFrame,
+               sector: str | None = None) -> tuple[float, float, int]:
+    """(beta, standard error, days used) of one holding to the theme's equal-weighted reference basket.
+
+    `sector` is the holding's sector-control column (e.g. "SEC_XLK"), when the theme uses one.
+    """
     ticker = ticker.upper()
     refs = [t for t in reference_tickers(theme) if t != ticker]  # never measure a stock against itself
     if not refs:
         raise ValueError(f"{theme['name']} has no other reference companies to compare {ticker} with.")
-    controls = list(theme["controls"])
+    controls = list(theme["controls"]) + ([sector] if sector else [])
     needed = [ticker] + controls + refs
     missing = [c for c in needed if c not in returns.columns]
     if missing:
@@ -94,8 +100,13 @@ def theme_beta(ticker: str, theme: dict, returns: pd.DataFrame) -> tuple[float, 
     return float(fit.params["THEME"]), float(fit.bse["THEME"]), int(fit.nobs)
 
 
-def sensitivities(weights: dict[str, float], theme: dict, returns: pd.DataFrame) -> dict[str, dict]:
-    """Beta to the theme for every holding. Problems become a note, not a crash."""
+def sensitivities(weights: dict[str, float], theme: dict, returns: pd.DataFrame,
+                  sectors: dict[str, str | None] | None = None) -> dict[str, dict]:
+    """Beta to the theme for every holding. Problems become a note, not a crash.
+
+    `sectors` maps each holding to its sector-control column (or None), as the classification does.
+    """
+    sectors = sectors or {}
     out = {}
     for ticker in weights:
         if ticker == CASH:
@@ -105,7 +116,7 @@ def sensitivities(weights: dict[str, float], theme: dict, returns: pd.DataFrame)
                            "note": f"{ticker} is a market control, held flat in the shock."}
         else:
             try:
-                beta, se, n = theme_beta(ticker, theme, returns)
+                beta, se, n = theme_beta(ticker, theme, returns, sectors.get(ticker))
                 out[ticker] = {"beta": beta, "se": se, "note": f"{n} days of data"}
             except ValueError as exc:
                 out[ticker] = {"beta": None, "se": None, "note": f"Couldn't estimate: {exc}"}
@@ -153,9 +164,9 @@ def apply_shock(weights: dict[str, float], sens: dict[str, dict], theme_key: str
 
 
 def shock_from_returns(weights: dict[str, float], theme_key: str, theme: dict, shock: float,
-                       returns: pd.DataFrame) -> ShockResult:
+                       returns: pd.DataFrame, sectors: dict[str, str | None] | None = None) -> ShockResult:
     """Run one shock on returns already in hand (no internet needed; used by the tests)."""
-    return apply_shock(weights, sensitivities(weights, theme, returns), theme_key, theme, shock)
+    return apply_shock(weights, sensitivities(weights, theme, returns, sectors), theme_key, theme, shock)
 
 
 def shock_portfolio(weights: dict[str, float], theme_key: str, shock: float,
@@ -166,18 +177,21 @@ def shock_portfolio(weights: dict[str, float], theme_key: str, shock: float,
     """
     theme = load_theme(theme_key)
     tickers = [t for t in weights if t != CASH]
-    needed = list(dict.fromkeys(tickers + list(theme["controls"]) + reference_tickers(theme)))
+    sectors = {t: sector_control(t, theme) for t in tickers if t not in theme["controls"]}
+    extra = [s for s in sectors.values() if s]
+    needed = list(dict.fromkeys(tickers + list(theme["controls"]) + extra + reference_tickers(theme)))
     try:
         returns = get_returns(needed, start, end)
     except DataError as exc:
         # One stock with too little history shouldn't sink everyone; retry without the stocks' joint join.
-        returns = _returns_per_holding(tickers, theme, start, end, exc)
-    return shock_from_returns(weights, theme_key, theme, shock, returns)
+        returns = _returns_per_holding(tickers, theme, extra, start, end, exc)
+    return shock_from_returns(weights, theme_key, theme, shock, returns, sectors)
 
 
-def _returns_per_holding(tickers: list[str], theme: dict, start: str, end: str, first_error: Exception):
+def _returns_per_holding(tickers: list[str], theme: dict, extra: list[str], start: str, end: str,
+                        first_error: Exception):
     """Fallback: fetch the theme's regressors once, then add each holding that has data on its own."""
-    base_cols = list(dict.fromkeys(list(theme["controls"]) + reference_tickers(theme)))
+    base_cols = list(dict.fromkeys(list(theme["controls"]) + extra + reference_tickers(theme)))
     try:
         base = get_returns(base_cols, start, end)
     except DataError:

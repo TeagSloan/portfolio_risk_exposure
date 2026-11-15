@@ -1,155 +1,152 @@
 {
  "preferences": {
-  "ai": "want",
-  "oil": "avoid"
+  "gold": "want"
  },
- "universe_size": 108,
+ "universe_size": 106,
  "holdings": [
   {
-   "ticker": "ARM",
-   "weight_pct": 14.29,
-   "points": 2,
-   "tiers": {
-    "AI": "High",
-    "Oil": "Limited (lower confidence)"
-   },
-   "labels": [
-    "Oil: lower confidence"
-   ]
-  },
-  {
-   "ticker": "GOOGL",
-   "weight_pct": 14.29,
-   "points": 2,
-   "tiers": {
-    "AI": "High",
-    "Oil": "Limited (lower confidence)"
-   },
-   "labels": [
-    "Oil: lower confidence"
-   ]
-  },
-  {
-   "ticker": "INTC",
-   "weight_pct": 14.29,
-   "points": 2,
-   "tiers": {
-    "AI": "High",
-    "Oil": "Limited (lower confidence)"
-   },
-   "labels": [
-    "Oil: lower confidence"
-   ]
-  },
-  {
-   "ticker": "LRCX",
-   "weight_pct": 14.29,
-   "points": 2,
-   "tiers": {
-    "AI": "High",
-    "Oil": "Limited (lower confidence)"
-   },
-   "labels": [
-    "Oil: lower confidence"
-   ]
-  },
-  {
-   "ticker": "XLK",
-   "weight_pct": 14.29,
-   "points": 2,
-   "tiers": {
-    "AI": "High",
-    "Oil": "Limited (lower confidence)"
-   },
-   "labels": [
-    "Oil: lower confidence"
-   ]
-  },
-  {
-   "ticker": "AMZN",
-   "weight_pct": 7.14,
+   "ticker": "ALB",
+   "weight_pct": 7.69,
    "points": 1,
    "tiers": {
-    "AI": "Moderate",
-    "Oil": "Limited (lower confidence)"
+    "Gold & precious metals": "High"
    },
-   "labels": [
-    "Oil: lower confidence"
-   ]
+   "labels": []
   },
   {
-   "ticker": "APH",
-   "weight_pct": 7.14,
+   "ticker": "BHP",
+   "weight_pct": 7.69,
    "points": 1,
    "tiers": {
-    "AI": "Moderate",
-    "Oil": "Limited (lower confidence)"
+    "Gold & precious metals": "High"
    },
-   "labels": [
-    "Oil: lower confidence"
-   ]
+   "labels": []
   },
   {
-   "ticker": "CDNS",
-   "weight_pct": 7.14,
+   "ticker": "CDE",
+   "weight_pct": 7.69,
    "points": 1,
    "tiers": {
-    "AI": "Moderate",
-    "Oil": "Limited (lower confidence)"
+    "Gold & precious metals": "High"
    },
-   "labels": [
-    "Oil: lower confidence"
-   ]
+   "labels": []
   },
   {
-   "ticker": "META",
-   "weight_pct": 7.14,
+   "ticker": "DG",
+   "weight_pct": 7.69,
    "points": 1,
    "tiers": {
-    "AI": "Moderate",
-    "Oil": "Limited (lower confidence)"
+    "Gold & precious metals": "High"
    },
-   "labels": [
-    "Oil: lower confidence"
-   ]
+   "labels": []
+  },
+  {
+   "ticker": "FCX",
+   "weight_pct": 7.69,
+   "points": 1,
+   "tiers": {
+    "Gold & precious metals": "High"
+   },
+   "labels": []
+  },
+  {
+   "ticker": "HII",
+   "weight_pct": 7.69,
+   "points": 1,
+   "tiers": {
+    "Gold & precious metals": "High"
+   },
+   "labels": []
+  },
+  {
+   "ticker": "NEM",
+   "weight_pct": 7.69,
+   "points": 1,
+   "tiers": {
+    "Gold & precious metals": "High"
+   },
+   "labels": []
+  },
+  {
+   "ticker": "PAAS",
+   "weight_pct": 7.69,
+   "points": 1,
+   "tiers": {
+    "Gold & precious metals": "High"
+   },
+   "labels": []
+  },
+  {
+   "ticker": "RIO",
+   "weight_pct": 7.69,
+   "points": 1,
+   "tiers": {
+    "Gold & precious metals": "High"
+   },
+   "labels": []
+  },
+  {
+   "ticker": "SCCO",
+   "weight_pct": 7.69,
+   "points": 1,
+   "tiers": {
+    "Gold & precious metals": "High"
+   },
+   "labels": []
+  },
+  {
+   "ticker": "SQM",
+   "weight_pct": 7.69,
+   "points": 1,
+   "tiers": {
+    "Gold & precious metals": "High"
+   },
+   "labels": []
+  },
+  {
+   "ticker": "SSRM",
+   "weight_pct": 7.69,
+   "points": 1,
+   "tiers": {
+    "Gold & precious metals": "High"
+   },
+   "labels": []
+  },
+  {
+   "ticker": "VALE",
+   "weight_pct": 7.69,
+   "points": 1,
+   "tiers": {
+    "Gold & precious metals": "High"
+   },
+   "labels": []
   }
  ],
  "cash_pct": 0.0,
+ "rejected_by_etf_check": [
+  "CEG",
+  "QCOM"
+ ],
  "warnings": [
-  "9 pick(s) pass an 'avoid' rule only with lower confidence: AMZN, APH, ARM, CDNS, GOOGL, INTC, LRCX, META, XLK."
+  "2 regression pick(s) failed the theme-ETF confirmation: CEG, QCOM."
  ],
  "verification": {
   "all_pass": true,
   "checks": {
-   "ai": {
-    "theme": "AI",
+   "gold": {
+    "theme": "Gold & precious metals",
     "choice": "want",
     "goal": "all invested weight (100%) High or Moderate",
     "pass": true,
     "high_moderate_pct": 100.0,
     "by_tier_pct": {
-     "High": 71.43,
-     "Moderate": 28.57,
+     "High": 100.0,
+     "Moderate": 0.0,
      "Limited": 0.0,
      "Limited (lower confidence)": 0.0,
      "Not determined": 0.0
     },
-    "sentence": "100% of your portfolio is in stocks with High or Moderate AI exposure (ARM, GOOGL, INTC, LRCX, XLK, AMZN, APH, CDNS, META)."
-   },
-   "oil": {
-    "theme": "Oil",
-    "choice": "avoid",
-    "goal": "0% High, Moderate or Not determined",
-    "pass": true,
-    "high_moderate_pct": 0.0,
-    "by_tier_pct": {
-     "High": 0.0,
-     "Moderate": 0.0,
-     "Limited": 0.0,
-     "Limited (lower confidence)": 100.0,
-     "Not determined": 0.0
-    },
-    "sentence": "None of your portfolio is in stocks with High or Moderate Oil exposure."
+    "sentence": "100% of your portfolio is in stocks with High or Moderate Gold & precious metals exposure (ALB, BHP, CDE, DG, FCX, HII, NEM, PAAS, RIO, SCCO, SQM, SSRM, VALE)."
    }
   }
  }

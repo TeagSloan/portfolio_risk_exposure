@@ -3,10 +3,6 @@ key: healthcare
 name: Healthcare
 plain: healthcare companies
 measures: Healthcare share of revenue
-controls:
-- SPY
-- TLT
-- VALUE
 ground_truth: XLV
 references:
   High:
@@ -38,23 +34,16 @@ references:
     fiscal_year: 2025
     source: 'FMP revenue-product-segmentation FY2025: all segments are theme business'
     reason: Medical imaging and diagnostics; all segments are healthcare.
-  Moderate:
-  - ticker: KR
-    name: The Kroger Co.
-    evidence_pct: 32.8
-    measures: Healthcare share of revenue
-    fiscal_year: 2025
-    source: 'FMP revenue-product-segmentation FY2025: Pharmacy / sum of all product segments'
-    reason: Grocer whose pharmacy (prescriptions) is a third of revenue.
+  Moderate: []
 control:
-  ticker: CRM
-  name: Salesforce, Inc.
+  ticker: ADM
+  name: Archer-Daniels-Midland Company
   measures: Healthcare share of revenue
   evidence_pct: 0
   fiscal_year: null
-  source: 'No theme-related segment in FMP data (CRM FY2026: Service Cloud 24%, Sales Cloud 22%, Salesforce Platform and Other
-    21%, Integration And Analytics 15%, Marketing and Commerce Cloud 13%, Professional Services and Other 5%)'
-  reason: Business software (Salesforce); no healthcare segment.
+  source: 'No theme-related segment in FMP data (ADM FY2025: Ag Services and Oilseeds 77%, Carbohydrate Solutions 13%, Nutrition
+    9%)'
+  reason: Crop processing and food ingredients; no healthcare segment.
 direct_classification:
 - ticker: UNH
   name: UnitedHealth Group Incorporated
@@ -62,5 +51,16 @@ direct_classification:
   evidence_pct: null
   source: No disclosed number (Tier 2)
   reason: Health insurer; FMP segments are revenue types (premiums, services), not a health share.
-notes: 'Exception (approved): only 1 Moderate reference. Kept only companies with a real partial healthcare business; PG and
-  WM were dropped because they don''t trade like healthcare.'
+notes: 'Exception (approved): no Moderate references. PG and WM were dropped (don''t trade like healthcare), then KR (failed
+  the price check once style controls were added).'
+controls:
+- SPY
+- TLT
+- VALUE
+- SIZE
+- MOM
+- LOWVOL
+style_skips: {}
+sector_skips:
+  XLV: 25.06
+use_sector_control: false

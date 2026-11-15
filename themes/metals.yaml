@@ -3,10 +3,6 @@ key: metals
 name: Industrial / EV metals (copper + lithium)
 plain: copper and lithium producers
 measures: Copper and lithium share of revenue
-controls:
-- SPY
-- TLT
-- VALUE
 ground_truth: COPX
 references:
   High:
@@ -88,3 +84,13 @@ direct_classification:
   evidence_pct: null
   source: No disclosed number (Tier 2)
   reason: Lithium developer; no meaningful revenue yet.
+controls:
+- SPY
+- TLT
+- VALUE
+- SIZE
+- MOM
+- LOWVOL
+style_skips: {}
+sector_skips: {}
+use_sector_control: false

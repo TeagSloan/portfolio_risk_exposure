@@ -1,8 +1,8 @@
 """Price check: do the theme's reference companies actually trade like the theme?
 
 For each theme:
-"Beyond the market" means after controlling for SPY and VALUE (IWD minus IWF, the value-vs-growth swing);
-AI and Cybersecurity control for SPY only, matching their regression controls.
+"Beyond the market" means after controlling for SPY, the theme's style controls (VALUE, SIZE, MOM, LOWVOL
+unless skipped by the 15% rule) and, when sector controls are on, the company's own sector-minus-SPY spread.
 - Each reference should move with its OWN group beyond the market: regress it on SPY, VALUE and the average
   return of the other members of its group. Pass = that coefficient is positive and significant
   (one-sided p < 0.05). If its group has no other members, the other group's average is used instead.
@@ -22,7 +22,9 @@ from pathlib import Path
 
 import pandas as pd
 import statsmodels.api as sm
+from scipy import stats
 
+from engine.controls import sector_control
 from engine.data import get_returns
 from engine.regression import GROUPS, reference_names
 from engine.theme_loader import load_all, load_theme
@@ -30,26 +32,35 @@ from engine.theme_loader import load_all, load_theme
 P_PASS = 0.05
 
 
-def _slope(y: pd.Series, x: pd.Series, spy: pd.Series, value: pd.Series | None = None) -> tuple[float, float]:
-    """Coefficient on x (controlling for SPY, and VALUE if given) and its one-sided p-value for '> 0'."""
-    cols = {"SPY": spy, "x": x} if value is None else {"SPY": spy, "VALUE": value, "x": x}
-    X = sm.add_constant(pd.DataFrame(cols))
+def _slope(y: pd.Series, x: pd.Series, ctrl: pd.DataFrame) -> tuple[float, float]:
+    """Coefficient on x after the control columns, and its one-sided p-value for '> 0'."""
+    X = sm.add_constant(pd.concat([ctrl, x.rename("x")], axis=1))
     fit = sm.OLS(y, X).fit()
-    b, t = fit.params["x"], fit.tvalues["x"]
-    from scipy import stats
-    return float(b), float(stats.t.sf(t, fit.df_resid))
+    return float(fit.params["x"]), float(stats.t.sf(fit.tvalues["x"], fit.df_resid))
 
 
-def check_theme(theme: dict) -> list[dict]:
+def _controls(theme: dict) -> list[str]:
+    """SPY plus the theme's style controls (TLT is left out, as in the original price check)."""
+    return ["SPY"] + [c for c in theme["controls"] if c not in ("SPY", "TLT")]
+
+
+def check_theme(theme: dict, returns: pd.DataFrame | None = None) -> list[dict]:
+    """Price check for one theme. `returns` can be passed in (it must hold every series needed)."""
     refs = reference_names(theme)
     gt, sign = theme.get("ground_truth"), theme.get("ground_truth_sign", 1)
     ctrl = theme["control"]["ticker"]
-    tickers = ["SPY", "VALUE"] + refs["High"] + refs["Moderate"] + [ctrl] + ([gt] if gt else [])
-    r = get_returns(tickers)
-    spy = r["SPY"]
-    value = r["VALUE"] if "VALUE" in theme["controls"] else None  # AI and Cyber don't use the VALUE control
+    base = _controls(theme)
+    members = refs["High"] + refs["Moderate"] + [ctrl]
+    sectors = {t: sector_control(t, theme) for t in members}
+    if returns is None:
+        need = base + members + [s for s in sectors.values() if s] + ([gt] if gt else [])
+        returns = get_returns(list(dict.fromkeys(need)))
+    r = returns
     all_refs = refs["High"] + refs["Moderate"]
     rows = []
+
+    def c(t):
+        return r[base + ([sectors[t]] if sectors[t] else [])]
 
     for g in GROUPS:
         for t in refs[g]:
@@ -58,19 +69,19 @@ def check_theme(theme: dict) -> list[dict]:
             if not peers:
                 other = "Moderate" if g == "High" else "High"
                 peers, basis = refs[other], f"{other} group (only one {g} name)"
-            b, p = _slope(r[t], r[peers].mean(axis=1), spy, value)
+            b, p = _slope(r[t], r[peers].mean(axis=1), c(t))
             row = {"theme": theme["key"], "ticker": t, "role": g, "group_basis": basis,
                    "group_beta": round(b, 3), "group_p": round(p, 4), "group_pass": b > 0 and p < P_PASS}
             if gt:
-                bg, pg = _slope(r[t], sign * r[gt], spy, value)
+                bg, pg = _slope(r[t], sign * r[gt], c(t))
                 row.update(gt_beta=round(bg, 3), gt_p=round(pg, 4), gt_pass=bg > 0 and pg < P_PASS)
             rows.append(row)
 
-    b, p = _slope(r[ctrl], r[all_refs].mean(axis=1), spy, value)
+    b, p = _slope(r[ctrl], r[all_refs].mean(axis=1), c(ctrl))
     row = {"theme": theme["key"], "ticker": ctrl, "role": "Control", "group_basis": "all references",
            "group_beta": round(b, 3), "group_p": round(p, 4), "group_pass": not (b > 0 and p < P_PASS)}
     if gt:
-        bg, pg = _slope(r[ctrl], sign * r[gt], spy, value)
+        bg, pg = _slope(r[ctrl], sign * r[gt], c(ctrl))
         row.update(gt_beta=round(bg, 3), gt_p=round(pg, 4), gt_pass=not (bg > 0 and pg < P_PASS))
     rows.append(row)
     for row in rows:

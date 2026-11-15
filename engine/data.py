@@ -103,7 +103,7 @@ def get_prices(tickers: list[str], start: str = DEFAULT_START, end: str = DEFAUL
 # large-cap value ETF (IWD) minus the large-cap growth ETF (IWF). It soaks up days when "value" stocks
 # (banks, energy, defense, pharma) and "growth" stocks (tech) move in opposite directions, so that swing
 # isn't mistaken for theme exposure.
-SYNTHETIC = {"VALUE": ("IWD", "IWF")}
+from engine.controls import SPREADS as SYNTHETIC
 
 
 def get_returns(tickers: list[str], start: str = DEFAULT_START, end: str = DEFAULT_END) -> pd.DataFrame:

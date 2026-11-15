@@ -3,9 +3,6 @@ key: ai
 name: AI
 plain: AI companies
 measures: AI share of revenue
-controls:
-- SPY
-- TLT
 ground_truth: null
 references:
   High:
@@ -101,3 +98,16 @@ direct_classification:
   evidence_pct: null
   source: No disclosed number (Tier 2)
   reason: Autonomy and robotics bets, but no disclosed AI revenue share.
+controls:
+- SPY
+- TLT
+- SIZE
+- MOM
+- LOWVOL
+style_skips:
+  VALUE:
+    IWD: 5.05
+    IWF: 27.06
+sector_skips:
+  XLK: 34.01
+use_sector_control: false

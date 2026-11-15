@@ -3,10 +3,6 @@ key: oil
 name: Oil
 plain: oil producers
 measures: 'Crude-oil share of revenue (CVX: upstream oil & gas production share)'
-controls:
-- SPY
-- TLT
-- VALUE
 ground_truth: USO
 references:
   High:
@@ -81,3 +77,14 @@ direct_classification:
   evidence_pct: null
   source: No disclosed number (Tier 2)
   reason: 'Oilfield services: revenue depends on drilling budgets; no disclosed oil-price share.'
+controls:
+- SPY
+- TLT
+- VALUE
+- SIZE
+- MOM
+- LOWVOL
+style_skips: {}
+sector_skips:
+  XLE: 31.68
+use_sector_control: false

@@ -173,3 +173,13 @@ def test_plain_phrase_is_used_in_sentences():
     theme = make_theme() | {"plain": "banks that earn mostly from lending"}
     assert reg.classify("X", theme, df).sentence == (
         "X moves strongly with banks that earn mostly from lending, beyond what the overall market explains.")
+
+
+def test_sector_control_is_a_control_not_a_reference():
+    df, rng = simulate(14)
+    df["SEC"] = rng.normal(0, 0.01, N_DAYS)
+    df["X"] = df["SPY"] + 0.9 * df["SEC"] + rng.normal(0, 0.004, N_DAYS)
+    res = reg.classify("X", make_theme(), df, sector_control="SEC")
+    assert res.controls == ["SPY", "TLT", "SEC"]
+    assert res.p_threshold == pytest.approx(0.05 / 6)  # still 5 references + the control company
+    assert res.tier == reg.LIMITED  # sector co-movement is absorbed, not counted as theme exposure

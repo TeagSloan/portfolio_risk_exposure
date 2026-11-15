@@ -49,11 +49,9 @@ def test_want_ai_avoid_oil_picks_and_weights():
     w = weights(out)
     # Pass: AI High/Moderate AND Oil Limited/Limited-low. A4 (oil ND), A5 (oil M), XOM, O*, C*, KO fail.
     assert set(w) == {"A1", "A2", "A3", "A6", "A7", "A8", "SMH"}
-    # Points: High=2 (A1, A3, A7, SMH), Moderate=1 (A2, A6, A8) -> total 11. 2/11 = 18.2% > cap -> High at 15%.
-    for t in ("A1", "A3", "A7", "SMH"):
-        assert w[t] == pytest.approx(15.0)
-    for t in ("A2", "A6", "A8"):
-        assert w[t] == pytest.approx(40 / 3, abs=0.01)
+    # Equal weight: 7 picks -> 100/7 = 14.29% each, under the 15% cap.
+    for t in w:
+        assert w[t] == pytest.approx(100 / 7, abs=0.01)
     assert sum(w.values()) == pytest.approx(100, abs=0.05)  # display rounding to 2 decimals
     assert out["cash_pct"] == 0
     a3 = next(h for h in out["holdings"] if h["ticker"] == "A3")
@@ -64,10 +62,10 @@ def test_want_ai_avoid_oil_picks_and_weights():
     assert v["checks"]["oil"]["high_moderate_pct"] == 0
 
 
-def test_multiple_want_themes_add_points():
+def test_multiple_want_themes_equal_weight():
     out = builder.build({"ai": "want", "cyber": "want"})
     pts = {h["ticker"]: h["points"] for h in out["holdings"] if h["ticker"] != "CASH"}
-    assert pts == {"A3": 4, "A6": 2}  # A3: High+High, A6: Moderate+Moderate
+    assert pts == {"A3": 1, "A6": 1}  # equal weight
     assert any("Only 2 holding" in x for x in out["warnings"])
     # Two names can hold at most 30% under the 15% cap; the rest is cash.
     assert weights(out) == {"A3": 15.0, "A6": 15.0, "CASH": 70.0}
@@ -130,3 +128,15 @@ def test_cli(capsys, tmp_path, monkeypatch):
     assert "both want and avoid" in capsys.readouterr().err
     assert builder.main([]) == 2
     assert builder.main(["--want", "ai", "--avoid", "oil", "--refresh"]) == 0
+
+
+def test_two_key_rule_rejects_picks_without_etf_confirmation(monkeypatch):
+    themes = {**THEMES, "ai": {**THEMES["ai"], "ground_truth": "AIETF"}}
+    monkeypatch.setattr(builder, "load_all", lambda: themes)
+    monkeypatch.setattr(screen, "load_theme", lambda k: themes[k])
+    monkeypatch.setattr(builder, "etf_check", lambda t, th: {"etf": "AIETF", "pass": t != "A1"})
+    out = builder.build({"ai": "want", "oil": "avoid"}, refresh=True)
+    assert "A1" not in weights(out) and out["rejected_by_etf_check"] == ["A1"]
+    assert any("failed the theme-ETF confirmation: A1" in x for x in out["warnings"])
+    # avoid-only builds and themes without an ETF are unaffected
+    assert "A1" in weights(builder.build({"oil": "avoid"}))

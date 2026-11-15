@@ -9,7 +9,8 @@ SEGMENTS = [
     {"fiscalYear": 2024, "data": {"Oil": 50, "Gas": 50}},
     {"fiscalYear": 2025, "data": {"Oil": 60, "Gas": 30, "Chemicals": 10, "Eliminations": -5, "Note": "n/a"}},
 ]
-INCOME = [{"fiscalYear": "2025", "revenue": 200, "netInterestIncome": 110}, {"fiscalYear": "2024", "revenue": 0}]
+INCOME = [{"fiscalYear": "2025", "revenue": 200, "netInterestIncome": 110, "interestIncome": 160},
+          {"fiscalYear": "2024", "revenue": 0}]
 
 
 @pytest.fixture(autouse=True)
@@ -79,9 +80,20 @@ def test_real_theme_files_are_valid():
     assert len(themes) == 10
     for t in themes.values():
         refs = [r["ticker"] for g in ("High", "Moderate") for r in t["references"][g]]
-        expected = ["SPY", "TLT"] if t["key"] in ("ai", "cyber") else ["SPY", "TLT", "VALUE"]
-        assert t["controls"] == expected
+        assert t["controls"][:2] == ["SPY", "TLT"]
+        for style in ("VALUE", "SIZE", "MOM", "LOWVOL"):  # each style control is either used or skipped (with %)
+            assert (style in t["controls"]) != (style in t["style_skips"])
+        assert t["use_sector_control"] is False  # method version B
         assert t["control"]["ticker"] not in refs
         assert 3 <= len(t["references"]["High"]) <= 5
         assert 0 <= len(t["references"]["Moderate"]) <= 4
         assert "plain" in t
+
+
+def test_nii_share():
+    r = evidence.nii_share("BANK")  # NII 110 / (110 + (200 - 160)) = 73.3%
+    assert (r["evidence_pct"], r["fiscal_year"]) == (73.3, 2025)
+    with pytest.raises(ValueError, match="missing"):
+        evidence.nii_share("BANK", fiscal_year=2024)
+    with pytest.raises(ValueError, match="no income-statement"):
+        evidence.nii_share("NONE")
