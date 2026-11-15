@@ -75,3 +75,8 @@ controls:
 - MOM
 - LOWVOL
 style_skips: {}
+allowed_industries:
+- Banks
+- Banks - Diversified
+- Banks - Regional
+- Financial - Mortgages

@@ -92,3 +92,7 @@ controls:
 - MOM
 - LOWVOL
 style_skips: {}
+allowed_industries:
+- Copper
+- Industrial Materials
+- Other Industrial Metals & Mining

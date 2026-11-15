@@ -67,3 +67,6 @@ controls:
 - MOM
 - LOWVOL
 style_skips: {}
+allowed_industries:
+- Solar
+- Renewable Utilities

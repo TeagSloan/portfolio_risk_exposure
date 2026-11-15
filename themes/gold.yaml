@@ -71,3 +71,7 @@ controls:
 - MOM
 - LOWVOL
 style_skips: {}
+allowed_industries:
+- Gold
+- Silver
+- Other Precious Metals
