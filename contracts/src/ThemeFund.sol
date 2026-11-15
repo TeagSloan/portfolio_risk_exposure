@@ -20,8 +20,9 @@ import {MockStock} from "./MockStock.sol";
 ///         - NAV:      what everything the fund holds is worth = sum(shares held x oracle
 ///                     price) + cash.
 ///         - mandate:  the rules chosen at launch. They match the Python builder:
-///             Avoid a theme -> every holding must be proven low for that theme
-///                              (Limited or Limited (lower confidence)).
+///             Avoid a theme -> no holding may be High or Moderate for that theme.
+///                              (Limited, Limited (lower confidence) and Not determined all pass,
+///                              as in the builder. A stock never scored for the theme is refused.)
 ///             Want a theme  -> at least a set share of the fund's weight must be in
 ///                              High or Moderate names for that theme.
 ///           Any basket change is checked against the ExposureOracle BEFORE trading and
@@ -216,14 +217,12 @@ contract ThemeFund is SimpleERC20 {
             for (uint256 i = 0; i < stocks_.length; i++) {
                 ExposureOracle.Tier tier = oracle.tierOf(MockStock(stocks_[i]).ticker(), rule.theme);
                 bool exposed = tier == ExposureOracle.Tier.High || tier == ExposureOracle.Tier.Moderate;
-                bool provenLow =
-                    tier == ExposureOracle.Tier.Limited || tier == ExposureOracle.Tier.LimitedLowerConfidence;
 
                 if (rule.kind == RuleKind.Avoid) {
                     if (exposed) return (false, string.concat("Mandate: ", rule.label, " exposure too high"));
-                    // Not determined (or never posted) means "the data can't tell", which is not zero.
-                    if (!provenLow) {
-                        return (false, string.concat("Mandate: ", rule.label, " exposure can't be ruled out"));
+                    // The engine has never posted a result for this stock and theme, so it can't be checked.
+                    if (tier == ExposureOracle.Tier.Unposted) {
+                        return (false, string.concat("Mandate: ", rule.label, " exposure not posted yet"));
                     }
                 } else if (exposed) {
                     exposedWeight += weights_[i];

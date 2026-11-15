@@ -201,13 +201,14 @@ contract Phase7bTest is Test {
         assertEq(reason, "Mandate: Oil exposure too high");
     }
 
-    function test_avoid_rejects_not_determined_and_unposted() public {
+    function test_avoid_allows_not_determined_but_refuses_unposted() public {
         vm.startPrank(manager);
-        vm.expectRevert("Mandate: Oil exposure can't be ruled out");
-        fund.addHolding(ko, 500); // Not determined: "the data can't tell" is not zero
-        vm.expectRevert("Mandate: Oil exposure can't be ruled out");
-        fund.addHolding(newco, 500); // the engine never posted a tier
+        vm.expectRevert("Mandate: Oil exposure not posted yet");
+        fund.addHolding(newco, 500); // the engine never posted a tier, so it can't be checked
+        fund.addHolding(ko, 500); // Not determined passes, as in the builder: only High / Moderate are refused
         vm.stopPrank();
+        (address[] memory stocks,) = fund.basket();
+        assertEq(stocks[stocks.length - 1], ko);
     }
 
     function test_want_rejects_basket_with_too_little_exposure() public {

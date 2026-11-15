@@ -360,7 +360,7 @@ def chain_tab(portfolio: dict) -> None:
             st.markdown(f"- Want **{r['label']}**: at least {r['min_bps'] / 100:g}% of the fund in High or "
                         "Moderate names")
         else:
-            st.markdown(f"- Avoid **{r['label']}**: every holding must be Limited or Limited (lower confidence)")
+            st.markdown(f"- Avoid **{r['label']}**: no holding may be High or Moderate")
 
     cfg = app_actions.config()
     if not cfg["ready"]:

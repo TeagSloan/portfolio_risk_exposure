@@ -150,14 +150,13 @@ def reshock(shock_result: dict, theme: dict, size: float) -> shocks.ShockResult:
 # ---------------------------------------------------------------------------------------------
 
 WANT_OK = {HIGH, MODERATE}
-AVOID_OK = {LIMITED, LIMITED_LOW}
 
 
 def mandate_check(ticker: str, prefs: dict[str, str], tiers: dict[str, str], themes: dict[str, dict]):
     """(allowed, reasons) for adding `ticker` to a fund with these preferences.
 
     `tiers` = {theme_key: tier} for the ticker. Same rules as the builder: a "want" theme needs High
-    or Moderate; an "avoid" theme needs Limited or Limited (lower confidence).
+    or Moderate; an "avoid" theme refuses only High or Moderate (and a stock that was never scored).
     """
     reasons = []
     for key, choice in prefs.items():
@@ -166,8 +165,8 @@ def mandate_check(ticker: str, prefs: dict[str, str], tiers: dict[str, str], the
         if choice == "avoid":
             if tier in WANT_OK:
                 reasons.append(f"Mandate: {name} exposure too high ({ticker} is {tier} for {name}).")
-            elif tier not in AVOID_OK:
-                reasons.append(f"Mandate: {name} exposure can't be ruled out ({ticker}: {tier}).")
+            elif tier == NOT_SCREENED:
+                reasons.append(f"Mandate: {name} exposure not posted yet ({ticker} hasn't been scored for {name}).")
         elif tier not in WANT_OK:
             reasons.append(f"Mandate: not enough {name} exposure ({ticker} is {tier} for {name}).")
     return (not reasons), reasons

@@ -95,7 +95,7 @@ def test_plan_from_build_and_text():
     assert "Fund: AI ex-Oil Fund ($AIXO)" in text
     assert "NVDA    80.00%" in text and "CASH    20.00%" in text
     assert "Want AI: at least 60% of the fund in High or Moderate names" in text
-    assert "Avoid Oil: every holding must be Limited or Limited (lower confidence)" in text
+    assert "Avoid Oil: no holding may be High or Moderate" in text
 
     assert launch.plan_from_build(BUILD, "My Fund", "mine", 60)["symbol"] == "MINE"
     with pytest.raises(PublishError, match="letters and digits only"):

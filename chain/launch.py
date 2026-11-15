@@ -10,7 +10,8 @@ Run `python -m chain.publish --extra XOM` first: a fund can only hold stocks who
 already on the oracle, and the launch itself fails if the basket breaks the fund's own rules.
 
 How the builder's result becomes the fund's mandate (the rules are fixed forever once launched):
-- "avoid" theme -> Avoid rule: every holding must be Limited or Limited (lower confidence) for it.
+- "avoid" theme -> Avoid rule: no holding may be High or Moderate for it (Not determined passes, as in
+                   the builder).
 - "want" theme  -> Want rule: at least --want-min-pct (default 60%) of the fund must be in High or
                    Moderate names for it. (If the basket holds less than that in stocks, the rest being
                    cash, the minimum is the invested share instead.)
@@ -144,7 +145,7 @@ def plan_text(plan: dict) -> str:
         if r["kind"] == WANT:
             lines.append(f"  Want {r['label']}: at least {r['min_bps'] / 100:g}% of the fund in High or Moderate names")
         else:
-            lines.append(f"  Avoid {r['label']}: every holding must be Limited or Limited (lower confidence)")
+            lines.append(f"  Avoid {r['label']}: no holding may be High or Moderate")
     return "\n".join(lines)
 
 

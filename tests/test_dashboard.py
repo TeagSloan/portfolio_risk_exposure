@@ -90,7 +90,8 @@ def test_reshock_scales_linearly_and_rewrites_the_sentence():
     ({"ai": HIGH, "oil": LIMITED}, True, None),
     ({"ai": MODERATE, "oil": LIMITED_LOW}, True, None),
     ({"ai": HIGH, "oil": MODERATE}, False, "Mandate: Oil exposure too high (XOM is Moderate for Oil)."),
-    ({"ai": HIGH, "oil": NOT_DETERMINED}, False, "Mandate: Oil exposure can't be ruled out"),
+    ({"ai": HIGH, "oil": NOT_DETERMINED}, True, None),   # Not determined passes an avoid rule, as in the builder
+    ({"ai": HIGH}, False, "Mandate: Oil exposure not posted yet (XOM hasn't been scored for Oil)."),
     ({"ai": LIMITED, "oil": LIMITED}, False, "Mandate: not enough AI exposure (XOM is Limited for AI)."),
     ({}, False, "not enough AI exposure (XOM is Not screened"),
 ])
