@@ -1,4 +1,4 @@
-"""Market, style and sector controls, and the objective rule for skipping them.
+"""Market, style and international controls, and the objective rule for skipping style controls.
 
 Every regression controls for the overall market (SPY) and bonds (TLT). On top of that:
 
@@ -8,11 +8,9 @@ Style controls (daily return spreads):
     MOM    = MTUM - SPY   momentum minus market
     LOWVOL = USMV - SPY   low-volatility/defensive minus market
 
-Sector control: each holding gets the spread of its own SPDR sector ETF minus SPY (from its FMP
-profile sector). ETFs get no sector control: a sector ETF minus SPY would explain a sector ETF
-perfectly, and other ETFs (e.g. SMH) don't belong to one sector.
+International control: a non-US stock (e.g. an ADR) also gets INTL = VXUS - SPY.
 
-Skip rule (objective, the same for every theme): a control is skipped for a theme if the theme's
+Skip rule (objective, the same for every theme): a style control is skipped for a theme if the theme's
 Tier 1 reference companies make up more than 15% of that control ETF's holdings (FMP ETF holdings).
 For a spread, each non-SPY leg is checked (VALUE checks both IWD and IWF). Controls are never part of
 a High/Moderate group and never count in the Bonferroni denominator.
@@ -20,21 +18,20 @@ a High/Moderate group and never count in the Bonferroni denominator.
 
 from __future__ import annotations
 
+import csv
+from pathlib import Path
+
 from engine import fmp
 
 SKIP_THRESHOLD_PCT = 15.0
 
 STYLE = {"VALUE": ("IWD", "IWF"), "SIZE": ("RSP", "SPY"), "MOM": ("MTUM", "SPY"), "LOWVOL": ("USMV", "SPY")}
 
-SECTOR_ETF = {
-    "Technology": "XLK", "Healthcare": "XLV", "Energy": "XLE", "Financial Services": "XLF",
-    "Industrials": "XLI", "Consumer Defensive": "XLP", "Consumer Cyclical": "XLY", "Basic Materials": "XLB",
-    "Utilities": "XLU", "Real Estate": "XLRE", "Communication Services": "XLC",
-}
-SECTOR_SPREADS = {f"SEC_{etf}": (etf, "SPY") for etf in SECTOR_ETF.values()}
+# International stocks (ADRs) also get the non-US market swing: all-world-ex-US minus US.
+INTL = {"INTL": ("VXUS", "SPY")}
 
 # Every built-in spread series engine/data.py knows how to make.
-SPREADS = {**STYLE, **SECTOR_SPREADS}
+SPREADS = {**STYLE, **INTL}
 
 
 def etf_holdings(etf: str) -> dict[str, float]:
@@ -69,40 +66,29 @@ def style_controls(theme: dict) -> tuple[list[str], dict[str, dict[str, float]]]
     return kept, skipped
 
 
-def sector_skips(theme: dict) -> dict[str, float]:
-    """{sector ETF: share %} for sector ETFs where the theme's references are > 15% of holdings."""
-    out = {}
-    for etf in SECTOR_ETF.values():
-        s = ref_share(theme, etf)
-        if s > SKIP_THRESHOLD_PCT:
-            out[etf] = s
-    return out
+UNIVERSE_CSV = Path(__file__).resolve().parent.parent / "data" / "universe.csv"
+_COUNTRY: dict[str, str] = {}
 
 
-def sector_shares(theme: dict) -> dict[str, float]:
-    """Reference share of every sector ETF (for reporting)."""
-    return {etf: ref_share(theme, etf) for etf in SECTOR_ETF.values()}
-
-
-def sector_of(ticker: str) -> str | None:
-    """The holding's SPDR sector ETF, or None for ETFs / unknown sectors."""
+def country_of(ticker: str) -> str | None:
+    """Country from data/universe.csv when listed there, else from the FMP profile."""
+    if not _COUNTRY and UNIVERSE_CSV.exists():
+        with UNIVERSE_CSV.open() as f:
+            for row in csv.DictReader(f):
+                _COUNTRY[row["ticker"]] = row.get("country") or ""
+    if ticker in _COUNTRY:
+        return _COUNTRY[ticker] or None
     try:
         rows = fmp.profile(ticker)
     except fmp.FMPError:
         return None
-    if not rows:
-        return None
-    p = rows[0]
-    if p.get("isEtf") or p.get("isFund"):
-        return None
-    return SECTOR_ETF.get(p.get("sector") or "")
+    return (rows[0].get("country") or None) if rows else None
 
 
-def sector_control(ticker: str, theme: dict) -> str | None:
-    """Name of the sector spread column to use for this holding and theme, or None."""
-    if not theme.get("use_sector_control"):
-        return None
-    etf = sector_of(ticker)
-    if etf is None or etf in theme.get("sector_skips", {}):
-        return None
-    return f"SEC_{etf}"
+def intl_control(ticker: str) -> str | None:
+    """"INTL" (VXUS minus SPY) for a non-US stock, None for a US stock or unknown country.
+
+    Like every control, it's never in a High/Moderate group and never counts in the Bonferroni denominator.
+    """
+    c = country_of(ticker)
+    return "INTL" if c and c != "US" else None

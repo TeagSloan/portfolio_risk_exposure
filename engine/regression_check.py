@@ -22,19 +22,19 @@ from scipy import stats
 
 from engine import fmp
 from engine.builder import universe
-from engine.controls import SPREADS, sector_control
+from engine.controls import SPREADS, intl_control
 from engine.data import get_returns
 from engine.regression import ALPHA, MIN_SUM, Z_ONE_SIDED_95, classify, reference_names
 from engine.theme_loader import load_all
 
 ROOT = Path(__file__).resolve().parent.parent
 RNG = np.random.default_rng(2026)
-REAL: set[str] = set()  # real tickers (synthetic test series never get a sector control)
+REAL: set[str] = set()  # real tickers (synthetic test series never get the INTL control)
 
 
 def cls(ticker, theme, df):
-    """classify() with the holding's sector control when the theme uses sector controls."""
-    sc = sector_control(ticker, theme) if ticker in REAL else None
+    """classify() with the INTL control for non-US holdings."""
+    sc = intl_control(ticker) if ticker in REAL else None
     if sc and sc not in df.columns:
         sc = None
     return classify(ticker, theme, df, sc)
@@ -149,7 +149,7 @@ def false_positives(themes, r, univ):
         df = pd.concat([r, fake], axis=1)
         th = {**template, "references": {"High": [{"ticker": f"N{i}"} for i in range(4)],
                                          "Moderate": [{"ticker": f"N{i}"} for i in range(4, 7)]},
-              "control": {"ticker": "N7"}, "direct_classification": [], "sector_skips": {}}
+              "control": {"ticker": "N7"}, "direct_classification": []}
         for h in RNG.choice(stocks, 20, replace=False):
             noise_n += 1
             noise_hits += cls(h, th, df).tier in ("High", "Moderate")
@@ -158,7 +158,7 @@ def false_positives(themes, r, univ):
         used = {sectors[p] for p in pick}
         th = {**template, "references": {"High": [{"ticker": p} for p in pick[:4]],
                                          "Moderate": [{"ticker": p} for p in pick[4:7]]},
-              "control": {"ticker": pick[7]}, "direct_classification": [], "sector_skips": {}}
+              "control": {"ticker": pick[7]}, "direct_classification": []}
         pool = [s for s in stocks if s not in pick and sectors[s] not in used]
         for h in RNG.choice(pool, min(20, len(pool)), replace=False) if pool else []:
             real_n += 1

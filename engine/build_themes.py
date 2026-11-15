@@ -20,13 +20,12 @@ from pathlib import Path
 import yaml
 
 from engine import fmp
-from engine.controls import sector_skips, style_controls
+from engine.controls import style_controls
 from engine.evidence import nii_share, segment_share, statement_ratio
 
 ROOT = Path(__file__).resolve().parent.parent
 THEMES_DIR = ROOT / "themes"
 ALL = "ALL"  # every reported segment counts toward the theme
-USE_SECTOR_CONTROL = False  # method version B chosen: style controls, no sector control (see results/method_comparison.md)
 
 
 # ---------------------------------------------------------------------------------------------
@@ -373,12 +372,10 @@ def summary_table(t: dict) -> str:
 
 
 def apply_controls(t: dict) -> None:
-    """Market + style controls via the objective 15% skip rule (engine/controls.py), plus sector settings."""
+    """Market + style controls via the objective 15% skip rule (engine/controls.py)."""
     kept, skipped = style_controls(t)
     t["controls"] = ["SPY", "TLT"] + kept
     t["style_skips"] = skipped
-    t["sector_skips"] = sector_skips(t)
-    t["use_sector_control"] = USE_SECTOR_CONTROL
 
 
 def main():

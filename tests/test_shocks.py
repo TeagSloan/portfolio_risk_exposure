@@ -173,34 +173,39 @@ def test_reference_data_failure_is_a_clear_error(monkeypatch):
         shocks.shock_portfolio({"HOLD": 1.0}, "oil", 0.3)
 
 
-# ---- sector control (used only when a theme turns it on, like the classification) ----
+@pytest.fixture(autouse=True)
+def _no_country_lookups(monkeypatch):
+    """Fake tickers like HOLD must never trigger a real FMP country lookup."""
+    monkeypatch.setattr(shocks, "intl_control", lambda t: None)
 
-def test_sector_control_is_used_when_the_theme_turns_it_on(monkeypatch):
-    """HOLD here moves with its sector spread, not the theme. Without the sector control the
-    theme basket would soak some of that up; with it, the theme beta is the true 0.3."""
+
+# ---- international control (non-US holdings get INTL = VXUS - SPY, like the classification) ----
+
+def test_intl_control_is_used_for_non_us_holdings(monkeypatch):
+    """HOLD here is a non-US stock that moves with the non-US market swing, not the theme. Without the INTL
+    control the theme basket would soak some of that up; with it, the theme beta is the true 0.3."""
     table = returns_table()
     rng = np.random.default_rng(9)
-    table["SEC_XLK"] = rng.normal(0, 0.01, len(table)) + 0.5 * table[["R2", "R3", "R4"]].mean(axis=1)
+    table["INTL"] = rng.normal(0, 0.01, len(table)) + 0.5 * table[["R2", "R3", "R4"]].mean(axis=1)
     basket = table[["R1", "R2", "R3", "R4"]].mean(axis=1)
-    table["HOLD"] = 0.3 * basket + 1.0 * table["SEC_XLK"] + 1.1 * table["SPY"] + rng.normal(0, 0.003, len(table))
+    table["HOLD"] = 0.3 * basket + 1.0 * table["INTL"] + 1.1 * table["SPY"] + rng.normal(0, 0.003, len(table))
     seen = []
 
     def fake_get(tickers, start, end):
         seen.append(tickers)
         return table
 
-    theme = {**THEME, "use_sector_control": True}
     monkeypatch.setattr(shocks, "get_returns", fake_get)
-    monkeypatch.setattr(shocks, "load_theme", lambda key: theme)
-    monkeypatch.setattr(shocks, "sector_control", lambda t, th: "SEC_XLK" if th.get("use_sector_control") else None)
+    monkeypatch.setattr(shocks, "load_theme", lambda key: THEME)
+    monkeypatch.setattr(shocks, "intl_control", lambda t: "INTL" if t == "HOLD" else None)
     res = shocks.shock_portfolio({"HOLD": 1.0}, "oil", 0.3)
-    assert "SEC_XLK" in seen[0]
+    assert "INTL" in seen[0]
     assert res.holdings[0].beta == pytest.approx(0.3, abs=0.05)
     without = shocks.theme_beta("HOLD", THEME, table)[0]
-    assert without > 0.5  # leaving the sector out would overstate the theme beta
+    assert without > 0.5  # leaving the INTL control out would overstate the theme beta
 
 
-def test_sector_control_off_by_default(monkeypatch):
+def test_no_intl_control_for_us_holdings(monkeypatch):
     seen = []
 
     def fake_get(tickers, start, end):
@@ -209,5 +214,6 @@ def test_sector_control_off_by_default(monkeypatch):
 
     monkeypatch.setattr(shocks, "get_returns", fake_get)
     monkeypatch.setattr(shocks, "load_theme", lambda key: THEME)
+    monkeypatch.setattr(shocks, "intl_control", lambda t: None)
     shocks.shock_portfolio({"HOLD": 1.0}, "oil", 0.3)
-    assert not any(t.startswith("SEC_") for t in seen[0])
+    assert "INTL" not in seen[0]

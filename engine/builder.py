@@ -11,11 +11,7 @@ Rules:
 - Universe: every theme reference company plus well-known stocks and sector ETFs (UNIVERSE below).
   The whole universe is screened against every theme once and cached in data/cache/universe_screen.json.
   The cache is rebuilt automatically if the themes, the method or the universe change.
-- "want" a theme  -> keep only High or Moderate for that theme. Two-key rule (builder only, not the screen):
-  for themes with an ETF ground truth, a want pick must ALSO have a significant positive beta on the theme
-  ETF (same controls as the regression, one-sided p < 0.05). Themes without an ETF (AI, Cybersecurity,
-  Bank lending) are unchanged. Picks are confirmed against the theme ETF; validation numbers come from the
-  unfiltered method.
+- "want" a theme  -> keep only High or Moderate for that theme.
 - "avoid" a theme -> keep only Limited or Limited (lower confidence). High, Moderate and Not determined are
   excluded ("the data can't tell" isn't proof of no exposure). Lower-confidence picks are labeled.
 - A holding must pass EVERY chosen rule.
@@ -34,13 +30,8 @@ import json
 import sys
 from pathlib import Path
 
-import pandas as pd
-import statsmodels.api as sm
-from scipy import stats
-
 from engine import screen
-from engine.controls import sector_control
-from engine.data import DEFAULT_END, DEFAULT_START, DataError, get_returns
+from engine.data import DEFAULT_END, DEFAULT_START
 from engine.regression import HIGH, LIMITED, LIMITED_LOW, MODERATE, NOT_DETERMINED
 from engine.theme_loader import THEMES_DIR, load_all
 
@@ -48,7 +39,6 @@ ROOT = Path(__file__).resolve().parent.parent
 CACHE_PATH = ROOT / "data" / "cache" / "universe_screen.json"
 CAP_PCT = 15.0
 MIN_HOLDINGS = 6
-ETF_P = 0.05
 WANT_OK = {HIGH, MODERATE}
 AVOID_OK = {LIMITED, LIMITED_LOW}
 
@@ -92,29 +82,9 @@ def prescreen(refresh: bool = False) -> dict[str, dict[str, dict]]:
             return cached["results"]
     results = {t: {k: screen._screen_one(t, th, DEFAULT_START, DEFAULT_END) for k, th in themes.items()}
                for t in tickers}
-    for t in tickers:  # second key: beta on the theme ETF, same controls as the regression
-        for k, th in themes.items():
-            if th.get("ground_truth"):
-                results[t][k]["etf_check"] = etf_check(t, th)
     CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
     CACHE_PATH.write_text(json.dumps({"key": key, "results": results}))
     return results
-
-
-def etf_check(ticker: str, theme: dict) -> dict:
-    """Beta of the holding on the theme ETF after the theme's controls (+ its sector control)."""
-    gt, sign = theme["ground_truth"], theme.get("ground_truth_sign", 1)
-    if ticker == gt:
-        return {"etf": gt, "beta": None, "p": None, "pass": True, "note": "the holding is the theme ETF"}
-    sc = sector_control(ticker, theme)
-    ctrls = list(theme["controls"]) + ([sc] if sc else [])
-    try:
-        r = get_returns([ticker, gt] + ctrls)
-    except DataError as exc:
-        return {"etf": gt, "beta": None, "p": None, "pass": False, "note": str(exc)}
-    fit = sm.OLS(r[ticker], sm.add_constant(pd.concat([r[ctrls], (sign * r[gt]).rename("ETF")], axis=1))).fit()
-    b, p = float(fit.params["ETF"]), float(stats.t.sf(fit.tvalues["ETF"], fit.df_resid))
-    return {"etf": gt, "beta": round(b, 4), "p": round(p, 5), "pass": b > 0 and p < ETF_P}
 
 
 def cap_and_rescale(points: dict[str, float], cap: float = CAP_PCT) -> tuple[dict[str, float], float]:
@@ -167,14 +137,10 @@ def build(prefs: dict[str, str], refresh: bool = False) -> dict:
     want = [k for k, v in prefs.items() if v == "want"]
     avoid = [k for k, v in prefs.items() if v == "avoid"]
 
-    picks, points, labels, rejected_by_etf = [], {}, {}, []
+    picks, points, labels = [], {}, {}
     for ticker, res in table.items():
         tiers = {k: res[k]["tier"] for k in prefs}
-        two_key = all(res[k].get("etf_check", {"pass": True})["pass"] for k in want)
         if all(tiers[k] in WANT_OK for k in want) and all(tiers[k] in AVOID_OK for k in avoid):
-            if not two_key:
-                rejected_by_etf.append(ticker)
-                continue
             picks.append(ticker)
             points[ticker] = 1  # equal weight
             labels[ticker] = [f"{themes[k]['name']}: lower confidence" for k in avoid if tiers[k] == LIMITED_LOW]
@@ -189,9 +155,6 @@ def build(prefs: dict[str, str], refresh: bool = False) -> dict:
     if picks and cash > 1e-9:
         warnings.append(f"With {len(picks)} holding(s) and a {CAP_PCT:g}% cap, only {100 - cash:.0f}% can be "
                         f"invested; {cash:.0f}% is held as cash.")
-    if rejected_by_etf:
-        warnings.append(f"{len(rejected_by_etf)} regression pick(s) failed the theme-ETF confirmation: "
-                        f"{', '.join(sorted(rejected_by_etf))}.")
     lower = [t for t in picks if labels[t]]
     if lower:
         warnings.append(f"{len(lower)} pick(s) pass an 'avoid' rule only with lower confidence: {', '.join(lower)}.")
@@ -211,7 +174,6 @@ def build(prefs: dict[str, str], refresh: bool = False) -> dict:
             for t, w in basket.items()
         ],
         "cash_pct": round(cash, 2) if picks else 0.0,
-        "rejected_by_etf_check": sorted(rejected_by_etf),
         "warnings": warnings,
         "verification": verification,
     }

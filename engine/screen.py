@@ -23,7 +23,7 @@ import math
 import sys
 from pathlib import Path
 
-from engine.controls import sector_control
+from engine.controls import intl_control
 from engine.data import DEFAULT_END, DEFAULT_START, DataError, get_returns
 from engine.regression import (
     HIGH,
@@ -81,11 +81,11 @@ def _normalize(holdings: dict[str, float]) -> tuple[dict[str, float], bool]:
 def _screen_one(ticker: str, theme: dict, start: str, end: str) -> dict:
     """Classify one holding for one theme; any data problem becomes 'Not determined' with the reason."""
     try:
-        sc = None if _is_listed(ticker, theme) else sector_control(ticker, theme)
+        sc = None if _is_listed(ticker, theme) else intl_control(ticker)
         needed = [] if _is_listed(ticker, theme) else regressors_needed(theme, sc)
         returns = get_returns([ticker] + needed, start, end) if needed else None
         out = classify(ticker, theme, returns, sc).to_dict()
-        out["sector_control"] = sc
+        out["extra_control"] = sc
         return out
     except (DataError, ValueError) as exc:
         return {"ticker": ticker, "theme": theme["name"], "tier": NOT_DETERMINED, "method": "not screened",

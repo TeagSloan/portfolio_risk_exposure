@@ -7,7 +7,7 @@ How it works, in plain terms:
   return is the theme's "basket".
 - For each holding, a regression measures how much it moved with that basket over the last ~2 years,
   after removing the same controls the classification uses (SPY, TLT, the theme's style controls, and
-  the holding's sector control when a theme turns that on).
+  the INTL control for a non-US holding).
   That slope is the holding's beta to the theme: beta 0.5 means "when the theme's basket rose 1% more
   than the market explained, this stock tended to rise 0.5%".
 - A shock of +30% means: the theme's basket rises 30% while the market controls stay flat. Each holding
@@ -28,7 +28,7 @@ import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 
-from engine.controls import sector_control
+from engine.controls import intl_control
 from engine.data import DEFAULT_END, DEFAULT_START, DataError, get_returns
 from engine.theme_loader import load_theme
 
@@ -80,7 +80,7 @@ def theme_beta(ticker: str, theme: dict, returns: pd.DataFrame,
                sector: str | None = None) -> tuple[float, float, int]:
     """(beta, standard error, days used) of one holding to the theme's equal-weighted reference basket.
 
-    `sector` is the holding's sector-control column (e.g. "SEC_XLK"), when the theme uses one.
+    `sector` is the holding's extra control column ("INTL" for a non-US stock), if any.
     """
     ticker = ticker.upper()
     refs = [t for t in reference_tickers(theme) if t != ticker]  # never measure a stock against itself
@@ -177,7 +177,7 @@ def shock_portfolio(weights: dict[str, float], theme_key: str, shock: float,
     """
     theme = load_theme(theme_key)
     tickers = [t for t in weights if t != CASH]
-    sectors = {t: sector_control(t, theme) for t in tickers if t not in theme["controls"]}
+    sectors = {t: intl_control(t) for t in tickers if t not in theme["controls"]}  # INTL for non-US
     extra = [s for s in sectors.values() if s]
     needed = list(dict.fromkeys(tickers + list(theme["controls"]) + extra + reference_tickers(theme)))
     try:
