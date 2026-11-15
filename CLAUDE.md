@@ -15,7 +15,7 @@ Every output should feel like advice from an experienced practitioner rather tha
 
 **Theme Funds: two ways in, one regression engine.** Users aren't finance experts, so every result needs a plain-English sentence.
 
-**Way 1: "Check my portfolio" (stocks → exposure).** The user enters any NYSE/NASDAQ stocks + weights. Each stock is run through the regression for every theme (AI, Oil, Gold, Defense, Healthcare, Copper+lithium, Clean energy, Consumer discretionary, Cybersecurity, Bank lending). Show the % of the portfolio exposed to each theme, each stock's tier, a plain-English sentence and the audit trail. Stocks not already scored are pulled live from FMP.
+**Way 1: "Check my portfolio" (stocks → exposure).** The user enters any NYSE/NASDAQ stocks + weights. Each stock is run through the regression for every theme (AI, Oil, Gold, Aerospace & defense, Healthcare, Copper+lithium, Clean energy, Consumer discretionary, Cybersecurity, Bank lending). Show the % of the portfolio exposed to each theme, each stock's tier, a plain-English sentence and the audit trail. Stocks not already scored are pulled live from FMP.
 
 **Way 2: "Build my ETF" (preferences → stocks).** The user picks Want / Don't care / Avoid per theme (e.g. high AI, low Oil) + region. We pick individual stocks only (no ETFs, funds or bonds) from a universe of NYSE + NASDAQ stocks (top ~500 US + ~150 international ADRs, market cap >= $2B) that were ALL run through the regression ahead of time and saved in an exposure table. Equal weight, 15% cap. Show the funnel (how many stocks survive each rule), then re-check the result with Way 1.
 
@@ -44,7 +44,7 @@ Built at Monad Blitz Oregon (Nov 15, 2026). The methodology comes from my prior 
 - Otherwise Not determined: "the data can't tell", which is NOT the same as zero.
 - A holding that is a reference or on the direct list uses its listed tier, with no regression.
 - Cash is kept at its weight and not scored.
-- Portfolio fingerprint: % of weight that's High+Moderate for each theme.
+- Portfolio fingerprint (Way 1), per theme: "Business-linked exposure %" (the headline: High/Moderate holdings that are also business_linked) and "Price co-movement only %" (High/Moderate but not business_linked, labeled as such). Each holding's row shows its tier and "business linked: yes/no". high_moderate_pct (the two added) is kept for the Way 2 re-check.
 
 ## Build phases
 
@@ -52,13 +52,13 @@ Work in phases. STOP at each checkpoint so I can check before continuing. Commit
 
 0. Setup: folders, venv, .gitignore, .env.example, README, this file.
 1. FMP client: engine/fmp.py (stable API, key from .env, every response cached in data/cache/fmp/). Test the endpoints on NVDA and XOM. → Checkpoint 1
-2. Themes: AI (my reference set exactly), then Oil, then the others (Bank lending, Gold, Defense, Healthcare, Copper+lithium, Clean energy, Consumer discretionary, Cybersecurity) (time-boxed to 30 minutes). → Checkpoint 2: one summary table per theme
+2. Themes: AI (my reference set exactly), then Oil, then the others (Bank lending, Gold, Aerospace & defense, Healthcare, Copper+lithium, Clean energy, Consumer discretionary, Cybersecurity) (time-boxed to 30 minutes). → Checkpoint 2: one summary table per theme
 3. Price data + regression: engine/data.py get_returns(), engine/regression.py, tests on simulated then real data, price check per theme. → Checkpoint 3
 4. Portfolio screen: engine/screen.py run_screen(holdings, themes) → JSON; CLI `python -m engine.screen NVDA:30 XOM:20 CASH:50`. → Checkpoint 4
 
 ### Later phases (don't build yet)
 
-5. Way 2 builder (built: engine/builder.py, reads data/exposure_table.parquet). Universe: data/universe.csv from the FMP screener (engine/universe.py): NYSE + NASDAQ stocks only (no ETFs/funds/preferreds/units, one share class per company), market cap >= $2B, avg volume >= 200k, top 500 US + top 150 international by market cap, plus all theme references and Tier 2 names. Prices: python -m engine.fetch_prices (resumable). Table: python -m engine.build_table (engine/exposure.py; batch OLS for full-history stocks, run_screen's own code for the rest; tested to match run_screen within 1e-8). Rules: want = High/Moderate AND business_linked; avoid = Limited or Limited (lower confidence), labeled; Not determined excluded; dont_care = no rule; region all/us/intl; must pass every rule; equal weight, 15% cap, cash for any remainder; warn if fewer than 6; funnel counts; re-check with Way 1 (run_screen). The two-key ETF rule was dropped.
+5. Way 2 builder (built: engine/builder.py, reads data/exposure_table.parquet). Universe: data/universe.csv from the FMP screener (engine/universe.py): NYSE + NASDAQ stocks only (no ETFs/funds/preferreds/units, one share class per company), market cap >= $2B, avg volume >= 200k, top 500 US + top 150 international by market cap, plus all theme references and Tier 2 names. Prices: python -m engine.fetch_prices (resumable). Table: python -m engine.build_table (engine/exposure.py; batch OLS for full-history stocks, run_screen's own code for the rest; tested to match run_screen within 1e-8). Rules: want = High/Moderate AND business_linked; avoid X = passes unless the regression flags it High or Moderate on X (Not determined, Limited and Limited (lower confidence) all pass), with a safety net: stocks business_linked to X are excluded even if Not determined; each pick's tier on the avoided theme is shown; dont_care = no rule; region all/us/intl; must pass every rule. Ranking, per want theme: (a) the theme's Tier 1 reference companies first, (b) then High before Moderate, (c) then by the t-statistic of the want theme's largest group sum (signed, not floored at 0; Tier 2 names keep their listed tier for Way 1 but rank by t like any other stock) (several want themes: add up each theme's percentile rank in that ordering; no want theme: market cap); top TOP_N = 15; equal weight, 15% cap, cash for any remainder. The t-statistic for reference companies on their own theme comes from a leave-one-out regression (removed from their group, same controls), and for Tier 2 names from an ordinary regression: ranking only, their listed tier never changes; warn if fewer than 6; funnel counts; re-check with Way 1 (run_screen). The two-key ETF rule was dropped.
 6. Risk (built: engine/monte_carlo.py, engine/shocks.py, engine/frontier_view.py, engine/risk.py; `python -m engine.risk --from-build`). Monte Carlo: 5-day block bootstrap, 5,000 paths, 252 days, fixed seed (20261115), portfolio and SPY resampled on the same dates, cash earns 0, daily rebalancing; fan chart, P(loss > 10%), 5% VaR/CVaR, P(beat SPY). Theme shocks via betas (e.g. Oil +30%), labeled "estimated sensitivity based on past co-movement": each holding's beta to the theme's equal-weighted reference basket (itself excluded if it's a reference), with the same controls the classification uses (SPY, TLT and the theme's style controls, plus the holding's sector control if a theme turns it on); a shock = the basket moves X% with the controls flat; portfolio move = sum of weight x beta x X. Mean-variance check (engine/mean_variance/, 10y monthly, each stock's own history): fund vs efficient frontier, CML, min-variance and tangency mixes of its own stocks. Check only; never changes weights.
 7. Blockchain (deployer wallet via Foundry keystore; chain/publish.py posts engine results to the oracle):
    - ExposureOracle: owner posts ticker / theme / tier / price / baselineHash / statsHash / timestamp. Prices use 8 decimals.
@@ -68,6 +68,19 @@ Work in phases. STOP at each checkpoint so I can check before continuing. Commit
    - ThemeFundFactory: creates a ThemeFund with name, symbol, basket, rules.
    - Tests: deposit then redeem with no price change returns about the same USDC; a price rise increases NAV; adding XOM to an Avoid-Oil fund reverts; a stale price reverts.
 8. Streamlit dashboard (built: app.py, engine/dashboard.py, engine/assistant.py, chain/app_actions.py; `streamlit run app.py`). Two ways in: "Build my ETF" (Want / Don't care / Avoid per theme + region → funnel → basket → Way 1 re-check) and "Check my portfolio" (any stocks + weights → % exposed per theme, tiers, sentences). Both: heatmap + audit trail, risk (Monte Carlo, shock slider, mean-variance), and the "Ask about your fund" chat (Claude Haiku 5.5 only, low effort, answers only from the fund's facts incl. company names/industries; ANTHROPIC_API_KEY in .env). Launch on Monad (built funds only): unlock the Foundry keystore with a password typed in the app (kept in memory only) → Publish (tiers + prices + XOM) → Launch (explorer link on Monad) → Deposit → "Try adding XOM" rehearsed against the live contract, rejection in red. Without MONAD_RPC_URL / FACTORY_ADDRESS / keystore, the tab lists the missing steps and previews the mandate check off-chain. chain/publish.py sends 20% gas headroom + 3,000 gas per timestamped item (estimates were short by 2,800 per re-posted price).
+
+## Notes for TeagSloan (contracts/ and chain/)
+
+- `results/build_latest.json` (Way 2 output) changed: it now has `funnel` (list of {step, left}), `region`, `ranked_by` and
+  `survivors`; there is no `points` field any more; each holding has `name`, `industry`, `want_tiers`, `avoid_tiers`
+  ({theme name: tier on the avoided theme}), `strength` ({theme name: strength score}) `t_stat`, `reference` (Tier 1 reference on that want theme) and `rank_score`. `ticker` and
+  `weight_pct` are unchanged, and CASH is still a holding when there's a remainder.
+- `engine.builder.prescreen()` still returns {ticker: {theme: result}} in run_screen's shape, now read from
+  `data/exposure_table.parquet` (666 stocks) instead of the old 106-name cache.
+- "avoid" now allows Not determined (see the Builder rules above), so a fund's avoid mandate should only reject High/Moderate.
+- Way 1 fingerprints (`results/screen_latest.json`) gained `business_linked_pct` and `price_only_pct` per theme and a
+  `business_linked` flag per holding result; `high_moderate_pct` is unchanged.
+- The Defense theme's display name is now "Aerospace & defense" (the key is still `defense`).
 
 ## Rules
 

@@ -1,5 +1,25 @@
 # Method comparison: A vs B vs C
 
+## Update: re-run on the 666-stock universe (sector-control version C deleted)
+
+| Measure | A (before) | A* | **B (kept)** |
+|---|---|---|---|
+| False alarms, real stocks from unrelated sectors (target ≤ 5%) | 28.5% | 28.5% | **11.3%** |
+| (calibration) false alarms, pure-noise references | 1.9% | 1.9% | 1.8% |
+| Leave-one-out: reference re-found as High/Moderate | 96.5% | 98.2% | **96.5%** |
+| ETF agreement, median Spearman (8 themes, 649 stocks) | 0.64 | 0.64 | **0.49** |
+| Results that are Not determined | 33.9% | 34.0% | 34.2% |
+| Price check | 66/67 | 66/67 | 64/67 |
+| Simulated stocks correct (of 600) | 590 | 590 | 588 |
+| High/Moderate calls in the 9×10 sanity table | 19 | 19 | 12 |
+
+On the larger universe B's advantage is much bigger than on the old 106 names (false alarms 28.5% → 11.3%), so B stays.
+ETF agreement per theme under B: GLD 0.75, CIBR 0.65, XLY 0.54, USO 0.53, ITA 0.45, COPX 0.44, ICLN 0.42, XLV 0.38.
+
+---
+
+*Earlier run (106-name universe), kept for the record:*
+
 **Kept: version B** (market + four style controls chosen by the objective 15% rule, no sector control).
 It's the only version that meaningfully cuts false alarms on real stocks (20.4% → 15.9%). It keeps the leave-one-out
 hit rate (96.5%) and the price check (64/67), and it fixes 3 of the 4 named sanity problems. The sector control
@@ -25,7 +45,7 @@ CRWV is excluded (short history).
 | AI | XLK (sector, used in C only) | 34.01% |
 | Oil | XLE (sector, C only) | 31.68% |
 | Healthcare | XLV (sector, C only) | 25.06% |
-| Defense | XLI (sector, C only) | 19.46% |
+| Aerospace & defense | XLI (sector, C only) | 19.46% |
 | All other themes / controls | none | all under 15% |
 
 MOM, SIZE and LOWVOL are kept for every theme, AI included: AI references are under 15% of MTUM, RSP and USMV.
@@ -55,15 +75,15 @@ leans heavily on defensive healthcare stocks, so LOWVOL absorbs much of the heal
 |---|---|---|---|
 | AAPL Healthcare | High ⚠️ | Lim-low ✅ | Lim-low ✅ |
 | KO Healthcare / Discretionary / Clean energy | High / Mod / Mod ⚠️ | ND ✅ / **High ⚠️** / Mod ⚠️ | Lim-low / Lim-low / ND ✅ |
-| COP Defense | High ⚠️ | **High ⚠️** | ND ✅ |
+| COP Aerospace & defense | High ⚠️ | **High ⚠️** | ND ✅ |
 | SMH Gold | High ⚠️ | Lim-low ✅ | Lim-low ✅ |
 
-High/Moderate calls in the 9×10 table: A 19 (≈9 wrong), B 12 (4 wrong: **COP AI High**, COP Defense High, KO Discretionary High,
-KO Clean energy Moderate), C 12 (4 wrong: NVDA Defense, NEM AI, NEM Bank lending, JNJ Clean energy).
+High/Moderate calls in the 9×10 table: A 19 (≈9 wrong), B 12 (4 wrong: **COP AI High**, COP Aerospace & defense High, KO Discretionary High,
+KO Clean energy Moderate), C 12 (4 wrong: NVDA Aerospace & defense, NEM AI, NEM Bank lending, JNJ Clean energy).
 
 Version B sanity table:
 
-| | AI | Bank | Clean | Disc | Cyber | Defense | Gold | Health | Metals | Oil |
+| | AI | Bank | Clean | Disc | Cyber | Aerospace & defense | Gold | Health | Metals | Oil |
 |---|---|---|---|---|---|---|---|---|---|---|
 | SMH | High | Lim | ND | Lim | Lim-low | Lim-low | Lim-low | ND | ND | Lim-low |
 | NVDA | High (listed) | ND | ND | Lim | Lim-low | ND | Lim-low | Lim-low | ND | ND |
@@ -81,9 +101,9 @@ Version B sanity table:
 the re-screen, and every pick is lower-confidence on Oil. COP is AI High in B, but it's excluded here because it's Oil High.
 A plain "want AI" basket would include it.
 
-**Want Gold + want Defense:** 1 holding (HII, 15%) + 85% cash. The goals pass, but HII as "Gold High" is wrong.
-The two-key rule removed only CEG and QCOM from Gold, and BAC, COP, CVX and GEHC from Defense. It confirmed other wrong picks
-(Gold: DG, HII, ALB, SQM; Defense: C, WFC, XLF, NFLX, TJX, RCL), because the ETF check runs on the same controls
+**Want Gold + want Aerospace & defense:** 1 holding (HII, 15%) + 85% cash. The goals pass, but HII as "Gold High" is wrong.
+The two-key rule removed only CEG and QCOM from Gold, and BAC, COP, CVX and GEHC from Aerospace & defense. It confirmed other wrong picks
+(Gold: DG, HII, ALB, SQM; Aerospace & defense: C, WFC, XLF, NFLX, TJX, RCL), because the ETF check runs on the same controls
 and picks up the same co-movement.
 
 ## Pitch numbers (version B)
@@ -94,7 +114,7 @@ and picks up the same co-movement.
 
 ## Open problems, most serious first
 
-1. Real-stock false alarms are still 15.9%, and the two-key ETF check doesn't catch them. "Want" baskets for Gold and Defense contain unrelated stocks.
+1. Real-stock false alarms are still 15.9%, and the two-key ETF check doesn't catch them. "Want" baskets for Gold and Aerospace & defense contain unrelated stocks.
 2. COP comes out AI High under B (KO comes out Discretionary High). Themes without an ETF (AI) get no second key.
 3. Healthcare's agreement with its ETF collapses under B (0.72 → 0.02), because LOWVOL absorbs defensive healthcare.
 4. Bank Moderates (WFC 57%, C 70%, BAC 53%) now exceed the 40% High cutoff under the new NII formula, and the formula overstates MTB versus its call (79% vs ~71%).

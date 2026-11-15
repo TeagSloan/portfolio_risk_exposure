@@ -47,6 +47,7 @@ def big_frame(themes):
     names = [r['ticker'] for r in load_universe()] + ["SPY", "TLT", "IWD", "IWF"] + [t["ground_truth"] for t in themes.values() if t.get("ground_truth")]
     names += [t["control"]["ticker"] for t in themes.values()]
     names += [leg for legs in SPREADS.values() for leg in legs]
+    names += SANITY  # SMH is an ETF, so it isn't in the universe; the checks still use it as a test holding
     names = list(dict.fromkeys(names))
     keep = []
     for n in names:
@@ -216,11 +217,9 @@ SHORT = {"High": "High", "Moderate": "Mod", "Limited": "Lim", "Limited (lower co
          "Not determined": "ND"}
 
 
-def sanity(themes):
-    from engine.build_table import load_table
-    t = load_table()
-    t = t[t["ticker"].isin(SANITY)].pivot(index="ticker", columns="theme", values="tier")
-    return {x: {k: t.loc[x, k] for k in themes} for x in SANITY if x in t.index}
+def sanity(themes, r):
+    """Tiers for familiar names across all themes, computed fresh (SMH isn't in the stock universe)."""
+    return {t: {k: cls(t, th, r).tier for k, th in themes.items()} for t in SANITY if t in r.columns}
 
 
 def main():
@@ -234,7 +233,7 @@ def main():
         "fp": false_positives(themes, r, univ),
         "loo": leave_one_out(themes, r),
         "gt": ground_truth(themes, r, univ),
-        "sanity": sanity(themes),
+        "sanity": sanity(themes, r),
         "n_days": len(r), "dropped": dropped,
     }
     out = ROOT / "results" / "regression_check_raw.json"

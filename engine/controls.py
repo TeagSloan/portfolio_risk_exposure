@@ -67,22 +67,35 @@ def style_controls(theme: dict) -> tuple[list[str], dict[str, dict[str, float]]]
 
 
 UNIVERSE_CSV = Path(__file__).resolve().parent.parent / "data" / "universe.csv"
-_COUNTRY: dict[str, str] = {}
+_UNIVERSE: dict[str, dict] = {}
 
 
-def country_of(ticker: str) -> str | None:
-    """Country from data/universe.csv when listed there, else from the FMP profile."""
-    if not _COUNTRY and UNIVERSE_CSV.exists():
+def _universe_row(ticker: str) -> dict | None:
+    if not _UNIVERSE and UNIVERSE_CSV.exists():
         with UNIVERSE_CSV.open() as f:
             for row in csv.DictReader(f):
-                _COUNTRY[row["ticker"]] = row.get("country") or ""
-    if ticker in _COUNTRY:
-        return _COUNTRY[ticker] or None
+                _UNIVERSE[row["ticker"]] = row
+    return _UNIVERSE.get(ticker)
+
+
+def _profile_field(ticker: str, field: str) -> str | None:
+    """A field from data/universe.csv when the stock is listed there, else from its FMP profile."""
+    row = _universe_row(ticker)
+    if row is not None:
+        return row.get(field) or None
     try:
         rows = fmp.profile(ticker)
     except fmp.FMPError:
         return None
-    return (rows[0].get("country") or None) if rows else None
+    return (rows[0].get(field) or None) if rows else None
+
+
+def country_of(ticker: str) -> str | None:
+    return _profile_field(ticker, "country")
+
+
+def industry_of(ticker: str) -> str | None:
+    return _profile_field(ticker, "industry")
 
 
 def intl_control(ticker: str) -> str | None:

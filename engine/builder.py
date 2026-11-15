@@ -12,11 +12,17 @@ Rules:
 - Region: all, us (country = US) or intl (everything else, e.g. ADRs).
 - "want"       -> High or Moderate for that theme AND business_linked (the stock's industry is in the theme's
                   allowed list, or it's a named reference / Tier 2 company). A price link alone isn't enough.
-- "avoid"      -> Limited or Limited (lower confidence). High, Moderate and Not determined are excluded
-                  ("the data can't tell" isn't proof of no exposure). Lower-confidence picks are labeled.
+- "avoid"      -> passes unless the regression flags it High or Moderate on that theme (Not determined,
+                  Limited and Limited (lower confidence) all pass). Safety net: stocks that are business_linked
+                  to the avoided theme (e.g. oil companies for avoid Oil) are excluded whatever their tier.
+                  Each pick's tier on the avoided theme is shown.
 - "dont_care"  -> no rule for that theme.
-- A stock must pass EVERY rule. Equal weight across picks, capped at 15% each; if there are too few names to
-  reach 100% under the cap, the rest is held as cash.
+- A stock must pass EVERY rule. Survivors are ranked, for each want theme: (a) the theme's Tier 1 reference
+  companies first, (b) then High before Moderate, (c) then by the t-statistic of the theme's largest group sum
+  (signed, so moving against the references ranks low). References use a leave-one-out regression; Tier 2
+  names keep their listed tier but rank by an ordinary regression like any other stock (ranking only). With several want themes, each theme's percentile rank in that
+  ordering is added up. With no want theme, the largest companies by market cap come first. The top TOP_N are held at equal weight, capped at 15% each;
+  if there are too few names to reach 100% under the cap, the rest is held as cash.
 - The funnel shows how many stocks are left after each rule.
 - Fewer than 6 holdings -> the basket is returned with a clear warning.
 - The final basket is re-checked from scratch with Way 1 (run_screen), and its fingerprint is compared with
@@ -34,14 +40,15 @@ import pandas as pd
 
 from engine import screen
 from engine.build_table import load_table
-from engine.regression import HIGH, LIMITED, LIMITED_LOW, MODERATE, NOT_DETERMINED
+from engine.regression import HIGH, MODERATE
 from engine.theme_loader import load_all
 
 ROOT = Path(__file__).resolve().parent.parent
 CAP_PCT = 15.0
+TOP_N = 15  # how many ranked stocks go into the basket
 MIN_HOLDINGS = 6
 WANT_OK = {HIGH, MODERATE}
-AVOID_OK = {LIMITED, LIMITED_LOW}
+AVOID_FAIL = {HIGH, MODERATE}
 CHOICES = {"want": "want", "avoid": "avoid", "dont_care": "dont_care", "don't care": "dont_care",
            "dont care": "dont_care", "dontcare": "dont_care"}
 REGIONS = {"all": "All regions", "us": "US only", "intl": "International only"}
@@ -128,7 +135,11 @@ def build(prefs: dict[str, str], region: str = "all", table: pd.DataFrame | None
 
     tiers = t.pivot(index="ticker", columns="theme", values="tier")
     linked = t.pivot(index="ticker", columns="theme", values="business_linked")
-    country = t.groupby("ticker")["country"].first().fillna("").reindex(tiers.index)
+    strength = t.pivot(index="ticker", columns="theme", values="strength")
+    tstat = t.pivot(index="ticker", columns="theme", values="strength_t")
+    is_ref = t.pivot(index="ticker", columns="theme", values="reference")
+    info = t.groupby("ticker")[["name", "industry", "country", "market_cap"]].first().reindex(tiers.index)
+    country = info["country"].fillna("")
     alive = pd.Series(True, index=tiers.index)
     funnel = [{"step": "Universe (scored stocks)", "left": int(alive.sum())}]
 
@@ -145,16 +156,36 @@ def build(prefs: dict[str, str], region: str = "all", table: pd.DataFrame | None
         alive &= linked[k].astype(bool)
         funnel.append({"step": f"Want {name}: business-linked", "left": int(alive.sum())})
     for k in avoid:
-        alive &= tiers[k].isin(AVOID_OK)
-        funnel.append({"step": f"Avoid {themes[k]['name']}: Limited or Limited (lower confidence)",
-                       "left": int(alive.sum())})
+        name = themes[k]["name"]
+        alive &= ~tiers[k].isin(AVOID_FAIL)
+        funnel.append({"step": f"Avoid {name}: not flagged High or Moderate", "left": int(alive.sum())})
+        alive &= ~linked[k].astype(bool)
+        funnel.append({"step": f"Avoid {name}: not in the {name} business (safety net)", "left": int(alive.sum())})
     if dont_care:
         funnel.append({"step": "Don't care: " + ", ".join(themes[k]["name"] for k in dont_care) + " (no rule)",
                        "left": int(alive.sum())})
 
-    picks = sorted(alive[alive].index)
-    labels = {p: [f"{themes[k]['name']}: lower confidence" for k in avoid if tiers.loc[p, k] == LIMITED_LOW]
-              for p in picks}
+    survivors = list(alive[alive].index)
+    def theme_order(k):
+        """Survivors in ranking order for one want theme: Tier 1 references first, then High, then t-statistic."""
+        return sorted(survivors, key=lambda x: (not bool(is_ref.loc[x, k]), tiers.loc[x, k] != HIGH,
+                                                -float(0 if pd.isna(tstat.loc[x, k]) else tstat.loc[x, k]), x))
+
+    if want:
+        n = len(survivors)
+        pct = {k: {x: 1 - i / n for i, x in enumerate(theme_order(k))} for k in want}  # 1 = best
+        score = pd.Series({x: sum(pct[k][x] for k in want) for x in survivors}, dtype=float)
+        order = theme_order(want[0]) if len(want) == 1 else sorted(survivors, key=lambda x: (-score[x], x))
+        basis = ("Tier 1 references first, then High before Moderate, then t-statistic" if len(want) == 1
+                 else "sum of percentile ranks (references first, High before Moderate, then t-statistic)")
+    else:
+        score = info["market_cap"].astype(float)
+        order = sorted(survivors, key=lambda x: (-score[x], x))
+        basis = "market cap (no want theme)"
+    picks = order[:TOP_N]
+    if len(survivors) > TOP_N:
+        funnel.append({"step": f"Ranked by {basis}: top {TOP_N}", "left": len(picks)})
+
     weights, cash = cap_and_rescale(dict.fromkeys(picks, 1.0))  # equal weight
     warnings = []
     if not picks:
@@ -165,22 +196,27 @@ def build(prefs: dict[str, str], region: str = "all", table: pd.DataFrame | None
     if picks and cash > 1e-9:
         warnings.append(f"With {len(picks)} holding(s) and a {CAP_PCT:g}% cap, only {100 - cash:.0f}% can be "
                         f"invested; {cash:.0f}% is held as cash.")
-    lower = [p for p in picks if labels[p]]
-    if lower:
-        warnings.append(f"{len(lower)} pick(s) pass an 'avoid' rule only with lower confidence.")
 
-    basket = {p: round(w, 4) for p, w in sorted(weights.items(), key=lambda kv: (-kv[1], kv[0]))}
+    basket = {p: round(w, 4) for p, w in sorted(weights.items(), key=lambda kv: (-kv[1], order.index(kv[0])))}
     if picks and cash > 1e-9:  # no picks -> no basket at all, not 100% cash
         basket[screen.CASH] = round(cash, 4)
-    scored = [k for k in prefs if prefs[k] != "dont_care"]
+
+    def holding(p, wt):
+        if p == screen.CASH:
+            return {"ticker": p, "weight_pct": round(wt, 2)}
+        nan = lambda v: None if pd.isna(v) else v
+        return {"ticker": p, "weight_pct": round(wt, 2), "name": info.loc[p, "name"], "industry": info.loc[p, "industry"],
+                "want_tiers": {themes[k]["name"]: tiers.loc[p, k] for k in want},
+                "avoid_tiers": {themes[k]["name"]: tiers.loc[p, k] for k in avoid},
+                "strength": {themes[k]["name"]: nan(strength.loc[p, k]) for k in want},
+                "t_stat": {themes[k]["name"]: nan(tstat.loc[p, k]) for k in want},
+                "reference": {themes[k]["name"]: bool(is_ref.loc[p, k]) for k in want},
+                "rank_score": float(score[p])}
+
     return {
         "preferences": prefs, "region": region, "universe_size": len(tiers), "funnel": funnel,
-        "holdings": [
-            {"ticker": p, "weight_pct": round(w, 2),
-             "tiers": {themes[k]["name"]: tiers.loc[p, k] for k in scored} if p in tiers.index else None,
-             "labels": labels.get(p, [])}
-            for p, w in basket.items()
-        ],
+        "ranked_by": basis, "survivors": len(survivors),
+        "holdings": [holding(p, wt) for p, wt in basket.items()],
         "cash_pct": round(cash, 2) if picks else 0.0,
         "warnings": warnings,
         "verification": _verify(basket, prefs, themes) if picks else None,
@@ -199,8 +235,8 @@ def _verify(basket: dict[str, float], prefs: dict[str, str], themes: dict[str, d
             ok = abs(f["high_moderate_pct"] - invested) < 0.01
             goal = f"all invested weight ({invested:.0f}%) High or Moderate"
         else:
-            ok = f["high_moderate_pct"] < 0.01 and f["by_tier_pct"][NOT_DETERMINED] < 0.01
-            goal = "0% High, Moderate or Not determined"
+            ok = f["high_moderate_pct"] < 0.01
+            goal = "0% High or Moderate"
         checks[k] = {"theme": themes[k]["name"], "choice": prefs[k], "goal": goal, "pass": ok,
                      "high_moderate_pct": f["high_moderate_pct"], "by_tier_pct": f["by_tier_pct"],
                      "sentence": f["sentence"]}
@@ -215,14 +251,19 @@ def summary_text(out: dict) -> str:
     if not out["holdings"]:
         lines.append("No basket: nothing passes every rule.")
     else:
-        lines.append(f"Basket ({sum(1 for h in out['holdings'] if h['ticker'] != screen.CASH)} holdings):")
+        lines.append(f"Basket ({sum(1 for h in out['holdings'] if h['ticker'] != screen.CASH)} holdings, "
+                     f"ranked by {out['ranked_by']}):")
         for h in out["holdings"]:
             if h["ticker"] == screen.CASH:
                 lines.append(f"  {'CASH':6} {h['weight_pct']:6.2f}%")
                 continue
-            tiers = ", ".join(f"{k}: {v}" for k, v in h["tiers"].items())
-            label = f"  [{'; '.join(h['labels'])}]" if h["labels"] else ""
-            lines.append(f"  {h['ticker']:6} {h['weight_pct']:6.2f}%   {tiers}{label}")
+            want = ", ".join(f"{k} {v}" for k, v in h["want_tiers"].items())
+            avoid = ", ".join(f"{k} {v}" for k, v in h["avoid_tiers"].items())
+            strength = ", ".join(f"{v:.2f}" if v is not None else "-" for v in h["strength"].values())
+            tst = ", ".join(f"{v:.1f}" if v is not None else "-" for v in h["t_stat"].values())
+            tag = "ref " if any(h["reference"].values()) else ""
+            lines.append(f"  {h['ticker']:6} {h['weight_pct']:6.2f}%  {str(h['name'])[:28]:28} {str(h['industry'])[:30]:30} "
+                         f"want: {tag}{want or '-'} | avoid: {avoid or '-'} | t {tst or '-'} | strength {strength or '-'}")
     lines += [f"WARNING: {w}" for w in out["warnings"]]
     v = out["verification"]
     if v:

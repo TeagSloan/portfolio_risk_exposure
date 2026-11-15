@@ -20,6 +20,7 @@ def theme(key, name):
         },
         "control": {"ticker": "CTRL"},
         "direct_classification": [{"ticker": f"{key.upper()}DIRECT", "tier": "Moderate", "reason": "no number."}],
+        "allowed_industries": ["Widgets"] if key == "t1" else [],
     }
 
 
@@ -53,6 +54,7 @@ def fakes(monkeypatch):
     monkeypatch.setattr(screen, "get_returns", get_returns)
     monkeypatch.setattr(screen, "load_theme", lambda k: THEMES[k] if k in THEMES else (_ for _ in ()).throw(ValueError(f"No theme called '{k}'")))
     monkeypatch.setattr(screen, "load_all", lambda: THEMES)
+    monkeypatch.setattr(screen, "industry_of", lambda t: "Widgets" if t == "ALPHAY" else None)
 
 
 def test_tiers_cash_and_fingerprint():
@@ -64,9 +66,12 @@ def test_tiers_cash_and_fingerprint():
     assert by["CASH"]["results"].startswith("cash")
     fp = rep["fingerprint"]
     assert fp["t1"]["high_moderate_pct"] == 30 and fp["t2"]["high_moderate_pct"] == 20
+    assert fp["t1"]["business_linked_pct"] == 30 and fp["t1"]["price_only_pct"] == 0  # ALPHAY is in a Widgets business
+    assert fp["t2"]["business_linked_pct"] == 20  # T2H1 is a named reference
+    assert by["ALPHAY"]["results"]["t1"]["business_linked"] is True
     assert fp["t1"]["cash_pct"] == 50
     assert sum(fp["t1"]["by_tier_pct"].values()) + fp["t1"]["cash_pct"] == pytest.approx(100)
-    assert "30% of your portfolio" in fp["t1"]["sentence"] and "ALPHAY" in fp["t1"]["sentence"]
+    assert "Business-linked exposure: 30% of your portfolio (ALPHAY)" in fp["t1"]["sentence"]
     json.dumps(rep)  # must be JSON-serializable
 
 
@@ -80,7 +85,7 @@ def test_weights_rescaled_when_not_100():
 def test_all_cash_portfolio():
     rep = screen.run_screen({"CASH": 100}, ["t1"])
     assert rep["fingerprint"]["t1"]["high_moderate_pct"] == 0
-    assert rep["fingerprint"]["t1"]["sentence"].startswith("None of your portfolio")
+    assert rep["fingerprint"]["t1"]["sentence"].startswith("Business-linked exposure: none of your portfolio has")
 
 
 def test_unknown_ticker_is_not_determined_with_reason():
@@ -128,8 +133,16 @@ def test_cli_summary_json_and_errors(capsys, tmp_path, monkeypatch):
     assert screen.main(["ALPHAY:30", "CASH:70", "--themes", "t1"]) == 0
     out = capsys.readouterr().out
     assert "Portfolio fingerprint" in out and "ALPHAY (30%)" in out and "cash: kept" in out
+    assert "Business-linked exposure %" in out and "Price co-movement only %" in out and "business linked: yes" in out
     assert json.loads((tmp_path / "results" / "screen_latest.json").read_text())["cash_pct"] == 70
     assert screen.main(["ALPHAY:1", "PLAIN:1", "--json"]) == 0
     assert json.loads(capsys.readouterr().out)["weights_rescaled_to_100"] is True
     assert screen.main(["NVDA30"]) == 2
     assert "Error:" in capsys.readouterr().err
+
+
+def test_price_co_movement_only_is_reported_separately(monkeypatch):
+    monkeypatch.setattr(screen, "industry_of", lambda t: None)  # ALPHAY moves with t1 but isn't in its business
+    fp = screen.run_screen({"ALPHAY": 30, "CASH": 70}, ["t1"])["fingerprint"]["t1"]
+    assert (fp["business_linked_pct"], fp["price_only_pct"], fp["high_moderate_pct"]) == (0, 30, 30)
+    assert "Price co-movement only: 30% (ALPHAY)" in fp["sentence"]

@@ -40,13 +40,15 @@ def test_exactly_15_percent_is_not_skipped():
 
 
 def test_intl_control_for_non_us_stocks(monkeypatch):
-    monkeypatch.setattr(controls, "_COUNTRY", {"TSM": "TW", "NVDA": "US", "BLANK": ""})
+    monkeypatch.setattr(controls, "_UNIVERSE", {"TSM": {"country": "TW", "industry": "Semiconductors"},
+                                                "NVDA": {"country": "US"}, "BLANK": {"country": ""}})
     assert controls.intl_control("TSM") == "INTL"
     assert controls.intl_control("NVDA") is None
     assert controls.intl_control("BLANK") is None
     PROFILES["SAP"] = {"country": "DE"}
     assert controls.intl_control("SAP") == "INTL"          # not in the universe file -> FMP profile
     assert controls.intl_control("NOPE") is None           # no profile
+    assert controls.industry_of("TSM") == "Semiconductors" and controls.industry_of("NVDA") is None
 
 
 def test_spreads_cover_styles_and_intl():

@@ -65,7 +65,7 @@ Note: Exception (approved): no Moderate references. FCX and SCCO (copper miners)
 | Tier 2 → High | KGC | Kinross Gold Corporation | n/a | - | Gold miner; FMP has no segment data. |
 | Tier 2 → High | AEM | Agnico Eagle Mines Limited | n/a | - | Gold miner; FMP's latest segment data is from 2013, too old to cite. |
 
-### Defense & aerospace  (ground truth: ITA; controls: SPY, TLT, VALUE, SIZE, MOM, LOWVOL)
+### Aerospace & defense  (ground truth: ITA; controls: SPY, TLT, VALUE, SIZE, MOM, LOWVOL)
 Measure: Defense / government segment share of revenue
 
 | Group | Ticker | Company | Evidence | FY | Reason |

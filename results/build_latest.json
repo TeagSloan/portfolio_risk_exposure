@@ -1,7 +1,6 @@
 {
  "preferences": {
-  "ai": "want",
-  "oil": "avoid"
+  "healthcare": "want"
  },
  "region": "all",
  "universe_size": 666,
@@ -11,221 +10,341 @@
    "left": 666
   },
   {
-   "step": "Want AI: High or Moderate",
-   "left": 103
+   "step": "Want Healthcare: High or Moderate",
+   "left": 69
   },
   {
-   "step": "Want AI: business-linked",
-   "left": 68
+   "step": "Want Healthcare: business-linked",
+   "left": 54
   },
   {
-   "step": "Avoid Oil: Limited or Limited (lower confidence)",
+   "step": "Ranked by Tier 1 references first, then High before Moderate, then t-statistic: top 15",
    "left": 15
   }
  ],
+ "ranked_by": "Tier 1 references first, then High before Moderate, then t-statistic",
+ "survivors": 54,
  "holdings": [
   {
-   "ticker": "ADSK",
+   "ticker": "MRK",
    "weight_pct": 6.67,
-   "tiers": {
-    "AI": "Moderate",
-    "Oil": "Limited (lower confidence)"
+   "name": "Merck & Co., Inc.",
+   "industry": "Drug Manufacturers - General",
+   "want_tiers": {
+    "Healthcare": "High"
    },
-   "labels": [
-    "Oil: lower confidence"
-   ]
+   "avoid_tiers": {},
+   "strength": {
+    "Healthcare": 0.6658311697530166
+   },
+   "t_stat": {
+    "Healthcare": 10.642622713930566
+   },
+   "reference": {
+    "Healthcare": true
+   },
+   "rank_score": 1.0
   },
   {
-   "ticker": "CDNS",
+   "ticker": "PFE",
    "weight_pct": 6.67,
-   "tiers": {
-    "AI": "Moderate",
-    "Oil": "Limited (lower confidence)"
+   "name": "Pfizer Inc.",
+   "industry": "Drug Manufacturers - General",
+   "want_tiers": {
+    "Healthcare": "High"
    },
-   "labels": [
-    "Oil: lower confidence"
-   ]
+   "avoid_tiers": {},
+   "strength": {
+    "Healthcare": 0.41704109317895677
+   },
+   "t_stat": {
+    "Healthcare": 9.861073121122331
+   },
+   "reference": {
+    "Healthcare": true
+   },
+   "rank_score": 0.9814814814814815
   },
   {
-   "ticker": "CRM",
+   "ticker": "LLY",
    "weight_pct": 6.67,
-   "tiers": {
-    "AI": "High",
-    "Oil": "Limited (lower confidence)"
+   "name": "Eli Lilly and Company",
+   "industry": "Drug Manufacturers - General",
+   "want_tiers": {
+    "Healthcare": "High"
    },
-   "labels": [
-    "Oil: lower confidence"
-   ]
+   "avoid_tiers": {},
+   "strength": {
+    "Healthcare": 0.7642743680898244
+   },
+   "t_stat": {
+    "Healthcare": 8.284928103802772
+   },
+   "reference": {
+    "Healthcare": true
+   },
+   "rank_score": 0.962962962962963
   },
   {
-   "ticker": "DASH",
+   "ticker": "GEHC",
    "weight_pct": 6.67,
-   "tiers": {
-    "AI": "Moderate",
-    "Oil": "Limited (lower confidence)"
+   "name": "GE HealthCare Technologies Inc.",
+   "industry": "Medical - Devices",
+   "want_tiers": {
+    "Healthcare": "High"
    },
-   "labels": [
-    "Oil: lower confidence"
-   ]
+   "avoid_tiers": {},
+   "strength": {
+    "Healthcare": 0.17011543886943678
+   },
+   "t_stat": {
+    "Healthcare": 2.5954941212443394
+   },
+   "reference": {
+    "Healthcare": true
+   },
+   "rank_score": 0.9444444444444444
   },
   {
-   "ticker": "GOOGL",
+   "ticker": "BMY",
    "weight_pct": 6.67,
-   "tiers": {
-    "AI": "High",
-    "Oil": "Limited (lower confidence)"
+   "name": "Bristol-Myers Squibb Company",
+   "industry": "Drug Manufacturers - General",
+   "want_tiers": {
+    "Healthcare": "High"
    },
-   "labels": [
-    "Oil: lower confidence"
-   ]
+   "avoid_tiers": {},
+   "strength": {
+    "Healthcare": 0.7173871179272495
+   },
+   "t_stat": {
+    "Healthcare": 12.937158501631057
+   },
+   "reference": {
+    "Healthcare": false
+   },
+   "rank_score": 0.9259259259259259
   },
   {
-   "ticker": "HUBB",
+   "ticker": "AMGN",
    "weight_pct": 6.67,
-   "tiers": {
-    "AI": "High",
-    "Oil": "Limited (lower confidence)"
+   "name": "Amgen Inc.",
+   "industry": "Drug Manufacturers - General",
+   "want_tiers": {
+    "Healthcare": "High"
    },
-   "labels": [
-    "Oil: lower confidence"
-   ]
+   "avoid_tiers": {},
+   "strength": {
+    "Healthcare": 0.7233436161267686
+   },
+   "t_stat": {
+    "Healthcare": 12.436137991435421
+   },
+   "reference": {
+    "Healthcare": false
+   },
+   "rank_score": 0.9074074074074074
   },
   {
-   "ticker": "IOT",
+   "ticker": "GSK",
    "weight_pct": 6.67,
-   "tiers": {
-    "AI": "Moderate",
-    "Oil": "Limited (lower confidence)"
+   "name": "GSK plc",
+   "industry": "Drug Manufacturers - General",
+   "want_tiers": {
+    "Healthcare": "High"
    },
-   "labels": [
-    "Oil: lower confidence"
-   ]
+   "avoid_tiers": {},
+   "strength": {
+    "Healthcare": 0.596497143780101
+   },
+   "t_stat": {
+    "Healthcare": 10.272891738111433
+   },
+   "reference": {
+    "Healthcare": false
+   },
+   "rank_score": 0.8888888888888888
   },
   {
-   "ticker": "IRM",
+   "ticker": "BIIB",
    "weight_pct": 6.67,
-   "tiers": {
-    "AI": "Moderate",
-    "Oil": "Limited (lower confidence)"
+   "name": "Biogen Inc.",
+   "industry": "Drug Manufacturers - General",
+   "want_tiers": {
+    "Healthcare": "High"
    },
-   "labels": [
-    "Oil: lower confidence"
-   ]
+   "avoid_tiers": {},
+   "strength": {
+    "Healthcare": 0.7395234048491625
+   },
+   "t_stat": {
+    "Healthcare": 10.077826319891631
+   },
+   "reference": {
+    "Healthcare": false
+   },
+   "rank_score": 0.8703703703703703
   },
   {
-   "ticker": "JPM",
+   "ticker": "ABBV",
    "weight_pct": 6.67,
-   "tiers": {
-    "AI": "Moderate",
-    "Oil": "Limited (lower confidence)"
+   "name": "AbbVie Inc.",
+   "industry": "Drug Manufacturers - General",
+   "want_tiers": {
+    "Healthcare": "High"
    },
-   "labels": [
-    "Oil: lower confidence"
-   ]
+   "avoid_tiers": {},
+   "strength": {
+    "Healthcare": 0.5596321268114963
+   },
+   "t_stat": {
+    "Healthcare": 10.043037107863572
+   },
+   "reference": {
+    "Healthcare": false
+   },
+   "rank_score": 0.8518518518518519
   },
   {
-   "ticker": "META",
+   "ticker": "NVS",
    "weight_pct": 6.67,
-   "tiers": {
-    "AI": "Moderate",
-    "Oil": "Limited (lower confidence)"
+   "name": "Novartis AG",
+   "industry": "Drug Manufacturers - General",
+   "want_tiers": {
+    "Healthcare": "High"
    },
-   "labels": [
-    "Oil: lower confidence"
-   ]
+   "avoid_tiers": {},
+   "strength": {
+    "Healthcare": 0.5099878525220247
+   },
+   "t_stat": {
+    "Healthcare": 9.952688122675383
+   },
+   "reference": {
+    "Healthcare": false
+   },
+   "rank_score": 0.8333333333333334
   },
   {
-   "ticker": "PTC",
+   "ticker": "REGN",
    "weight_pct": 6.67,
-   "tiers": {
-    "AI": "Moderate",
-    "Oil": "Limited (lower confidence)"
+   "name": "Regeneron Pharmaceuticals, Inc.",
+   "industry": "Biotechnology",
+   "want_tiers": {
+    "Healthcare": "High"
    },
-   "labels": [
-    "Oil: lower confidence"
-   ]
+   "avoid_tiers": {},
+   "strength": {
+    "Healthcare": 0.7968349217434407
+   },
+   "t_stat": {
+    "Healthcare": 8.615063554641845
+   },
+   "reference": {
+    "Healthcare": false
+   },
+   "rank_score": 0.8148148148148149
   },
   {
-   "ticker": "ROP",
+   "ticker": "TMO",
    "weight_pct": 6.67,
-   "tiers": {
-    "AI": "High",
-    "Oil": "Limited (lower confidence)"
+   "name": "Thermo Fisher Scientific Inc.",
+   "industry": "Medical - Diagnostics & Research",
+   "want_tiers": {
+    "Healthcare": "High"
    },
-   "labels": [
-    "Oil: lower confidence"
-   ]
+   "avoid_tiers": {},
+   "strength": {
+    "Healthcare": 0.5756428301184863
+   },
+   "t_stat": {
+    "Healthcare": 8.308899219630984
+   },
+   "reference": {
+    "Healthcare": false
+   },
+   "rank_score": 0.7962962962962963
   },
   {
-   "ticker": "TOST",
+   "ticker": "DHR",
    "weight_pct": 6.67,
-   "tiers": {
-    "AI": "Moderate",
-    "Oil": "Limited (lower confidence)"
+   "name": "Danaher Corporation",
+   "industry": "Medical - Diagnostics & Research",
+   "want_tiers": {
+    "Healthcare": "High"
    },
-   "labels": [
-    "Oil: lower confidence"
-   ]
+   "avoid_tiers": {},
+   "strength": {
+    "Healthcare": 0.5665362196546804
+   },
+   "t_stat": {
+    "Healthcare": 8.180771065701549
+   },
+   "reference": {
+    "Healthcare": false
+   },
+   "rank_score": 0.7777777777777778
   },
   {
-   "ticker": "TYL",
+   "ticker": "A",
    "weight_pct": 6.67,
-   "tiers": {
-    "AI": "Moderate",
-    "Oil": "Limited (lower confidence)"
+   "name": "Agilent Technologies, Inc.",
+   "industry": "Medical - Diagnostics & Research",
+   "want_tiers": {
+    "Healthcare": "High"
    },
-   "labels": [
-    "Oil: lower confidence"
-   ]
+   "avoid_tiers": {},
+   "strength": {
+    "Healthcare": 0.5521507340854407
+   },
+   "t_stat": {
+    "Healthcare": 8.084155422462802
+   },
+   "reference": {
+    "Healthcare": false
+   },
+   "rank_score": 0.7592592592592593
   },
   {
-   "ticker": "U",
+   "ticker": "JNJ",
    "weight_pct": 6.67,
-   "tiers": {
-    "AI": "Moderate",
-    "Oil": "Limited (lower confidence)"
+   "name": "Johnson & Johnson",
+   "industry": "Drug Manufacturers - General",
+   "want_tiers": {
+    "Healthcare": "High"
    },
-   "labels": [
-    "Oil: lower confidence"
-   ]
+   "avoid_tiers": {},
+   "strength": {
+    "Healthcare": 0.3261005999713181
+   },
+   "t_stat": {
+    "Healthcare": 7.5219806170965935
+   },
+   "reference": {
+    "Healthcare": false
+   },
+   "rank_score": 0.7407407407407407
   }
  ],
  "cash_pct": 0.0,
- "warnings": [
-  "15 pick(s) pass an 'avoid' rule only with lower confidence."
- ],
+ "warnings": [],
  "verification": {
   "all_pass": true,
   "checks": {
-   "ai": {
-    "theme": "AI",
+   "healthcare": {
+    "theme": "Healthcare",
     "choice": "want",
     "goal": "all invested weight (100%) High or Moderate",
     "pass": true,
     "high_moderate_pct": 100.0,
     "by_tier_pct": {
-     "High": 26.67,
-     "Moderate": 73.33,
+     "High": 100.0,
+     "Moderate": 0.0,
      "Limited": 0.0,
      "Limited (lower confidence)": 0.0,
      "Not determined": 0.0
     },
-    "sentence": "100% of your portfolio is in stocks with High or Moderate AI exposure (ADSK, CDNS, CRM, DASH, GOOGL, HUBB, IOT, IRM, JPM, META, PTC, ROP, TOST, TYL, U)."
-   },
-   "oil": {
-    "theme": "Oil",
-    "choice": "avoid",
-    "goal": "0% High, Moderate or Not determined",
-    "pass": true,
-    "high_moderate_pct": 0.0,
-    "by_tier_pct": {
-     "High": 0.0,
-     "Moderate": 0.0,
-     "Limited": 0.0,
-     "Limited (lower confidence)": 100.0,
-     "Not determined": 0.0
-    },
-    "sentence": "None of your portfolio is in stocks with High or Moderate Oil exposure."
+    "sentence": "Business-linked exposure: 100% of your portfolio (MRK, PFE, LLY, GEHC, BMY, AMGN, GSK, BIIB, ABBV, NVS, REGN, TMO, DHR, A, JNJ)."
    }
   }
  }

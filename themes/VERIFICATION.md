@@ -2,7 +2,7 @@
 
 Each reference's evidence % checked against its latest FMP earnings-call transcript (`python -m engine.verify_evidence`). A quarter's share can differ from the fiscal-year share; within 10 points counts as VERIFIED. NOT FOUND means the call didn't state a comparable number, not that the evidence is wrong. Nothing in themes/*.yaml was changed.
 
-**Totals:** 3 verified, 1 mismatch, 55 not found.
+**Totals:** 3 verified, 1 mismatch, 53 not found.
 
 ## AI
 
@@ -31,13 +31,13 @@ Each reference's evidence % checked against its latest FMP earnings-call transcr
 
 | Ticker | Group | Evidence | Found in call | Status | Quote | Source |
 |---|---|---|---|---|---|---|
-| MTB | High | 56.4% | 70.8% | **MISMATCH** | Reviewed: real gap from the definition. The call implies NII / (NII + fees) = 71%; FMP's income-statement revenue gives 56%. Bank evidence % is likely understated for all banks. Call text: Taxable equivalent net interest income was $1.8 billion, largely unchanged from the linked quarter, as the benefits from one additional day  … Non-interest income was $743 million compared to $740 million in the linked quarter. | FMP earnings call transcript FY2026 Q3 (2026-10-16) |
-| ZION | High | 53.1% | - | **NOT FOUND** | Reviewed: auto-match used an annualized fee projection, not the quarter's fees. Likely the same definition gap as MTB. Call text: Taxable equivalent net interest income was $684 million, up $7 million or 1% from the prior quarter, up $12 million or 2% from the year ago  … Before moving on, I will note that the $136 million fee income number shown for 2026 is annualized based on pe | FMP earnings call transcript FY2026 Q3 (2026-10-19) |
-| CFG | High | 52.5% | - | **NOT FOUND** |  | FMP earnings call transcript FY2026 Q3 (2026-10-16) |
-| RF | High | 51.9% | - | **NOT FOUND** |  | FMP earnings call transcript FY2026 Q3 (2026-10-16) |
-| WFC | Moderate | 38.4% | - | **NOT FOUND** |  | FMP earnings call transcript FY2026 Q3 (2026-10-13) |
-| C | Moderate | 35.5% | - | **NOT FOUND** |  | FMP earnings call transcript FY2026 Q3 (2026-10-13) |
-| BAC | Moderate | 31.4% | - | **NOT FOUND** |  | FMP earnings call transcript FY2026 Q3 (2026-10-14) |
+| MTB | High | 79.2% | 70.8% | **MISMATCH** | Reviewed: real gap from the definition. The call implies NII / (NII + fees) = 71%; FMP's income-statement revenue gives 56%. Bank evidence % is likely understated for all banks. Call text: Taxable equivalent net interest income was $1.8 billion, largely unchanged from the linked quarter, as the benefits from one additional day  … Non-interest income was $743 million compared to $740 million in the linked quarter. | FMP earnings call transcript FY2026 Q3 (2026-10-16) |
+| ZION | High | 77.6% | - | **NOT FOUND** | Reviewed: auto-match used an annualized fee projection, not the quarter's fees. Likely the same definition gap as MTB. Call text: Taxable equivalent net interest income was $684 million, up $7 million or 1% from the prior quarter, up $12 million or 2% from the year ago  … Before moving on, I will note that the $136 million fee income number shown for 2026 is annualized based on pe | FMP earnings call transcript FY2026 Q3 (2026-10-19) |
+| CFG | High | 79.8% | - | **NOT FOUND** |  | FMP earnings call transcript FY2026 Q3 (2026-10-16) |
+| RF | High | 66.3% | - | **NOT FOUND** |  | FMP earnings call transcript FY2026 Q3 (2026-10-16) |
+| WFC | Moderate | 56.7% | - | **NOT FOUND** |  | FMP earnings call transcript FY2026 Q3 (2026-10-13) |
+| C | Moderate | 70.2% | - | **NOT FOUND** |  | FMP earnings call transcript FY2026 Q3 (2026-10-13) |
+| BAC | Moderate | 53.1% | - | **NOT FOUND** |  | FMP earnings call transcript FY2026 Q3 (2026-10-14) |
 
 ## Clean energy (solar & renewables)
 
@@ -57,7 +57,6 @@ Each reference's evidence % checked against its latest FMP earnings-call transcr
 | TJX | High | 100.0% | - | **NOT FOUND** | (evidence is 'all segments are theme business'; no single share to compare) | FMP earnings call transcript FY2027 Q2 (2026-08-19) |
 | RCL | High | 95.2% | - | **NOT FOUND** |  | FMP earnings call transcript FY2026 Q3 (2026-10-27) |
 | COST | Moderate | 25.5% | - | **NOT FOUND** |  | FMP earnings call transcript FY2026 Q4 (2026-09-24) |
-| DIS | Moderate | 32.4% | - | **NOT FOUND** |  | FMP earnings call transcript FY2026 Q3 (2026-08-05) |
 | DG | Moderate | 18.0% | - | **NOT FOUND** |  | FMP earnings call transcript FY2026 Q2 (2026-08-27) |
 
 ## Cybersecurity
@@ -70,7 +69,7 @@ Each reference's evidence % checked against its latest FMP earnings-call transcr
 | CHKP | High | 100.0% | - | **NOT FOUND** | (evidence is 'all segments are theme business'; no single share to compare) | FMP earnings call transcript FY2026 Q3 (2026-11-02) |
 | CSCO | Moderate | 13.0% | - | **NOT FOUND** |  | FMP earnings call transcript FY2027 Q1 (2026-11-12) |
 
-## Defense & aerospace
+## Aerospace & defense
 
 | Ticker | Group | Evidence | Found in call | Status | Quote | Source |
 |---|---|---|---|---|---|---|
@@ -99,7 +98,6 @@ Each reference's evidence % checked against its latest FMP earnings-call transcr
 | MRK | High | 89.4% | - | **NOT FOUND** |  | FMP earnings call transcript FY2026 Q3 (2026-10-29) |
 | LLY | High | 100.0% | - | **NOT FOUND** | (evidence is 'all segments are theme business'; no single share to compare) | FMP earnings call transcript FY2026 Q3 (2026-10-29) |
 | GEHC | High | 100.0% | - | **NOT FOUND** | (evidence is 'all segments are theme business'; no single share to compare) | FMP earnings call transcript FY2026 Q3 (2026-10-28) |
-| KR | Moderate | 32.8% | - | **NOT FOUND** |  | FMP earnings call transcript FY2026 Q4 (2026-03-05) |
 
 ## Industrial / EV metals (copper + lithium)
 

@@ -23,7 +23,8 @@ import math
 import sys
 from pathlib import Path
 
-from engine.controls import intl_control
+from engine.business import business_linked
+from engine.controls import industry_of, intl_control
 from engine.data import DEFAULT_END, DEFAULT_START, DataError, get_returns
 from engine.regression import (
     HIGH,
@@ -99,24 +100,39 @@ def _is_listed(ticker: str, theme: dict) -> bool:
 
 
 def fingerprint(holdings: dict[str, float], results: dict[str, dict[str, dict]], themes: dict[str, dict]) -> dict:
-    """% of portfolio weight in each tier per theme, and the headline High+Moderate share."""
+    """Per theme: % of weight in each tier, and High/Moderate exposure split two ways.
+
+    - business_linked_pct (the headline): High/Moderate stocks that also do business in the theme
+      (industry in the theme's list, or a named reference / Tier 2 company).
+    - price_only_pct: High/Moderate stocks that only move with the theme's companies (no business link).
+    - high_moderate_pct: the two added together.
+    """
     out = {}
     cash = holdings.get(CASH, 0.0)
     for key, theme in themes.items():
         by_tier = dict.fromkeys(TIERS, 0.0)
+        linked, price_only = [], []
         for ticker, w in holdings.items():
-            if ticker != CASH:
-                by_tier[results[ticker][key]["tier"]] += w
-        exposed = by_tier[HIGH] + by_tier[MODERATE]
-        names = [t for t in holdings if t != CASH and results[t][key]["tier"] in (HIGH, MODERATE)]
-        if names:
-            text = (f"{exposed:.0f}% of your portfolio is in stocks with High or Moderate {theme['name']} exposure "
-                    f"({', '.join(names)}).")
+            if ticker == CASH:
+                continue
+            r = results[ticker][key]
+            by_tier[r["tier"]] += w
+            if r["tier"] in (HIGH, MODERATE):
+                (linked if r.get("business_linked") else price_only).append(ticker)
+        b_pct = sum(holdings[t] for t in linked)
+        p_pct = sum(holdings[t] for t in price_only)
+        name = theme["name"]
+        if linked:
+            text = f"Business-linked exposure: {b_pct:.0f}% of your portfolio ({', '.join(linked)})."
         else:
-            text = f"None of your portfolio is in stocks with High or Moderate {theme['name']} exposure."
+            text = f"Business-linked exposure: none of your portfolio has High or Moderate {name} exposure."
+        if price_only:
+            text += (f" Price co-movement only: {p_pct:.0f}% ({', '.join(price_only)}) moves with {name} companies "
+                     f"but isn't in a {name} business.")
         if by_tier[NOT_DETERMINED]:
             text += f" For {by_tier[NOT_DETERMINED]:.0f}% the data can't tell."
-        out[key] = {"name": theme["name"], "high_moderate_pct": round(exposed, 2),
+        out[key] = {"name": name, "business_linked_pct": round(b_pct, 2), "price_only_pct": round(p_pct, 2),
+                    "high_moderate_pct": round(b_pct + p_pct, 2),
                     "by_tier_pct": {t: round(v, 2) for t, v in by_tier.items()},
                     "cash_pct": round(cash, 2), "sentence": text}
     return out
@@ -135,6 +151,9 @@ def run_screen(holdings: dict[str, float], themes: list[str] | None = None,
         if ticker == CASH:
             continue
         results[ticker] = {key: _screen_one(ticker, th, start, end) for key, th in theme_defs.items()}
+        industry = industry_of(ticker)
+        for key, th in theme_defs.items():
+            results[ticker][key]["business_linked"] = business_linked(ticker, industry, th)
     return {
         "window": {"start": start, "end": end},
         "weights_rescaled_to_100": rescaled,
@@ -163,11 +182,18 @@ def summary_text(report: dict) -> str:
             continue
         for k in keys:
             r = h["results"][k]
-            lines.append(f"  {report['fingerprint'][k]['name']:<{width}}  {r['tier']:<27} {r['sentence']}")
-    lines += ["", "Portfolio fingerprint (% of portfolio in High or Moderate stocks):"]
+            bl = "yes" if r.get("business_linked") else "no"
+            lines.append(f"  {report['fingerprint'][k]['name']:<{width}}  {r['tier']:<27} business linked: {bl:<3}  {r['sentence']}")
+    lines += ["", "Portfolio fingerprint:",
+              f"  {'Theme':<{width}}  Business-linked exposure %   Price co-movement only %"]
     for k in keys:
         f = report["fingerprint"][k]
-        lines.append(f"  {f['name']:<{width}}  {f['high_moderate_pct']:5.1f}%   {f['sentence']}")
+        lines.append(f"  {f['name']:<{width}}  {f['business_linked_pct']:24.1f}%  {f['price_only_pct']:23.1f}%")
+    lines += ["", "Business-linked exposure = High/Moderate stocks that also do business in the theme (the headline).",
+              "Price co-movement only = High/Moderate stocks whose prices move with the theme's companies, but which",
+              "aren't in a theme business. Treat these with caution.", ""]
+    for k in keys:
+        lines.append(f"  {report['fingerprint'][k]['name']}: {report['fingerprint'][k]['sentence']}")
     return "\n".join(lines)
 
 

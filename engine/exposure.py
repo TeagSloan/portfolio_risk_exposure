@@ -124,6 +124,43 @@ def _row_from_result(res: dict, path: str) -> dict:
     return row
 
 
+def _best(groups: dict) -> tuple[float | None, float | None]:
+    """(largest group beta sum, its t-statistic), signed; None if there are no stats.
+
+    Not floored at 0: a stock that moves AGAINST the references keeps its negative t, so it ranks below
+    stocks with no link at all (earlier versions floored both at 0, which made every such stock tie).
+    """
+    cands = [(g["beta_sum"], g["se"]) for g in groups.values()
+             if g.get("beta_sum") is not None and not pd.isna(g.get("beta_sum"))]
+    if not cands:
+        return None, None
+    s, se = max(cands, key=lambda c: c[0])
+    return s, (s / se if se and se > 0 else 0.0)
+
+
+def _strength(t: str, theme: dict, row: dict, listed: set[str]) -> tuple[float | None, float | None, str | None]:
+    """Ranking scores for Way 2 (never change the tier): the largest group beta sum and its t-statistic.
+
+    - Regression rows: the group (High or Moderate) with the larger sum (signed).
+    - Reference companies on their own theme have no regression (it would be circular), so they're scored
+      with a leave-one-out regression: the stock is removed from its group and regressed on the remaining
+      references with the same controls. Tier 2 names get an ordinary regression (they're never regressors).
+    """
+    if t not in listed:
+        groups = {g: {"beta_sum": row.get(f"{g}_sum"), "se": row.get(f"{g}_se")} for g in GROUPS}
+        best, tstat = _best(groups)
+        return best, tstat, ("regression" if best is not None else None)
+    loo = {**theme, "direct_classification": [],
+           "references": {g: [x for x in theme["references"].get(g, []) if x["ticker"] != t] for g in GROUPS}}
+    is_ref = any(x["ticker"] == t for g in GROUPS for x in theme["references"].get(g, []))
+    try:
+        res = screen._screen_one(t, loo, START, END)
+    except Exception:  # noqa: BLE001 - no ranking score is better than a crash
+        return None, None, None
+    best, tstat = _best(res.get("groups") or {})
+    return best, tstat, ("leave-one-out regression" if is_ref else "regression (Tier 2 name, ranking only)")
+
+
 def score_theme(theme: dict, tickers: list[str], meta: dict[str, dict], store: PriceStore) -> list[dict]:
     """Rows for every ticker on one theme."""
     refs = reference_names(theme)
@@ -177,7 +214,10 @@ def score_theme(theme: dict, tickers: list[str], meta: dict[str, dict], store: P
     refs_used = ",".join(refs["High"] + refs["Moderate"])
     for t in tickers:
         m = meta.get(t, {})
-        row = {"ticker": t, "theme": theme["key"], **rows[t],
+        strength, tstat, basis = _strength(t, theme, rows[t], listed)
+        row = {"ticker": t, "theme": theme["key"], "name": m.get("name"), **rows[t],
+               "strength": strength, "strength_t": tstat, "strength_basis": basis,
+               "reference": any(x["ticker"] == t for g in GROUPS for x in theme["references"].get(g, [])),
                "business_linked": business_linked(t, m.get("industry"), theme),
                "country": m.get("country"), "sector": m.get("sector"), "industry": m.get("industry"),
                "market_cap": float(m.get("market_cap") or 0), "references_used": refs_used,

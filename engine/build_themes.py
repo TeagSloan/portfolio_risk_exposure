@@ -130,7 +130,7 @@ THEMES = [
         ],
     },
     {
-        "key": "defense", "plain": "defense contractors", "name": "Defense & aerospace", "ground_truth": "ITA",
+        "key": "defense", "plain": "aerospace and defense companies", "name": "Aerospace & defense", "ground_truth": "ITA",
         "measures": "Defense / government segment share of revenue",
         "High": [
             ("LMT", ALL, "Largest defense contractor; all four segments serve defense customers."),
