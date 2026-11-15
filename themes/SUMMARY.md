@@ -5,14 +5,14 @@ Measure: AI share of revenue
 
 | Group | Ticker | Company | Evidence | FY | Reason |
 |---|---|---|---|---|---|
-| High | NVDA | NVIDIA Corporation | 90% | - | Data-center GPUs are most of revenue. |
-| High | MU | Micron Technology, Inc. | 55.5% | - | High-bandwidth and data-center memory for AI servers. |
-| High | VRT | Vertiv Holdings Co | 50% | - | Power and cooling for AI data centers. |
-| High | AVGO | Broadcom Inc. | 49% | - | Custom AI chips and AI networking. |
-| Moderate | TSM | Taiwan Semiconductor Manufactu | 18% | - | Manufactures most AI accelerators, but also phones, PCs, autos. |
-| Moderate | MSFT | Microsoft Corporation | 11.2% | - | AI services inside Azure; most revenue is other software and cloud. |
-| Moderate | VST | Vistra Corp. | 8.6% | - | Power producer selling electricity to AI data centers. |
-| Control | ADM | Archer-Daniels-Midland Company | 0% | - | Agricultural processor with no AI revenue. |
+| High | NVDA | NVIDIA Corporation | 90% | From capstone research, most recent filings at the time | Data-center GPUs are most of revenue. |
+| High | MU | Micron Technology, Inc. | 55.5% | From capstone research, most recent filings at the time | High-bandwidth and data-center memory for AI servers. |
+| High | VRT | Vertiv Holdings Co | 50% | From capstone research, most recent filings at the time | Power and cooling for AI data centers. |
+| High | AVGO | Broadcom Inc. | 49% | From capstone research, most recent filings at the time | Custom AI chips and AI networking. |
+| Moderate | TSM | Taiwan Semiconductor Manufactu | 18% | From capstone research, most recent filings at the time | Manufactures most AI accelerators, but also phones, PCs, autos. |
+| Moderate | MSFT | Microsoft Corporation | 11.2% | From capstone research, most recent filings at the time | AI services inside Azure; most revenue is other software and cloud. |
+| Moderate | VST | Vistra Corp. | 8.6% | From capstone research, most recent filings at the time | Power producer selling electricity to AI data centers. |
+| Control | ADM | Archer-Daniels-Midland Company | 0% | From capstone research, most recent filings at the time | Agricultural processor with no AI revenue. |
 | Tier 2 → High | CRWV | CoreWeave, Inc. Class A Common | 100% | - | AI cloud provider: renting GPUs is the whole business. |
 | Tier 2 → High | GOOGL | Alphabet Inc. | n/a | - | Large AI exposure through Gemini and Cloud, but no disclosed AI share. |
 | Tier 2 → Moderate | JPM | JPMorgan Chase & Co. | n/a | - | Big AI spender and user, but no disclosed AI revenue share. |
@@ -80,7 +80,8 @@ Measure: Defense / government segment share of revenue
 | Control | CL | Colgate-Palmolive Company | 0% | - | Toothpaste and pet food; no defense revenue. |
 
 ### Healthcare  (ground truth: XLV; controls: SPY, TLT)
-Measure: Healthcare share of revenue
+Measure: Healthcare share of revenue  
+Note: Exception (approved): only 1 Moderate reference. Kept only companies with a real partial healthcare business; PG and WM were dropped because they don't trade like healthcare.
 
 | Group | Ticker | Company | Evidence | FY | Reason |
 |---|---|---|---|---|---|
@@ -88,8 +89,7 @@ Measure: Healthcare share of revenue
 | High | MRK | Merck & Co., Inc. | 89.4% | 2025 | Large drugmaker; animal health is the rest. |
 | High | LLY | Eli Lilly and Company | 100.0% | 2025 | Drugmaker; all revenue is medicines. |
 | High | GEHC | GE HealthCare Technologies Inc | 100.0% | 2025 | Medical imaging and diagnostics; all segments are healthcare. |
-| Moderate | PG | The Procter & Gamble Company | 14.3% | 2026 | Consumer products; oral care and OTC medicines are its Health Care segment. |
-| Moderate | WM | Waste Management, Inc. | 10.0% | 2025 | Waste hauler; medical-waste unit (ex-Stericycle) is a minority. |
+| Moderate | KR | The Kroger Co. | 32.8% | 2025 | Grocer whose pharmacy (prescriptions) is a third of revenue. |
 | Control | VMC | Vulcan Materials Company | 0% | - | Crushed stone and asphalt; no healthcare revenue. |
 | Tier 2 → High | UNH | UnitedHealth Group Incorporate | n/a | - | Health insurer; FMP segments are revenue types (premiums, services), not a health share. |
 
@@ -135,13 +135,15 @@ Measure: Discretionary-spending share of revenue
 | High | TJX | The TJX Companies, Inc. | 100.0% | 2026 | Off-price clothing and home goods retailer. |
 | High | RCL | Royal Caribbean Cruises Ltd. | 95.2% | 2025 | Cruise line; travel spending. |
 | Moderate | COST | Costco Wholesale Corporation | 25.5% | 2026 | Warehouse club; non-food goods are about a quarter, the rest is groceries. |
-| Moderate | MMM | 3M Company | 19.7% | 2025 | Industrial conglomerate; consumer products (Scotch, Post-it) are a fifth. |
+| Moderate | DIS | The Walt Disney Company | 32.4% | 2025 | Media company; parks, resorts and merchandise are about a third, the rest is TV and streaming. |
+| Moderate | DG | Dollar General Corporation | 18.0% | 2025 | Discount store; seasonal, home and apparel goods are a fifth, the rest is consumables. |
 | Control | DUK | Duke Energy Corporation | 0% | - | Regulated electric utility; demand doesn't depend on discretionary spending. |
 | Tier 2 → High | MCD | McDonald's Corporation | n/a | - | Restaurants; FMP segments are geographic, not by spending type. |
 | Tier 2 → Moderate | AMZN | Amazon.com, Inc. | n/a | - | Online retail is large, but FMP doesn't split discretionary from essentials. |
 
 ### Cybersecurity  (ground truth: CIBR; controls: SPY, TLT)
-Measure: Security share of revenue
+Measure: Security share of revenue  
+Note: Exception (approved): only 1 Moderate reference instead of 2-4. FMP doesn't disclose a security share for any other company with partial exposure.
 
 | Group | Ticker | Company | Evidence | FY | Reason |
 |---|---|---|---|---|---|

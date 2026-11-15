@@ -22,6 +22,7 @@ Built at Monad Blitz Oregon (Nov 15, 2026). The methodology comes from my prior 
 - Tiers: High / Moderate / Limited / Limited (lower confidence) / Not determined. There is NO Inverse tier.
 - A theme is a YAML file in themes/: High and Moderate reference groups (ticker, evidence %, what it measures, fiscal year, source), one zero-exposure control, a direct_classification list (Tier 2), and an optional ground_truth ticker used ONLY for validation (never as a reference).
 - Tier 1 = disclosed number → regression reference. Tier 2 = exposed but no disclosed number → classified directly, never a regression reference.
+- Picking references (approved): High = theme is >= 40% of revenue, Moderate = 5-40%. AI uses my capstone numbers as given. Approved exceptions: Healthcare and Cybersecurity have 1 Moderate reference each.
 - Evidence comes from FMP data only (segment revenue share, income-statement ratios, industry). No SEC filings. Never estimated. No disclosed number → Tier 2.
 - Data: ~2 years of daily dividend-adjusted closes from FMP (fallback yfinance), cached. Simple daily returns, inner-join dates, no forward fill.
 - For each holding and theme, OLS (statsmodels): r_holding = a + b*SPY + b*TLT + sum of b_j * r_reference_j + error. (Interest-rates theme drops TLT from its controls.)
@@ -48,7 +49,13 @@ Work in phases. STOP at each checkpoint so I can check before continuing. Commit
 
 5. Builder: preferences like {"AI": "want", "Oil": "avoid"} → universe of ~30–40 tickers → "want" keeps High/Moderate, "avoid" keeps only proven Limited (Not determined is excluded) → weight High 2 / Moderate 1, cap 15%, rescale → re-screen to verify.
 6. Monte Carlo: 5-day block bootstrap, 5,000 paths, 252 days, fixed seed, vs SPY; fan chart, P(loss > 10%), 5% VaR/CVaR; theme shocks via betas (e.g. Oil +30%), labeled "estimated sensitivity based on past co-movement".
-7. Blockchain: deployer wallet via Foundry keystore; ExposureOracle (post ticker/theme/tier/price/baselineHash/statsHash), MockStock ERC-20s, ThemeFund (deposit → mint at NAV, redeem → burn, mandate rules per theme, adding a holding that breaks a rule reverts e.g. "Mandate: Oil exposure too high"), ThemeFundFactory; chain/publish.py posts results to the oracle.
+7. Blockchain (deployer wallet via Foundry keystore; chain/publish.py posts engine results to the oracle):
+   - ExposureOracle: owner posts ticker / theme / tier / price / baselineHash / statsHash / timestamp. Prices use 8 decimals.
+   - MockUSDC: ERC-20 test dollars, 6 decimals, public faucet(). MockStock: one ERC-20 per ticker, 18 decimals. Only MockExchange can mint or burn either.
+   - MockExchange: buy(stock, usdcAmount) takes USDC and mints stock at the oracle price; sell(stock, qty) burns stock and mints USDC at the oracle price. Reverts if a price is missing or older than 7 days.
+   - ThemeFund (ERC-20 shares): deposit → buy the basket through the exchange at target weights → mint shares at NAV (first deposit: 1 share = $1). redeem → sell a pro-rata slice of each holding → pay USDC → burn shares. NAV = sum(qty × oracle price) + cash. addHolding / rebalance check the mandate against ExposureOracle BEFORE trading and revert with a clear reason, e.g. "Mandate: Oil exposure too high".
+   - ThemeFundFactory: creates a ThemeFund with name, symbol, basket, rules.
+   - Tests: deposit then redeem with no price change returns about the same USDC; a price rise increases NAV; adding XOM to an Avoid-Oil fund reverts; a stale price reverts.
 8. Streamlit dashboard: Want / Don't care / Avoid per theme → Build → heatmap + audit trail → Monte Carlo + shock buttons → Launch fund on Monad (explorer link) → Deposit → "Try adding XOM" shows the rejection in red.
 
 ## Rules

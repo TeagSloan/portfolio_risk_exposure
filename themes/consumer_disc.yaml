@@ -44,13 +44,21 @@ references:
     fiscal_year: 2026
     source: 'FMP revenue-product-segmentation FY2026: Non-Foods / sum of all product segments'
     reason: Warehouse club; non-food goods are about a quarter, the rest is groceries.
-  - ticker: MMM
-    name: 3M Company
-    evidence_pct: 19.7
+  - ticker: DIS
+    name: The Walt Disney Company
+    evidence_pct: 32.4
     measures: Discretionary-spending share of revenue
     fiscal_year: 2025
-    source: 'FMP revenue-product-segmentation FY2025: Consumer Segment / sum of all product segments'
-    reason: Industrial conglomerate; consumer products (Scotch, Post-it) are a fifth.
+    source: 'FMP revenue-product-segmentation FY2025: Resorts and vacations + Retail and wholesale sales of merchandise, food
+      and beverage + Theme park admissions / sum of all product segments'
+    reason: Media company; parks, resorts and merchandise are about a third, the rest is TV and streaming.
+  - ticker: DG
+    name: Dollar General Corporation
+    evidence_pct: 18.0
+    measures: Discretionary-spending share of revenue
+    fiscal_year: 2025
+    source: 'FMP revenue-product-segmentation FY2025: Apparel + Home Products + Seasonal / sum of all product segments'
+    reason: Discount store; seasonal, home and apparel goods are a fifth, the rest is consumables.
 control:
   ticker: DUK
   name: Duke Energy Corporation

@@ -12,7 +12,7 @@ references:
     name: NVIDIA Corporation
     evidence_pct: 90
     measures: AI share of revenue
-    fiscal_year: null
+    fiscal_year: From capstone research, most recent filings at the time
     source: 'User-provided research: AI share of revenue from 10-K filings / earnings calls'
     reason: Data-center GPUs are most of revenue.
     fmp_cross_check: FMP FY2026 Data Center share = 89.7%
@@ -20,21 +20,21 @@ references:
     name: Micron Technology, Inc.
     evidence_pct: 55.5
     measures: AI share of revenue
-    fiscal_year: null
+    fiscal_year: From capstone research, most recent filings at the time
     source: 'User-provided research: AI share of revenue from 10-K filings / earnings calls'
     reason: High-bandwidth and data-center memory for AI servers.
   - ticker: VRT
     name: Vertiv Holdings Co
     evidence_pct: 50
     measures: AI share of revenue
-    fiscal_year: null
+    fiscal_year: From capstone research, most recent filings at the time
     source: 'User-provided research: AI share of revenue from 10-K filings / earnings calls'
     reason: Power and cooling for AI data centers.
   - ticker: AVGO
     name: Broadcom Inc.
     evidence_pct: 49
     measures: AI share of revenue
-    fiscal_year: null
+    fiscal_year: From capstone research, most recent filings at the time
     source: 'User-provided research: AI share of revenue from 10-K filings / earnings calls'
     reason: Custom AI chips and AI networking.
   Moderate:
@@ -42,21 +42,21 @@ references:
     name: Taiwan Semiconductor Manufacturing Company Limited
     evidence_pct: 18
     measures: AI share of revenue
-    fiscal_year: null
+    fiscal_year: From capstone research, most recent filings at the time
     source: 'User-provided research: AI share of revenue from 10-K filings / earnings calls'
     reason: Manufactures most AI accelerators, but also phones, PCs, autos.
   - ticker: MSFT
     name: Microsoft Corporation
     evidence_pct: 11.2
     measures: AI share of revenue
-    fiscal_year: null
+    fiscal_year: From capstone research, most recent filings at the time
     source: 'User-provided research: AI share of revenue from 10-K filings / earnings calls'
     reason: AI services inside Azure; most revenue is other software and cloud.
   - ticker: VST
     name: Vistra Corp.
     evidence_pct: 8.6
     measures: AI share of revenue
-    fiscal_year: null
+    fiscal_year: From capstone research, most recent filings at the time
     source: 'User-provided research: AI share of revenue from 10-K filings / earnings calls'
     reason: Power producer selling electricity to AI data centers.
 control:
@@ -64,7 +64,7 @@ control:
   name: Archer-Daniels-Midland Company
   evidence_pct: 0
   measures: AI share of revenue
-  fiscal_year: null
+  fiscal_year: From capstone research, most recent filings at the time
   source: 'User-provided research: AI share of revenue from 10-K filings / earnings calls'
   reason: Agricultural processor with no AI revenue.
 direct_classification:

@@ -37,20 +37,13 @@ references:
     source: 'FMP revenue-product-segmentation FY2025: all segments are theme business'
     reason: Medical imaging and diagnostics; all segments are healthcare.
   Moderate:
-  - ticker: PG
-    name: The Procter & Gamble Company
-    evidence_pct: 14.3
-    measures: Healthcare share of revenue
-    fiscal_year: 2026
-    source: 'FMP revenue-product-segmentation FY2026: Health Care / sum of all product segments'
-    reason: Consumer products; oral care and OTC medicines are its Health Care segment.
-  - ticker: WM
-    name: Waste Management, Inc.
-    evidence_pct: 10.0
+  - ticker: KR
+    name: The Kroger Co.
+    evidence_pct: 32.8
     measures: Healthcare share of revenue
     fiscal_year: 2025
-    source: 'FMP revenue-product-segmentation FY2025: Healthcare Solutions / sum of all product segments'
-    reason: Waste hauler; medical-waste unit (ex-Stericycle) is a minority.
+    source: 'FMP revenue-product-segmentation FY2025: Pharmacy / sum of all product segments'
+    reason: Grocer whose pharmacy (prescriptions) is a third of revenue.
 control:
   ticker: VMC
   name: Vulcan Materials Company
@@ -66,3 +59,5 @@ direct_classification:
   evidence_pct: null
   source: No disclosed number (Tier 2)
   reason: Health insurer; FMP segments are revenue types (premiums, services), not a health share.
+notes: 'Exception (approved): only 1 Moderate reference. Kept only companies with a real partial healthcare business; PG and
+  WM were dropped because they don''t trade like healthcare.'

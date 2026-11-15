@@ -31,6 +31,7 @@ ALL = "ALL"  # every reported segment counts toward the theme
 # AI: the user's reference set, used exactly as given.
 # ---------------------------------------------------------------------------------------------
 AI_SOURCE = "User-provided research: AI share of revenue from 10-K filings / earnings calls"
+AI_FISCAL_YEAR = "From capstone research, most recent filings at the time"
 AI = {
     "key": "ai",
     "name": "AI",
@@ -144,6 +145,8 @@ THEMES = [
     {
         "key": "healthcare", "name": "Healthcare", "ground_truth": "XLV",
         "measures": "Healthcare share of revenue",
+        "notes": "Exception (approved): only 1 Moderate reference. Kept only companies with a real partial "
+                 "healthcare business; PG and WM were dropped because they don't trade like healthcare.",
         "High": [
             ("PFE", ["Biopharma Segment"], "Large drugmaker."),
             ("MRK", ["Pharmaceutical segment"], "Large drugmaker; animal health is the rest."),
@@ -151,8 +154,10 @@ THEMES = [
             ("GEHC", ALL, "Medical imaging and diagnostics; all segments are healthcare."),
         ],
         "Moderate": [
-            ("PG", ["Health Care"], "Consumer products; oral care and OTC medicines are its Health Care segment."),
-            ("WM", ["Healthcare Solutions"], "Waste hauler; medical-waste unit (ex-Stericycle) is a minority."),
+            # Only one real partial-healthcare business found. Rejected: GLW (Life Sciences 6%, but the stock
+            # moves with optical fiber), ECL (Life Sciences 5%, an industrial service), MTD/WAT (lab equipment
+            # with no healthcare share disclosed), PG and WM (don't trade like healthcare).
+            ("KR", ["Pharmacy"], "Grocer whose pharmacy (prescriptions) is a third of revenue."),
         ],
         "control": ("VMC", "Crushed stone and asphalt; no healthcare revenue."),
         "direct": [
@@ -211,7 +216,11 @@ THEMES = [
         ],
         "Moderate": [
             ("COST", ["Non-Foods"], "Warehouse club; non-food goods are about a quarter, the rest is groceries."),
-            ("MMM", ["Consumer Segment"], "Industrial conglomerate; consumer products (Scotch, Post-it) are a fifth."),
+            ("DIS", ["Theme park admissions", "Resorts and vacations",
+                     "Retail and wholesale sales of merchandise, food and beverage"],
+             "Media company; parks, resorts and merchandise are about a third, the rest is TV and streaming."),
+            ("DG", ["Seasonal", "Home Products", "Apparel"],
+             "Discount store; seasonal, home and apparel goods are a fifth, the rest is consumables."),
         ],
         "control": ("DUK", "Regulated electric utility; demand doesn't depend on discretionary spending."),
         "direct": [
@@ -222,6 +231,8 @@ THEMES = [
     {
         "key": "cyber", "name": "Cybersecurity", "ground_truth": "CIBR",
         "measures": "Security share of revenue",
+        "notes": "Exception (approved): only 1 Moderate reference instead of 2-4. FMP doesn't disclose a "
+                 "security share for any other company with partial exposure.",
         "High": [
             ("CRWD", ALL, "Endpoint security; all revenue is security."),
             ("PANW", ALL, "Network and cloud security; all revenue is security."),
@@ -274,7 +285,7 @@ def build_ai() -> dict:
     refs = {}
     for tier, rows in AI["references"].items():
         refs[tier] = [{"ticker": t, "name": _name(t), "evidence_pct": pct, "measures": AI["measures"],
-                       "fiscal_year": None, "source": AI_SOURCE, "reason": why} for t, pct, why in rows]
+                       "fiscal_year": AI_FISCAL_YEAR, "source": AI_SOURCE, "reason": why} for t, pct, why in rows]
     # Independent check: FMP's NVDA Data Center share should be close to the user's 90%.
     nvda = segment_share("NVDA", ["Data Center"])
     refs["High"][0]["fmp_cross_check"] = f"FMP FY{nvda['fiscal_year']} Data Center share = {nvda['evidence_pct']}%"
@@ -283,7 +294,7 @@ def build_ai() -> dict:
         "key": AI["key"], "name": AI["name"], "measures": AI["measures"], "controls": AI["controls"],
         "ground_truth": AI["ground_truth"], "references": refs,
         "control": {"ticker": ct, "name": _name(ct), "evidence_pct": cpct, "measures": AI["measures"],
-                    "fiscal_year": None, "source": AI_SOURCE, "reason": cwhy},
+                    "fiscal_year": AI_FISCAL_YEAR, "source": AI_SOURCE, "reason": cwhy},
         "direct_classification": [{"ticker": t, "name": _name(t), "tier": tier, "evidence_pct": pct,
                                    "source": AI_SOURCE if pct is not None else "No disclosed number (Tier 2)",
                                    "reason": why} for t, tier, pct, why in AI["direct"]],
@@ -311,7 +322,7 @@ def build_theme(theme: dict, warnings: list) -> dict:
     count = len(refs["High"]) + len(refs["Moderate"])
     if not 3 <= len(refs["High"]) <= 5:
         warnings.append(f"{theme['key']}: {len(refs['High'])} High references (rule is 3-5)")
-    if not 2 <= len(refs["Moderate"]) <= 4:
+    if not 2 <= len(refs["Moderate"]) <= 4 and "notes" not in theme:
         warnings.append(f"{theme['key']}: {len(refs['Moderate'])} Moderate references (rule is 2-4)")
     ai_refs = {r[0] for rows in AI["references"].values() for r in rows}
     for r in refs["High"] + refs["Moderate"]:
@@ -330,6 +341,8 @@ def build_theme(theme: dict, warnings: list) -> dict:
     }
     if "ground_truth_sign" in theme:
         out["ground_truth_sign"] = theme["ground_truth_sign"]
+    if "notes" in theme:
+        out["notes"] = theme["notes"]
     return out
 
 
@@ -337,7 +350,7 @@ def summary_table(t: dict) -> str:
     """Markdown table for the checkpoint."""
     sign = ", sign flipped" if t.get("ground_truth_sign") == -1 else ""
     lines = [f"### {t['name']}  (ground truth: {t.get('ground_truth') or 'none'}{sign}; controls: {', '.join(t['controls'])})",
-             f"Measure: {t['measures']}", "",
+             f"Measure: {t['measures']}" + (f"  \nNote: {t['notes']}" if t.get("notes") else ""), "",
              "| Group | Ticker | Company | Evidence | FY | Reason |", "|---|---|---|---|---|---|"]
     for tier in ("High", "Moderate"):
         for r in t["references"][tier]:
