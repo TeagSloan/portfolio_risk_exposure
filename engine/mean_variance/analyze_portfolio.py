@@ -21,6 +21,7 @@ import math
 import numbers
 import sys
 from dataclasses import dataclass
+from pathlib import Path
 
 import pandas as pd
 from dotenv import load_dotenv
@@ -28,6 +29,7 @@ from dotenv import load_dotenv
 from . import chart_builder, data_fetcher, optimizer, return_calculator
 from .errors import PortfolioInputError, PortfolioToolError
 
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 LOOKBACK_YEARS = 10
 # Weights may add up to anywhere from 99% to 101%; they are then rescaled to 100%.
 WEIGHT_SUM_TOLERANCE = 0.01
@@ -210,7 +212,7 @@ def format_summary(summary):
 
 
 def main(argv=None):
-    load_dotenv()  # picks up FMP_API_KEY from the project's .env file
+    load_dotenv(PROJECT_ROOT / ".env")  # picks up FMP_API_KEY from the project's .env file
     parser = argparse.ArgumentParser(description="Mean-variance analysis of a stock portfolio.")
     parser.add_argument("holdings", nargs="+", help="TICKER=WEIGHT pairs, e.g. AAPL=0.4 MSFT=0.6")
     parser.add_argument("--window", choices=return_calculator.WINDOW_MODES, default="shared",
