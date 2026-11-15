@@ -171,6 +171,22 @@ def heatmap_and_audit(table: dict[str, dict[str, dict]], weights: dict[str, floa
             st.dataframe(groups, hide_index=True, width="stretch")
 
 
+def why_in(h: dict) -> str:
+    """One plain-English line on why a holding is in the fund (from the builder's own labels)."""
+    if h["ticker"] == "CASH":
+        return "Cash for the part of the fund no stock could fill under your rules."
+    theme, rating = h.get("picked_for"), h.get("picked_tier")
+    if not theme or theme == "_cap":
+        return "One of the largest companies that passes every theme you chose to avoid."
+    if (h.get("reference") or {}).get(theme):
+        return f"A {theme} reference company: its own filings show {theme} is a big part of its revenue."
+    if rating == "High":
+        return f"Rated High for {theme}: it's in the business, and its revenue or price moves strongly with it."
+    if rating == "Moderate":
+        return f"Rated Moderate for {theme}: it's in the business, with a real but smaller link."
+    return f"Picked for {theme}."
+
+
 def own_step_build(build: dict, prefs: dict[str, str]) -> dict[str, float]:
     weights = dashboard.holdings_from_build(build)
     st.html(style.step(2, "See what you own", "Each column is the share of your fund in stocks that really "
@@ -203,7 +219,8 @@ def own_step_build(build: dict, prefs: dict[str, str]) -> dict[str, float]:
         for h in build["holdings"]:
             chips = [style.chip(f"{name}: {tier}", tier) for name, tier in (h.get("tiers") or {}).items()]
             rows.append({"ticker": h["ticker"], "name": h.get("name", "Cash" if h["ticker"] == "CASH" else ""),
-                         "industry": h.get("industry", ""), "weight": h["weight_pct"], "chips": chips})
+                         "industry": h.get("industry", ""), "weight": h["weight_pct"], "chips": chips,
+                         "why": why_in(h)})
         st.html(style.holdings(rows))
     heatmap_and_audit(table, weights)
     return weights

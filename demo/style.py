@@ -9,6 +9,7 @@ coral only for gains and losses (always with a + or - sign). Headings and big nu
 
 from __future__ import annotations
 
+import re
 from html import escape
 
 # ---------------------------------------------------------------------------------------------
@@ -70,7 +71,35 @@ p, li, label, .stMarkdown {{ color: {TEXT}; }}
 div[data-baseweb="select"] > div, input, textarea {{ background: {RAISED} !important; color: {TEXT} !important; }}
 :focus-visible {{ outline: 2px solid {BLUSH} !important; outline-offset: 2px; }}
 
-.tf-hero {{ padding: 8px 0 32px; border-bottom: 1px solid {LINE}; margin-bottom: 8px; }}
+.tf-hero {{ position: relative; overflow: hidden; isolation: isolate; padding: 48px 40px 40px; margin-bottom: 8px;
+  border: 1px solid {LINE}; border-radius: 16px; background: {CARD}; }}
+.tf-hero::before {{ content: ""; position: absolute; inset: -40%; z-index: -2;
+  background: radial-gradient(40% 35% at 20% 30%, rgba(194, 69, 111, .30), transparent 70%),
+              radial-gradient(35% 30% at 80% 20%, rgba(244, 166, 191, .16), transparent 70%),
+              radial-gradient(45% 40% at 70% 85%, rgba(232, 201, 143, .12), transparent 70%);
+  animation: tf-drift 18s ease-in-out infinite alternate; will-change: transform; }}
+.tf-hero::after {{ content: ""; position: absolute; inset: 0; z-index: -1; opacity: .07; pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }}
+@keyframes tf-drift {{ from {{ transform: translate3d(-4%, -2%, 0) scale(1); }} to {{ transform: translate3d(4%, 3%, 0) scale(1.08); }} }}
+.tf-hero .eyebrow {{ font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: {BLUSH}; margin-bottom: 16px; }}
+.tf-hero .props {{ display: flex; gap: 8px; flex-wrap: wrap; margin-top: 24px; }}
+.tf-hero .props span {{ font-size: 13px; color: {TEXT}; background: rgba(23, 19, 21, .7); border: 1px solid {LINE};
+  border-radius: 999px; padding: 6px 12px; }}
+@property --tf-a {{ syntax: "<integer>"; initial-value: 0; inherits: false; }}
+@property --tf-b {{ syntax: "<integer>"; initial-value: 0; inherits: false; }}
+.tf-count {{ --tf-a: var(--a); --tf-b: var(--b); counter-reset: a var(--tf-a) b var(--tf-b);
+  animation: tf-count 900ms cubic-bezier(.2,.8,.2,1) both; }}
+.tf-count .i::after {{ content: counter(a); }}
+.tf-count .f::after {{ content: counter(b, var(--fs, decimal)); }}
+@keyframes tf-count {{ from {{ --tf-a: 0; --tf-b: 0; }} }}
+.tf-tile {{ animation: tf-rise 400ms cubic-bezier(.2,.8,.2,1) both; animation-delay: var(--d, 0ms); }}
+@keyframes tf-rise {{ from {{ opacity: 0; transform: translateY(6px); }} to {{ opacity: 1; transform: none; }} }}
+.tf-hold .bar {{ grid-column: 2 / -1; height: 4px; background: {RAISED}; border-radius: 4px; overflow: hidden; margin-top: 2px; }}
+.tf-hold .bar span {{ display: block; height: 100%; background: {ROSE}; border-radius: 4px; transform-origin: left;
+  animation: tf-bar 600ms cubic-bezier(.2,.8,.2,1) both; }}
+@keyframes tf-bar {{ from {{ transform: scaleX(0); }} to {{ transform: scaleX(1); }} }}
+.tf-hold .why {{ grid-column: 2 / -1; font-size: 13px; color: {MUTED}; line-height: 1.45; }}
+@media (prefers-reduced-motion: reduce) {{ .tf-hero::before, .tf-count, .tf-tile, .tf-hold .bar span {{ animation: none; }} }}
 .tf-hero h1 {{ font-size: 76px; line-height: 0.95; margin: 0; font-weight: 500 !important; letter-spacing: -0.025em; }}
 .tf-hero p {{ margin: 16px 0 0; color: {MUTED}; font-size: 19px; max-width: 640px; line-height: 1.55; }}
 
@@ -105,13 +134,13 @@ div[data-baseweb="select"] > div, input, textarea {{ background: {RAISED} !impor
   font-variant-numeric: tabular-nums; line-height: 1; }}
 
 .tf-hold {{ display: flex; flex-direction: column; }}
-.tf-hold .row {{ display: grid; grid-template-columns: 76px minmax(0, 1fr) auto 64px; gap: 14px; align-items: center;
-  padding: 12px 4px; border-top: 1px solid {LINE}; }}
+.tf-hold .row {{ display: grid; grid-template-columns: 76px minmax(0, 1fr) auto 64px; column-gap: 16px; row-gap: 6px;
+  align-items: center; padding: 16px 4px; border-top: 1px solid {LINE}; }}
 .tf-hold .row:first-child {{ border-top: 0; }}
 .tf-hold .tk {{ font-family: {SANS}; font-weight: 700; font-size: 16px; letter-spacing: 0.02em; }}
 .tf-hold .nm {{ font-size: 14px; color: {TEXT}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
 .tf-hold .ind {{ font-size: 13px; color: {MUTED}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
-.tf-hold .w {{ text-align: right; font-variant-numeric: tabular-nums; color: {MUTED}; }}
+.tf-hold .w {{ text-align: right; font-variant-numeric: tabular-nums; color: {TEXT}; font-family: {SERIF}; font-size: 18px; }}
 .tf-chips {{ display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }}
 .tf-chip {{ font-size: 12px; font-weight: 600; padding: 4px 9px; border-radius: 999px; white-space: nowrap; }}
 
@@ -173,10 +202,14 @@ def chip(text: str, kind: str) -> str:
 
 
 def hero(active_step: int = 0) -> str:
-    """The page title. active_step is kept for older callers; the step pills are gone."""
-    return ('<div class="tf-hero"><h1>Theme Funds</h1>'
+    """The page title over a slowly drifting rose-and-champagne gradient with fine grain. active_step is kept for
+    older callers; the step pills are gone."""
+    props = "".join(f"<span>{escape(p)}</span>" for p in
+                    ("666 stocks scored on 10 themes", "Rules enforced on Monad", "Race your fund in the League"))
+    return ('<div class="tf-hero"><div class="eyebrow">Built on Monad</div><h1>Theme Funds</h1>'
             '<p>Invest in what you believe in. Tell us the themes you want and the ones to avoid. We pick '
-            'stocks by what they actually move with, not their labels, then lock your rules on Monad.</p></div>')
+            'stocks by what they actually move with, not their labels, then lock your rules on Monad.</p>'
+            f'<div class="props">{props}</div></div>')
 
 
 def step(n: int, title: str, sentence: str) -> str:
@@ -227,21 +260,44 @@ def funnel(steps: list[dict]) -> str:
 
 
 def holdings(rows: list[dict]) -> str:
-    """rows: [{"ticker", "name", "industry", "weight", "chips": [html]}]"""
+    """rows: [{"ticker", "name", "industry", "weight", "chips": [html], "why" (optional one line)}]
+    Each row: ticker, company, theme chips, weight, a weight bar (relative to the largest holding) and why it's in."""
+    top = max([r["weight"] for r in rows] or [1]) or 1
     out = []
-    for r in rows:
+    for i, r in enumerate(rows):
+        why = f'<div class="why">{escape(r["why"])}</div>' if r.get("why") else ""
         out.append(f'<div class="row"><span class="tk">{escape(r["ticker"])}</span>'
                    f'<div style="min-width:0"><div class="nm">{escape(r.get("name") or "")}</div>'
                    f'<div class="ind">{escape(r.get("industry") or "")}</div></div>'
                    f'<div class="tf-chips">{"".join(r.get("chips", []))}</div>'
-                   f'<span class="w">{r["weight"]:.1f}%</span></div>')
+                   f'<span class="w">{r["weight"]:.1f}%</span>'
+                   f'<div class="bar"><span style="width:{100 * r["weight"] / top:.0f}%;animation-delay:{i * 30}ms">'
+                   f'</span></div>{why}</div>')
     return f'<div class="tf-hold">{"".join(out)}</div>'
 
 
+_NUM = re.compile(r"^([−+-]?)(\d+)(?:\.(\d{1,2}))?(%?)$")
+
+
+def count_up(value: str) -> str:
+    """A number that counts up from 0 when it first appears (CSS only; st.html runs no scripts). Text that
+    isn't a plain number (e.g. "no loss") is shown as is."""
+    m = _NUM.match(value)
+    if not m:
+        return escape(value)
+    sign, whole, frac, pct = m.groups()
+    if frac is None:
+        return f'<span class="tf-count" style="--a:{int(whole)};--b:0">{sign}<span class="i"></span>{pct}</span>'
+    style = "--fs:decimal-leading-zero" if len(frac) == 2 else ""
+    return (f'<span class="tf-count" style="--a:{int(whole)};--b:{int(frac)};{style}">{sign}<span class="i"></span>.'
+            f'<span class="f"></span>{pct}</span>')
+
+
 def tiles(items: list[tuple[str, str, str]]) -> str:
-    """items: [(label, value, comparison line)]"""
-    cells = "".join(f'<div class="tf-tile"><div class="k">{escape(k)}</div><div class="v">{escape(v)}</div>'
-                    f'<div class="b">{escape(b)}</div></div>' for k, v, b in items)
+    """items: [(label, value, comparison line)]. Values count up on first render; tiles rise in one by one."""
+    cells = "".join(f'<div class="tf-tile" style="--d:{i * 60}ms"><div class="k">{escape(k)}</div>'
+                    f'<div class="v" aria-label="{escape(v)}">{count_up(v)}</div>'
+                    f'<div class="b">{escape(b)}</div></div>' for i, (k, v, b) in enumerate(items))
     return f'<div class="tf-tiles">{cells}</div>'
 
 
@@ -293,16 +349,23 @@ def recolor_heatmap(fig, tier_order: list[str]):
     return plotly_dark(fig, height=fig.layout.height)
 
 
+COLORWAY = [BLUSH, CHAMPAGNE, ROSE, GAIN, MUTED, "#E07A9B", "#D9B37A", LOSS]
+
+
 def plotly_dark(fig, height: int | None = None):
-    """Restyle any Plotly figure to match the page."""
+    """Restyle any Plotly figure to match the page: palette colors, no gridline clutter, short eased transitions,
+    clean hover labels."""
     fig.update_layout(
         template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
-        font={"family": SANS, "color": TEXT, "size": 14},
-        margin={"t": 30, "l": 10, "r": 10, "b": 10}, hoverlabel={"bgcolor": CARD, "bordercolor": LINE},
-        legend={"bgcolor": "rgba(0,0,0,0)"},
+        font={"family": SANS, "color": TEXT, "size": 14}, colorway=COLORWAY,
+        margin={"t": 30, "l": 10, "r": 10, "b": 10},
+        hoverlabel={"bgcolor": CARD, "bordercolor": LINE, "font": {"family": SANS, "color": TEXT, "size": 13}},
+        legend={"bgcolor": "rgba(0,0,0,0)", "font": {"color": MUTED}},
+        transition={"duration": 300, "easing": "cubic-in-out"},
     )
-    fig.update_xaxes(gridcolor=LINE, zerolinecolor=LINE, linecolor=LINE)
-    fig.update_yaxes(gridcolor=LINE, zerolinecolor=LINE, linecolor=LINE)
+    fig.update_xaxes(showgrid=False, zeroline=False, linecolor=LINE, tickfont={"color": MUTED})
+    fig.update_yaxes(showgrid=True, gridcolor="rgba(46, 37, 41, .5)", zeroline=False, linecolor=LINE,
+                     tickfont={"color": MUTED})
     if height:
         fig.update_layout(height=height)
     return fig
