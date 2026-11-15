@@ -1,0 +1,28 @@
+name: Healthcare live
+enabled: false   # automatic FMP version (later step); hand-built baseline is healthcare.yaml
+plain_name: the healthcare sector
+description: How much a holding behaves like healthcare companies.
+baseline_source: fmp_rules        # rebuild: python build_baseline.py healthcare
+ground_truth: {ticker: XLV, sign: 1, plain: "healthcare stocks"}
+max_per_tier: 4
+min_market_cap: 20.0e+9
+
+tiers:
+  High:
+    direction: positive
+    plain: "Behaves like a core healthcare company (drug makers, health insurers)"
+    candidates:
+      screen: {sector: Healthcare}
+      tickers: [LLY, JNJ, MRK, ABBV, PFE, UNH, ELV]
+    industry_contains: ["drug manufacturers", "healthcare plans"]
+  Moderate:
+    direction: positive
+    plain: "Partly behaves like healthcare (medical devices, biotech, lab tools)"
+    candidates:
+      screen: {sector: Healthcare}
+      tickers: [ABT, TMO, MDT, ISRG, AMGN, DHR]
+    industry_contains: ["medical", "biotechnology", "diagnostics"]
+  Control:
+    plain: "Reference company with no healthcare link"
+    candidates:
+      tickers: [ADBE, INTU, CAT, DE]

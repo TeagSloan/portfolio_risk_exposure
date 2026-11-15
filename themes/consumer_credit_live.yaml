@@ -1,0 +1,33 @@
+name: Consumer credit live
+enabled: false   # automatic FMP version (later step); hand-built baseline is consumer_credit.yaml
+plain_name: consumer borrowing and credit conditions
+description: (Experimental) How much a holding moves with consumer lenders and the credit cycle.
+baseline_source: fmp_rules        # rebuild: python build_baseline.py consumer_credit
+# No clean observable price for consumer credit, so references are checked for group consistency.
+max_per_tier: 4
+min_market_cap: 3.0e+9
+
+tiers:
+  High:
+    direction: positive
+    plain: "Strongly tied to consumer borrowing (credit card and consumer lenders)"
+    candidates:
+      screen: {sector: Financial Services}
+      tickers: [COF, SYF, AXP, ALLY, BFH, OMF]
+    industry_contains: ["credit services"]
+    exclude: [PRAA, ECPG, V, MA, PYPL]    # debt collectors are Inverse; payment networks don't lend
+  Moderate:
+    direction: positive
+    plain: "Partly tied to consumer borrowing (sales depend on car loans)"
+    candidates:
+      tickers: [KMX, CVNA, AN, LAD]
+    industry_contains: ["auto & truck dealerships", "dealerships"]
+  Inverse:
+    direction: inverse
+    plain: "Tends to do better when consumer credit gets worse (debt collectors)"
+    candidates:
+      tickers: [PRAA, ECPG]
+  Control:
+    plain: "Reference company with no consumer-credit link"
+    candidates:
+      tickers: [ADBE, INTU, XOM]

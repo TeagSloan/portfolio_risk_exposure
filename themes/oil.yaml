@@ -1,0 +1,36 @@
+# Oil theme: hand-validated baseline (same method as the AI Exposure Screen).
+# Tier 1 = disclosed number from filings/earnings -> used as a regression reference.
+# Tier 2 = qualitative / not disclosed -> classified directly, NOT used as a reference.
+# Approved by Shannon 2026-11-12.
+
+name: Oil
+plain_name: oil prices
+description: How much a holding moves with companies whose filings disclose oil revenue or oil-driven costs.
+baseline_source: manual
+ground_truth: {ticker: USO, sign: 1, plain: "oil prices"}
+
+categories:
+  - name: High
+    direction: positive
+    plain: "Tends to rise and fall with oil prices"
+    members:
+      - {ticker: OXY,  evidence_pct: 89, evidence_type: "oil & gas segment revenue / total revenue (Q4 2025)", note: "OxyChem sold Jan 2026, so now almost pure oil & gas"}
+      - {ticker: FANG, evidence_pct: 90, evidence_type: "oil, gas & NGL sales / total revenue (Q4 2025)", note: "Permian pure-play producer"}
+      - {ticker: DVN,  evidence_pct: 65, evidence_type: "oil, gas & NGL sales / total revenue (FY2025)", note: "remainder mostly marketing & midstream"}
+      - {ticker: EOG,  evidence_pct: 56, evidence_type: "crude oil & condensate revenue / total operating revenue (FY2025)", note: "10-K: operations are all crude oil and natural gas E&P"}
+  - name: Inverse
+    direction: inverse
+    plain: "Tends to do worse when oil prices rise (fuel is a big cost)"
+    members:
+      - {ticker: UAL, evidence_pct: -21, evidence_type: "aircraft fuel / total operating expense (FY2025)", note: "fuel cost $11.4B of $54.4B"}
+      - {ticker: DAL, evidence_pct: -17, evidence_type: "adjusted fuel expense / operating revenue (FY2025)", note: "fuel $9.8B vs revenue $58.3B"}
+
+control:
+  - {ticker: ADBE, note: "Zero-exposure control: software, no oil revenue or fuel-heavy costs (ADM rejected: ethanol/biofuels link)"}
+
+# Tier 2: flagged directly when held, not used as regression references.
+direct_classification:
+  - {ticker: COP, tier: High,     evidence_type: "pure-play E&P (business description)", note: "oil revenue % not found yet"}
+  - {ticker: XOM, tier: Moderate, evidence_type: "integrated: production + refining + chemicals", note: "not disclosed as %"}
+  - {ticker: SLB, tier: Moderate, evidence_type: "oilfield services: revenue tied to drilling spend", note: "not disclosed"}
+  - {ticker: HAL, tier: Moderate, evidence_type: "oilfield services: revenue tied to drilling spend", note: "not disclosed"}

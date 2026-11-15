@@ -1,0 +1,20 @@
+# Oil theme: LIVE baseline. build_baseline.py rebuilds the categories below from SEC EDGAR
+# (SIC industry code + XBRL fuel-cost data) and writes data/baselines/oil.json with an audit trail.
+# This file only lists CANDIDATES and the tier RULES. Nobody hand-assigns tiers.
+
+name: Oil SEC
+enabled: false   # alternative builder using SEC EDGAR directly; oil.yaml (FMP) is the default
+description: Price co-movement with companies whose filings disclose oil revenue or oil-driven costs.
+baseline_source: sec_live
+
+# Validation: oil has an observable price, so each holding's direct beta on crude
+# is compared with the reference-company result (ground-truth check of the method).
+ground_truth_ticker: USO
+
+candidates: [EOG, OXY, DVN, COP, FANG, APA, SLB, HAL, BKR, DAL, UAL, AAL, LUV, ADBE, ORCL]
+
+rules:
+  High:      {sic: [1311]}                                  # Crude petroleum & natural gas producers
+  Moderate:  {sic: [1381, 1382, 1389, 3533]}                # Drilling, oilfield services & equipment
+  Inverse:   {sic: [4512], min_fuel_cost_share: 0.15}       # Airlines where fuel >= 15% of revenue
+  Control:   {sic: [7372]}                                  # Prepackaged software: no commodity link

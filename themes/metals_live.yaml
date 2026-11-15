@@ -1,0 +1,38 @@
+name: Industrial metals live
+enabled: false   # automatic FMP version (later step); hand-built baseline is metals.yaml
+plain_name: industrial metal prices (copper, aluminum, steel)
+description: How much a holding moves with industrial metal prices.
+baseline_source: fmp_rules        # rebuild: python build_baseline.py metals
+ground_truth: {ticker: DBB, sign: 1, plain: "base metal prices"}   # Invesco DB Base Metals fund
+max_per_tier: 4
+min_market_cap: 3.0e+9
+
+tiers:
+  High:
+    direction: positive
+    plain: "Tends to rise and fall with metal prices (miners and producers)"
+    candidates:
+      screen: {sector: Basic Materials}
+      tickers: [FCX, SCCO, AA, TECK, CENX]
+    industry_contains: ["copper", "aluminum", "industrial metals"]
+  Moderate:
+    direction: positive
+    plain: "Partly tied to metal prices (steel makers)"
+    candidates:
+      screen: {sector: Basic Materials}
+      tickers: [NUE, STLD, CLF, RS, CMC]
+    industry_contains: ["steel"]
+  Inverse:
+    direction: inverse
+    plain: "Tends to do worse when metal prices rise (metal is a big cost)"
+    candidates:
+      screen: {sector: Consumer Cyclical}
+      tickers: [BALL, CCK, AMCR]
+    industry_contains: ["packaging"]
+    require:
+      - {metric: ratio, numerator: costOfRevenue, denominator: revenue, min: 0.75}
+  Control:
+    plain: "Reference company with no metals link"
+    candidates:
+      tickers: [ADBE, INTU, CRM, NOW]
+    industry_contains: ["software"]

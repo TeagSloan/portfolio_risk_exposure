@@ -1,0 +1,39 @@
+name: Interest rates live
+enabled: false   # automatic FMP version (later step); hand-built baseline is rates.yaml
+plain_name: rising interest rates
+description: How a holding tends to react when interest rates go up.
+baseline_source: fmp_rules        # rebuild: python build_baseline.py rates
+# TLT (long-term Treasury bonds) FALLS when rates rise, so "rising rates" = -TLT.
+ground_truth: {ticker: TLT, sign: -1, plain: "rising interest rates"}
+drop_controls: [TLT]              # TLT is what this theme measures, so it can't also be a control
+max_per_tier: 4
+min_market_cap: 20.0e+9
+
+tiers:
+  High:
+    direction: positive
+    plain: "Tends to benefit when interest rates rise (banks earning more on loans)"
+    candidates:
+      screen: {sector: Financial Services}
+      tickers: [JPM, BAC, WFC, USB, PNC, TFC]
+    industry_contains: ["banks"]
+    require:
+      # Net interest income is most of a lending bank's revenue
+      - {metric: ratio, numerator: netInterestIncome, denominator: revenue, min: 0.40}
+  Moderate:
+    direction: positive
+    plain: "Partly benefits when rates rise (insurers investing premiums in bonds)"
+    candidates:
+      screen: {sector: Financial Services}
+      tickers: [MET, PRU, AFL]
+    industry_contains: ["insurance - life", "life insurance"]
+  Inverse:
+    direction: inverse
+    plain: "Tends to be hurt when interest rates rise (borrow heavily or sell to borrowers)"
+    candidates:
+      tickers: [O, PLD, AMT, DUK, SO, NEE, DHI, LEN]
+    industry_contains: ["reit", "utilities", "regulated electric", "residential construction"]
+  Control:
+    plain: "Reference company with no clear rate link"
+    candidates:
+      tickers: [ADM, XOM, CAT, DE, COST]

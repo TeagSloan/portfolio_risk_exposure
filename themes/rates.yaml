@@ -1,0 +1,34 @@
+# Interest rates theme: hand-validated baseline (same method as the AI Exposure Screen).
+# Directional: High = tends to BENEFIT when rates rise; Inverse = tends to be HURT.
+# Approved by Shannon 2026-11-12.
+
+name: Interest rates
+plain_name: rising interest rates
+description: How a holding tends to react when interest rates go up.
+baseline_source: manual
+# TLT (long Treasury bonds) FALLS when rates rise, so "rising rates" = -TLT.
+ground_truth: {ticker: TLT, sign: -1, plain: "rising interest rates"}
+drop_controls: [TLT]   # TLT is what this theme measures, so it can't also be a control
+
+categories:
+  - name: High
+    direction: positive
+    plain: "Tends to benefit when interest rates rise (banks earning more on loans)"
+    members:
+      - {ticker: USB, evidence_pct: 58, evidence_type: "net interest income / total net revenue (FY2025)", note: "$16.6B of $28.7B"}
+      - {ticker: WFC, evidence_pct: 57, evidence_type: "net interest income / total revenue (FY2025)", note: "$47.5B of $83.7B"}
+      - {ticker: JPM, evidence_pct: 52, evidence_type: "net interest income / revenue before loan losses (FY2025)", note: "$95.4B of $182.4B"}
+  - name: Inverse
+    direction: inverse
+    plain: "Tends to be hurt when interest rates rise (borrows heavily or sells to borrowers)"
+    members:
+      - {ticker: DHI, evidence_pct: -73, evidence_type: "share of buyers needing a mortgage-rate buydown (fiscal Q4 2025)", note: "demand depends on mortgage rates"}
+      - {ticker: O,   evidence_pct: -20, evidence_type: "interest expense / revenue (2025, computed)", note: "Q4 interest $288M annualized vs $5.75B revenue; stock trades on rate expectations"}
+
+control:
+  - {ticker: XOM, note: "Weak control: little direct rate sensitivity (no clean rate-neutral stock exists)"}
+
+direct_classification:
+  - {ticker: DUK, tier: Inverse,  evidence_type: "utility: heavy borrower, bond-like dividend stock", note: "not disclosed as %"}
+  - {ticker: MET, tier: Moderate, evidence_type: "insurer investing premiums in bonds", note: "not disclosed as %"}
+  - {ticker: PRU, tier: Moderate, evidence_type: "insurer investing premiums in bonds", note: "not disclosed as %"}

@@ -1,0 +1,30 @@
+# Industrial metals theme: hand-validated baseline (same method as the AI Exposure Screen).
+# Tier 1 = disclosed number -> regression reference. Tier 2 -> classified directly.
+# Approved by Shannon 2026-11-12. No Inverse group: can makers pass metal costs through to customers.
+
+name: Industrial metals
+plain_name: industrial metal prices (copper, aluminum, steel)
+description: How much a holding moves with companies whose revenue comes from producing industrial metals.
+baseline_source: manual
+ground_truth: {ticker: DBB, sign: 1, plain: "base metal prices"}
+
+categories:
+  - name: High
+    direction: positive
+    plain: "Tends to rise and fall with metal prices (miners and producers)"
+    members:
+      - {ticker: SCCO, evidence_pct: 74.8, evidence_type: "copper share of sales (FY2025)", note: "company-stated"}
+      - {ticker: FCX,  evidence_pct: 66,   evidence_type: "copper volume x realized price / revenue (FY2025, computed)", note: "3.6B lb at $4.75/lb vs $25.9B revenue"}
+      - {ticker: AA,   evidence_pct: 100,  evidence_type: "pure-play aluminum chain (bauxite, alumina, aluminum)", note: "FY2025 revenue $12.8B"}
+  - name: Moderate
+    direction: positive
+    plain: "Partly tied to metal prices (steel, where tariffs and US demand also matter)"
+    members:
+      - {ticker: NUE, evidence_pct: 100, evidence_type: "pure-play steel maker", note: "Moderate because US steel prices are tariff/domestic-driven"}
+
+control:
+  - {ticker: ADBE, note: "Zero-exposure control: software, no metal revenue or metal-heavy costs"}
+
+direct_classification:
+  - {ticker: CCK,  tier: Limited, evidence_type: "aluminum + steel = 55% of cost of products sold (FY2025)", note: "costs passed through to customers"}
+  - {ticker: BALL, tier: Limited, evidence_type: "aluminum is largest input", note: "aluminum-based pricing passed through to customers"}

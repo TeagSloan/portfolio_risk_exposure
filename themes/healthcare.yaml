@@ -1,0 +1,26 @@
+# Healthcare theme: hand-validated baseline (same method as the AI Exposure Screen).
+# Exposure = how much of the business IS healthcare (no healthcare "price", so no Inverse group).
+# Approved by Shannon 2026-11-12. UNH swapped for ELV (UNH's 2025 moves were company-specific).
+
+name: Healthcare
+plain_name: the healthcare sector
+description: How much a holding behaves like companies whose revenue is healthcare.
+baseline_source: manual
+ground_truth: {ticker: XLV, sign: 1, plain: "healthcare stocks"}
+
+categories:
+  - name: High
+    direction: positive
+    plain: "Behaves like a core healthcare company (drug makers, health insurers)"
+    members:
+      - {ticker: JNJ, evidence_pct: 100, evidence_type: "Innovative Medicine + MedTech = all sales (FY2025)", note: "$60.4B + $33.8B = $94.2B"}
+      - {ticker: MRK, evidence_pct: 88,  evidence_type: "pharmaceutical segment / total sales (FY2025)", note: "$57.5B of $65.0B; rest mostly Animal Health"}
+      - {ticker: LLY, evidence_pct: 100, evidence_type: "all pharmaceutical revenue (FY2025)", note: "over half from GLP-1s (Mounjaro, Zepbound): watch for obesity-drug-specific moves"}
+      - {ticker: ELV, evidence_pct: 100, evidence_type: "health benefits + Carelon health services (FY2025)", note: "operating revenue $197.6B"}
+
+control:
+  - {ticker: ADBE, note: "Zero-exposure control: software, no healthcare revenue"}
+
+direct_classification:
+  - {ticker: TMO, tier: Moderate, evidence_type: "customers span pharma/biotech, academic, industrial, diagnostics", note: "healthcare share not disclosed"}
+  - {ticker: UNH, tier: High,     evidence_type: "100% health insurance + services (FY2025)", note: "kept out of the regression: 2025 stock moves were company-specific"}

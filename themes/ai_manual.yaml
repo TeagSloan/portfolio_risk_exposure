@@ -1,0 +1,31 @@
+# AI theme: hand-validated baseline (carried over from an earlier AI exposure screen).
+# Every reference company must earn its place through DISCLOSED exposure.
+# evidence_pct = disclosed AI share of revenue where the filing gives one.
+# Leave evidence_pct blank (null) rather than guessing; the dashboard flags it "needs source".
+
+name: AI manual
+enabled: false   # superseded by ai.yaml (built from FMP); kept as the hand-validated reference
+description: Price co-movement with companies whose filings disclose AI exposure.
+baseline_source: manual            # manual = hand-validated; sec_live = built by build_baseline.py
+
+categories:
+  - name: High
+    direction: positive
+    members:
+      - {ticker: NVDA, evidence_pct: 90, evidence_type: revenue, note: "Data center / AI accelerator revenue"}
+      - {ticker: AVGO, evidence_pct: 49, evidence_type: revenue, note: "AI semiconductor revenue"}
+      - {ticker: MU,   evidence_pct: null, evidence_type: revenue, note: "HBM / AI memory - add disclosed %"}
+      - {ticker: VRT,  evidence_pct: null, evidence_type: revenue, note: "Data center power & cooling - add disclosed %"}
+  - name: Moderate
+    direction: positive
+    members:
+      - {ticker: TSM,  evidence_pct: 18, evidence_type: revenue, note: "AI accelerator foundry revenue"}
+      - {ticker: MSFT, evidence_pct: 11, evidence_type: revenue, note: "Disclosed AI revenue run-rate"}
+      - {ticker: VST,  evidence_pct: null, evidence_type: operational, note: "Data center power contracts - add disclosed detail"}
+  - name: Inverse
+    direction: inverse
+    members:
+      - {ticker: CHGG, evidence_pct: -66, evidence_type: revenue, note: "Revenue decline attributed to generative AI substitution"}
+
+control:
+  - {ticker: ADM, note: "Zero-exposure control: no disclosed AI revenue or investment"}

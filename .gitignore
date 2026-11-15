@@ -1,0 +1,18 @@
+# Secrets: never commit
+.env
+
+# Foundry build output and deploy logs
+contracts/out/
+contracts/cache/
+contracts/broadcast/
+
+# Cached market data
+data/cache/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# macOS
+.DS_Store
