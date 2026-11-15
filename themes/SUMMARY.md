@@ -10,7 +10,7 @@ Measure: AI share of revenue
 | High | VRT | Vertiv Holdings Co | 50% | From capstone research, most recent filings at the time | Power and cooling for AI data centers. |
 | High | AVGO | Broadcom Inc. | 49% | From capstone research, most recent filings at the time | Custom AI chips and AI networking. |
 | Moderate | TSM | Taiwan Semiconductor Manufactu | 18% | From capstone research, most recent filings at the time | Manufactures most AI accelerators, but also phones, PCs, autos. |
-| Moderate | MSFT | Microsoft Corporation | 11.2% | From capstone research, most recent filings at the time | AI services inside Azure; most revenue is other software and cloud. |
+| Moderate | MSFT | Microsoft Corporation | 11.2% | From capstone research, most recent filings at the time | AI services inside Azure; most revenue is other software and cloud. **Note:** Fails the group-consistency price check (doesn't move with TSM/VST beyond the market). Expected: TSM, MSFT and VST are different businesses. Kept by decision. |
 | Moderate | VST | Vistra Corp. | 8.6% | From capstone research, most recent filings at the time | Power producer selling electricity to AI data centers. |
 | Control | ADM | Archer-Daniels-Midland Company | 0% | From capstone research, most recent filings at the time | Agricultural processor with no AI revenue. |
 | Tier 2 → High | CRWV | CoreWeave, Inc. Class A Common | 100% | - | AI cloud provider: renting GPUs is the whole business. |
@@ -30,13 +30,14 @@ Measure: Crude-oil share of revenue (CVX: upstream oil & gas production share)
 | High | EOG | EOG Resources, Inc. | 61.6% | 2025 | Large low-cost US producer; most revenue is oil and condensate. |
 | Moderate | CVX | Chevron Corporation | 29.0% | 2025 | Integrated major: production is ~30% of segment revenue; refining offsets part of oil moves. |
 | Moderate | SHEL | Shell plc | 13.4% | 2025 | Integrated major: crude sales are a minority; most revenue is refined products and gas. |
-| Control | INTU | Intuit Inc. | 0% | - | Tax and accounting software; no oil-related segment or fuel-cost dependence. |
+| Control | ADBE | Adobe Inc. | 0% | - | Design and document software; no oil-related segment or fuel-cost dependence. |
 | Tier 2 → High | OXY | Occidental Petroleum Corporati | n/a | - | 94% of revenue is its Oil and Gas segment, but FMP doesn't split oil from gas. |
 | Tier 2 → Moderate | SLB | Slb N.V. | n/a | - | Oilfield services: revenue depends on drilling budgets; no disclosed oil-price share. |
 | Tier 2 → Moderate | HAL | Halliburton Company | n/a | - | Oilfield services: revenue depends on drilling budgets; no disclosed oil-price share. |
 
-### Interest rates  (ground truth: TLT, sign flipped; controls: SPY)
-Measure: Net interest income as a share of revenue
+### Bank lending / net interest income  (ground truth: none; controls: SPY)
+Measure: Net interest income as a share of revenue  
+Note: Validated by group consistency only (like AI). TLT was dropped as ground truth: over this window banks did not move opposite to long-term bonds beyond the market.
 
 | Group | Ticker | Company | Evidence | FY | Reason |
 |---|---|---|---|---|---|
@@ -77,7 +78,7 @@ Measure: Defense / government segment share of revenue
 | Moderate | RTX | RTX Corporation | 30.8% | 2025 | Raytheon defense unit; Pratt and Collins are mostly commercial aviation. |
 | Moderate | BA | The Boeing Company | 30.4% | 2025 | Defense unit; most revenue is commercial airplanes. |
 | Moderate | GE | GE Aerospace | 23.0% | 2025 | Military engines; most revenue is commercial engines. |
-| Control | CL | Colgate-Palmolive Company | 0% | - | Toothpaste and pet food; no defense revenue. |
+| Control | INTU | Intuit Inc. | 0% | - | Tax and accounting software; no defense or government-contract revenue. |
 
 ### Healthcare  (ground truth: XLV; controls: SPY, TLT)
 Measure: Healthcare share of revenue  
@@ -90,7 +91,7 @@ Note: Exception (approved): only 1 Moderate reference. Kept only companies with 
 | High | LLY | Eli Lilly and Company | 100.0% | 2025 | Drugmaker; all revenue is medicines. |
 | High | GEHC | GE HealthCare Technologies Inc | 100.0% | 2025 | Medical imaging and diagnostics; all segments are healthcare. |
 | Moderate | KR | The Kroger Co. | 32.8% | 2025 | Grocer whose pharmacy (prescriptions) is a third of revenue. |
-| Control | VMC | Vulcan Materials Company | 0% | - | Crushed stone and asphalt; no healthcare revenue. |
+| Control | CRM | Salesforce, Inc. | 0% | - | Business software (Salesforce); no healthcare segment. |
 | Tier 2 → High | UNH | UnitedHealth Group Incorporate | n/a | - | Health insurer; FMP segments are revenue types (premiums, services), not a health share. |
 
 ### Industrial / EV metals (copper + lithium)  (ground truth: COPX; controls: SPY, TLT)
@@ -137,7 +138,7 @@ Measure: Discretionary-spending share of revenue
 | Moderate | COST | Costco Wholesale Corporation | 25.5% | 2026 | Warehouse club; non-food goods are about a quarter, the rest is groceries. |
 | Moderate | DIS | The Walt Disney Company | 32.4% | 2025 | Media company; parks, resorts and merchandise are about a third, the rest is TV and streaming. |
 | Moderate | DG | Dollar General Corporation | 18.0% | 2025 | Discount store; seasonal, home and apparel goods are a fifth, the rest is consumables. |
-| Control | DUK | Duke Energy Corporation | 0% | - | Regulated electric utility; demand doesn't depend on discretionary spending. |
+| Control | ADM | Archer-Daniels-Midland Company | 0% | - | Crop processing and food ingredients; no discretionary-spending revenue. |
 | Tier 2 → High | MCD | McDonald's Corporation | n/a | - | Restaurants; FMP segments are geographic, not by spending type. |
 | Tier 2 → Moderate | AMZN | Amazon.com, Inc. | n/a | - | Online retail is large, but FMP doesn't split discretionary from essentials. |
 

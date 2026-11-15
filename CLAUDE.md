@@ -23,11 +23,13 @@ Built at Monad Blitz Oregon (Nov 15, 2026). The methodology comes from my prior 
 - A theme is a YAML file in themes/: High and Moderate reference groups (ticker, evidence %, what it measures, fiscal year, source), one zero-exposure control, a direct_classification list (Tier 2), and an optional ground_truth ticker used ONLY for validation (never as a reference).
 - Tier 1 = disclosed number → regression reference. Tier 2 = exposed but no disclosed number → classified directly, never a regression reference.
 - Picking references (approved): High = theme is >= 40% of revenue, Moderate = 5-40%. AI uses my capstone numbers as given. Approved exceptions: Healthcare and Cybersecurity have 1 Moderate reference each.
+- Price check (engine/price_check.py): each reference must move with its own group beyond SPY (and with the ground truth if the theme has one); the control must NOT. Controls were picked to pass this check. Known, accepted fails: MSFT (AI Moderate; TSM/MSFT/VST are different businesses) and NEE/BWXT (clean energy Moderate; both pass against ICLN).
+- Bank lending / net interest income (formerly "Interest rates"): no ground truth. TLT was dropped because banks didn't move opposite to long bonds beyond the market in this window; validated by group consistency only, like AI.
 - Evidence comes from FMP data only (segment revenue share, income-statement ratios, industry). No SEC filings. Never estimated. No disclosed number → Tier 2.
 - Data: ~2 years of daily dividend-adjusted closes from FMP (fallback yfinance), cached. Simple daily returns, inner-join dates, no forward fill.
-- For each holding and theme, OLS (statsmodels): r_holding = a + b*SPY + b*TLT + sum of b_j * r_reference_j + error. (Interest-rates theme drops TLT from its controls.)
+- For each holding and theme, OLS (statsmodels): r_holding = a + b*SPY + b*TLT + sum of b_j * r_reference_j + b_c * r_control + error. The theme's zero-exposure control company is a regressor but never belongs to a High/Moderate group (if the holding is the control itself, it's left off the right-hand side). (Bank lending theme drops TLT from its controls.)
 - For each group: sum the betas, SE from the full covariance matrix, one-sided test of sum > 0.
-- A group is eligible if sum > 0.05 AND one-sided p < 0.05 / (number of reference names). The largest eligible sum wins.
+- A group is eligible if sum > 0.05 AND one-sided p < 0.05 / (number of reference names), counting ALL High and Moderate references in the theme plus the control company (e.g. AI: 7 references + 1 control → 0.05/8). The largest eligible sum wins.
 - Limited: nothing eligible AND every group's sum + 1.645*SE < 0.05. Plain text: "doesn't rise with this theme."
 - Limited (lower confidence): otherwise, if all group sums < 0.05.
 - Otherwise Not determined: "the data can't tell", which is NOT the same as zero.
@@ -41,7 +43,7 @@ Work in phases. STOP at each checkpoint so I can check before continuing. Commit
 
 0. Setup: folders, venv, .gitignore, .env.example, README, this file.
 1. FMP client: engine/fmp.py (stable API, key from .env, every response cached in data/cache/fmp/). Test the endpoints on NVDA and XOM. → Checkpoint 1
-2. Themes: AI (my reference set exactly), then Oil, then the others (time-boxed to 30 minutes). → Checkpoint 2: one summary table per theme
+2. Themes: AI (my reference set exactly), then Oil, then the others (Bank lending, Gold, Defense, Healthcare, Copper+lithium, Clean energy, Consumer discretionary, Cybersecurity) (time-boxed to 30 minutes). → Checkpoint 2: one summary table per theme
 3. Price data + regression: engine/data.py get_returns(), engine/regression.py, tests on simulated then real data, price check per theme. → Checkpoint 3
 4. Portfolio screen: engine/screen.py run_screen(holdings, themes) → JSON; CLI `python -m engine.screen NVDA:30 XOM:20 CASH:50`. → Checkpoint 4
 

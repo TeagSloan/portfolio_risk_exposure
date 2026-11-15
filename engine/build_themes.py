@@ -47,7 +47,9 @@ AI = {
         ],
         "Moderate": [
             ("TSM", 18, "Manufactures most AI accelerators, but also phones, PCs, autos."),
-            ("MSFT", 11.2, "AI services inside Azure; most revenue is other software and cloud."),
+            ("MSFT", 11.2, "AI services inside Azure; most revenue is other software and cloud.",
+             ("Fails the group-consistency price check (doesn't move with TSM/VST beyond the market). Expected: "
+             "TSM, MSFT and VST are different businesses. Kept by decision.")),
             ("VST", 8.6, "Power producer selling electricity to AI data centers."),
         ],
     },
@@ -68,7 +70,7 @@ AI = {
 # ---------------------------------------------------------------------------------------------
 THEMES = [
     {
-        "key": "oil", "name": "Oil", "ground_truth": "USO",
+        "key": "oil", "plain": "oil producers", "name": "Oil", "ground_truth": "USO",
         "measures": "Crude-oil share of revenue (CVX: upstream oil & gas production share)",
         "High": [
             ("PR", ["Crude Oil"], "Permian pure-play producer; almost all revenue is crude sales."),
@@ -80,7 +82,7 @@ THEMES = [
             ("CVX", ["Upstream"], "Integrated major: production is ~30% of segment revenue; refining offsets part of oil moves."),
             ("SHEL", ["Crude oil"], "Integrated major: crude sales are a minority; most revenue is refined products and gas."),
         ],
-        "control": ("INTU", "Tax and accounting software; no oil-related segment or fuel-cost dependence."),
+        "control": ("ADBE", "Design and document software; no oil-related segment or fuel-cost dependence."),
         "direct": [
             ("OXY", "High", "94% of revenue is its Oil and Gas segment, but FMP doesn't split oil from gas."),
             ("SLB", "Moderate", "Oilfield services: revenue depends on drilling budgets; no disclosed oil-price share."),
@@ -88,8 +90,10 @@ THEMES = [
         ],
     },
     {
-        "key": "rates", "name": "Interest rates", "ground_truth": "TLT", "ground_truth_sign": -1,
-        "controls": ["SPY"],  # TLT is the theme itself here, so it's dropped from the controls
+        "key": "bank_lending", "name": "Bank lending / net interest income", "ground_truth": None,
+        "plain": "banks that earn mostly from lending",
+        "notes": "Validated by group consistency only (like AI). TLT was dropped as ground truth: over this window banks did not move opposite to long-term bonds beyond the market.",
+        "controls": ["SPY"],  # TLT stays out of the controls, as in the original interest-rates design
         "measures": "Net interest income as a share of revenue",
         "High": [
             ("MTB", ("ratio", "netInterestIncome"), "Regional bank; most revenue is lending spread, which widens as rates rise."),
@@ -106,7 +110,7 @@ THEMES = [
         "direct": [],
     },
     {
-        "key": "gold", "name": "Gold & precious metals", "ground_truth": "GLD",
+        "key": "gold", "plain": "gold and silver miners", "name": "Gold & precious metals", "ground_truth": "GLD",
         "measures": "Gold and silver share of revenue",
         "High": [
             ("SSRM", ["Gold", "Silver"], "Gold and silver miner; nearly all revenue is precious metals."),
@@ -126,7 +130,7 @@ THEMES = [
         ],
     },
     {
-        "key": "defense", "name": "Defense & aerospace", "ground_truth": "ITA",
+        "key": "defense", "plain": "defense contractors", "name": "Defense & aerospace", "ground_truth": "ITA",
         "measures": "Defense / government segment share of revenue",
         "High": [
             ("LMT", ALL, "Largest defense contractor; all four segments serve defense customers."),
@@ -139,11 +143,11 @@ THEMES = [
             ("BA", ["Defense, Space & Security"], "Defense unit; most revenue is commercial airplanes."),
             ("GE", ["Defense & Propulsion Technologies"], "Military engines; most revenue is commercial engines."),
         ],
-        "control": ("CL", "Toothpaste and pet food; no defense revenue."),
+        "control": ("INTU", "Tax and accounting software; no defense or government-contract revenue."),
         "direct": [],
     },
     {
-        "key": "healthcare", "name": "Healthcare", "ground_truth": "XLV",
+        "key": "healthcare", "plain": "healthcare companies", "name": "Healthcare", "ground_truth": "XLV",
         "measures": "Healthcare share of revenue",
         "notes": "Exception (approved): only 1 Moderate reference. Kept only companies with a real partial "
                  "healthcare business; PG and WM were dropped because they don't trade like healthcare.",
@@ -159,13 +163,13 @@ THEMES = [
             # with no healthcare share disclosed), PG and WM (don't trade like healthcare).
             ("KR", ["Pharmacy"], "Grocer whose pharmacy (prescriptions) is a third of revenue."),
         ],
-        "control": ("VMC", "Crushed stone and asphalt; no healthcare revenue."),
+        "control": ("CRM", "Business software (Salesforce); no healthcare segment."),
         "direct": [
             ("UNH", "High", "Health insurer; FMP segments are revenue types (premiums, services), not a health share."),
         ],
     },
     {
-        "key": "metals", "name": "Industrial / EV metals (copper + lithium)", "ground_truth": "COPX",
+        "key": "metals", "plain": "copper and lithium producers", "name": "Industrial / EV metals (copper + lithium)", "ground_truth": "COPX",
         "measures": "Copper and lithium share of revenue",
         "High": [
             ("SCCO", ["Copper"], "Copper miner; three-quarters of revenue is copper."),
@@ -187,7 +191,7 @@ THEMES = [
         ],
     },
     {
-        "key": "clean_energy", "name": "Clean energy & uranium", "ground_truth": "ICLN",
+        "key": "clean_energy", "plain": "clean-energy and nuclear-fuel companies", "name": "Clean energy & uranium", "ground_truth": "ICLN",
         "measures": "Solar, renewables and nuclear-fuel share of revenue",
         "High": [
             ("FSLR", ALL, "US solar panel maker; all revenue is solar modules."),
@@ -206,7 +210,7 @@ THEMES = [
         ],
     },
     {
-        "key": "consumer_disc", "name": "Consumer discretionary", "ground_truth": "XLY",
+        "key": "consumer_disc", "plain": "consumer discretionary companies", "name": "Consumer discretionary", "ground_truth": "XLY",
         "measures": "Discretionary-spending share of revenue",
         "High": [
             ("HD", ALL, "Home improvement retailer; all categories are discretionary home spending."),
@@ -222,14 +226,14 @@ THEMES = [
             ("DG", ["Seasonal", "Home Products", "Apparel"],
              "Discount store; seasonal, home and apparel goods are a fifth, the rest is consumables."),
         ],
-        "control": ("DUK", "Regulated electric utility; demand doesn't depend on discretionary spending."),
+        "control": ("ADM", "Crop processing and food ingredients; no discretionary-spending revenue."),
         "direct": [
             ("MCD", "High", "Restaurants; FMP segments are geographic, not by spending type."),
             ("AMZN", "Moderate", "Online retail is large, but FMP doesn't split discretionary from essentials."),
         ],
     },
     {
-        "key": "cyber", "name": "Cybersecurity", "ground_truth": "CIBR",
+        "key": "cyber", "plain": "cybersecurity companies", "name": "Cybersecurity", "ground_truth": "CIBR",
         "measures": "Security share of revenue",
         "notes": "Exception (approved): only 1 Moderate reference instead of 2-4. FMP doesn't disclose a "
                  "security share for any other company with partial exposure.",
@@ -284,14 +288,20 @@ def _check_tier(tier: str, pct: float, ticker: str, warnings: list):
 def build_ai() -> dict:
     refs = {}
     for tier, rows in AI["references"].items():
-        refs[tier] = [{"ticker": t, "name": _name(t), "evidence_pct": pct, "measures": AI["measures"],
-                       "fiscal_year": AI_FISCAL_YEAR, "source": AI_SOURCE, "reason": why} for t, pct, why in rows]
+        refs[tier] = []
+        for t, pct, why, *note in rows:
+            ref = {"ticker": t, "name": _name(t), "evidence_pct": pct, "measures": AI["measures"],
+                   "fiscal_year": AI_FISCAL_YEAR, "source": AI_SOURCE, "reason": why}
+            if note:
+                ref["note"] = note[0]
+            refs[tier].append(ref)
     # Independent check: FMP's NVDA Data Center share should be close to the user's 90%.
     nvda = segment_share("NVDA", ["Data Center"])
     refs["High"][0]["fmp_cross_check"] = f"FMP FY{nvda['fiscal_year']} Data Center share = {nvda['evidence_pct']}%"
     ct, cpct, cwhy = AI["control"]
     return {
-        "key": AI["key"], "name": AI["name"], "measures": AI["measures"], "controls": AI["controls"],
+        "key": AI["key"], "name": AI["name"], "plain": "AI companies", "measures": AI["measures"],
+        "controls": AI["controls"],
         "ground_truth": AI["ground_truth"], "references": refs,
         "control": {"ticker": ct, "name": _name(ct), "evidence_pct": cpct, "measures": AI["measures"],
                     "fiscal_year": AI_FISCAL_YEAR, "source": AI_SOURCE, "reason": cwhy},
@@ -312,7 +322,7 @@ def build_theme(theme: dict, warnings: list) -> dict:
                                "measures": theme["measures"], "fiscal_year": ev["fiscal_year"],
                                "source": ev["source"], "reason": why})
     ct, cwhy = theme["control"]
-    if theme["key"] == "rates":
+    if theme["key"] == "bank_lending":
         cev = statement_ratio(ct, "netInterestIncome")
         control = {"evidence_pct": cev["evidence_pct"], "fiscal_year": cev["fiscal_year"], "source": cev["source"]}
     else:
@@ -329,7 +339,7 @@ def build_theme(theme: dict, warnings: list) -> dict:
         if r["ticker"] in ai_refs:
             warnings.append(f"{theme['key']}: {r['ticker']} is also an AI reference")
     out = {
-        "key": theme["key"], "name": theme["name"], "measures": theme["measures"],
+        "key": theme["key"], "name": theme["name"], "plain": theme["plain"], "measures": theme["measures"],
         "controls": theme.get("controls", ["SPY", "TLT"]),
         "ground_truth": theme.get("ground_truth"),
         "references": refs,
@@ -354,7 +364,8 @@ def summary_table(t: dict) -> str:
              "| Group | Ticker | Company | Evidence | FY | Reason |", "|---|---|---|---|---|---|"]
     for tier in ("High", "Moderate"):
         for r in t["references"][tier]:
-            lines.append(f"| {tier} | {r['ticker']} | {r['name'][:30]} | {r['evidence_pct']}% | {r['fiscal_year'] or '-'} | {r['reason']} |")
+            why = r["reason"] + (f" **Note:** {r['note']}" if r.get("note") else "")
+            lines.append(f"| {tier} | {r['ticker']} | {r['name'][:30]} | {r['evidence_pct']}% | {r['fiscal_year'] or '-'} | {why} |")
     c = t["control"]
     lines.append(f"| Control | {c['ticker']} | {c['name'][:30]} | {c['evidence_pct']}% | {c['fiscal_year'] or '-'} | {c['reason']} |")
     for d in t["direct_classification"]:

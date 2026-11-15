@@ -1,12 +1,14 @@
 """Theme exposure regression: classifies one holding for one theme.
 
 The method (from CLAUDE.md; don't change it without asking):
-1. Regress the holding's daily return on the market controls (SPY, and TLT unless the theme is interest
-   rates) plus the daily returns of every High and Moderate reference company, using ordinary least squares.
+1. Regress the holding's daily return on the market controls (SPY, and TLT unless the theme is bank lending)
+   plus the daily returns of every High and Moderate reference company AND the theme's zero-exposure control
+   company, using ordinary least squares. The control company never belongs to a High/Moderate group.
 2. For each group (High, Moderate): add up that group's betas. Its standard error comes from the full
    covariance matrix, so it accounts for the reference companies moving together. One-sided test: is the
    sum above zero?
-3. A group is "eligible" if its sum > 0.05 AND its one-sided p-value < 0.05 / (number of reference names).
+3. A group is "eligible" if its sum > 0.05 AND its one-sided p-value < 0.05 / (number of reference names,
+   counting every High and Moderate reference plus the control company).
    The eligible group with the largest sum gives the tier.
 4. If nothing is eligible:
    - Limited: every group's sum + 1.645 x SE is below 0.05 (we're confident it's small).
@@ -76,7 +78,7 @@ def reference_names(theme: dict) -> dict[str, list[str]]:
 def regressors_needed(theme: dict) -> list[str]:
     """Every price series a regression for this theme needs (besides the holding itself)."""
     refs = reference_names(theme)
-    return list(theme["controls"]) + refs[HIGH] + refs[MODERATE]
+    return list(theme["controls"]) + refs[HIGH] + refs[MODERATE] + [theme["control"]["ticker"]]
 
 
 def _listed(ticker: str, theme: dict):
@@ -106,14 +108,17 @@ def decide_tier(groups: dict[str, GroupStats]) -> str:
     return NOT_DETERMINED
 
 
-def sentence(ticker: str, theme_name: str, tier: str, method: str, evidence: str | None = None) -> str:
+def sentence(ticker: str, theme_name: str, tier: str, method: str, evidence: str | None = None,
+             plain: str | None = None) -> str:
+    """One plain-English sentence. `plain` names the reference companies, e.g. "oil producers"."""
+    peers = plain or f"{theme_name} companies"
     if method == "listed reference":
         return f"{ticker} is one of the {theme_name} reference companies ({evidence}), so it keeps its listed tier: {tier}."
     if method == "direct classification":
         return f"{ticker} is classified directly as {tier} for {theme_name}: {evidence}"
     return {
-        HIGH: f"{ticker} moves strongly with {theme_name} companies, beyond what the overall market explains.",
-        MODERATE: f"{ticker} moves partly with {theme_name} companies, beyond what the overall market explains.",
+        HIGH: f"{ticker} moves strongly with {peers}, beyond what the overall market explains.",
+        MODERATE: f"{ticker} moves partly with {peers}, beyond what the overall market explains.",
         LIMITED: f"{ticker} doesn't rise with this theme.",
         LIMITED_LOW: (f"{ticker} shows little sign of rising with {theme_name}, "
                       "but the data isn't precise enough to rule out a small link."),
@@ -145,30 +150,35 @@ def classify(ticker: str, theme: dict, returns: pd.DataFrame) -> Result:
     """Classify one holding for one theme. `returns` must contain the holding and every regressor."""
     ticker = ticker.upper()
     name = theme["name"]
+    plain = theme.get("plain")
 
     listed = _listed(ticker, theme)
     if listed:
         tier, method, evidence = listed
-        return Result(ticker, name, tier, method, sentence(ticker, name, tier, method, evidence), evidence=evidence)
+        return Result(ticker, name, tier, method, sentence(ticker, name, tier, method, evidence, plain), evidence=evidence)
 
     controls = list(theme["controls"])
     if ticker in controls:
         raise ValueError(f"{ticker} is one of the market controls for {name}; its exposure beyond itself can't be measured.")
 
     refs = reference_names(theme)
-    regressors = controls + refs[HIGH] + refs[MODERATE]
+    control_co = theme["control"]["ticker"]
+    # The control company is a regressor too (never in a group). If the holding IS the control, it can't
+    # also be on the right-hand side, so it's left out of that one regression.
+    extra = [control_co] if control_co != ticker else []
+    regressors = controls + refs[HIGH] + refs[MODERATE] + extra
     needed = [ticker] + regressors
     missing = [c for c in needed if c not in returns.columns]
     if missing:
         raise ValueError(f"Missing returns for: {', '.join(missing)}")
     data = returns[needed].dropna()
-    n_refs = len(refs[HIGH]) + len(refs[MODERATE])
+    n_refs = len(refs[HIGH]) + len(refs[MODERATE]) + len(extra)  # Bonferroni count includes the control
     if len(data) < len(regressors) + 30:
         raise ValueError(f"{ticker}: only {len(data)} days of shared data for {len(regressors)} regressors; need more.")
 
     fit = sm.OLS(data[ticker], sm.add_constant(data[regressors])).fit()
     groups = {g: group_stats(fit, refs[g], n_refs) for g in GROUPS if refs[g]}
     tier = decide_tier(groups)
-    return Result(ticker, name, tier, "regression", sentence(ticker, name, tier, "regression"),
+    return Result(ticker, name, tier, "regression", sentence(ticker, name, tier, "regression", plain=plain),
                   groups=groups, n_obs=int(fit.nobs), r_squared=float(fit.rsquared),
                   p_threshold=ALPHA / n_refs, controls=controls)

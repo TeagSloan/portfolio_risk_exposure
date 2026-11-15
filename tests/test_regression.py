@@ -35,6 +35,7 @@ def simulate(seed=0, n=N_DAYS):
         df[t] = spy + 1.0 * theme + rng.normal(0, 0.01, n)
     for t in ("M1", "M2"):
         df[t] = spy + 0.3 * theme + sub + rng.normal(0, 0.01, n)
+    df["CTRL"] = spy + rng.normal(0, 0.01, n)  # zero-exposure control company
     return df, rng
 
 
@@ -83,13 +84,14 @@ def test_group_se_matches_full_covariance_by_hand():
     df, rng = simulate(5)
     df["X"] = df["SPY"] + 0.4 * df["H1"] + rng.normal(0, 0.01, N_DAYS)
     res = reg.classify("X", make_theme(), df)
-    cols = ["SPY", "TLT", "H1", "H2", "H3", "M1", "M2"]
+    cols = ["SPY", "TLT", "H1", "H2", "H3", "M1", "M2", "CTRL"]
     fit = sm.OLS(df["X"], sm.add_constant(df[cols])).fit()
-    w = np.array([0, 0, 0, 1, 1, 1, 0, 0], dtype=float)  # const, SPY, TLT, H1..H3, M1, M2
+    w = np.array([0, 0, 0, 1, 1, 1, 0, 0, 0], dtype=float)  # const, SPY, TLT, H1..H3, M1, M2, CTRL
     se = np.sqrt(w @ fit.cov_params().values @ w)
     assert res.groups["High"].se == pytest.approx(se, rel=1e-9)
     assert res.groups["High"].beta_sum == pytest.approx(fit.params[["H1", "H2", "H3"]].sum(), rel=1e-9)
-    assert res.p_threshold == pytest.approx(0.05 / 5)
+    assert res.p_threshold == pytest.approx(0.05 / 6)  # 5 references + the control company
+    assert "CTRL" in fit.params.index
     assert res.n_obs == N_DAYS
 
 
@@ -110,7 +112,7 @@ def test_reference_and_direct_use_listed_tier_without_regression():
 
 
 def test_missing_columns_and_short_data_raise_clear_errors():
-    df, _ = simulate(8, n=30)  # 7 regressors need 37+ days
+    df, _ = simulate(8, n=30)  # 8 regressors need 38+ days
     with pytest.raises(ValueError, match="Missing returns for: X"):
         reg.classify("X", make_theme(), df)
     df["X"] = df["SPY"]
@@ -146,6 +148,28 @@ def test_decision_rule(groups, expected):
 def test_eligibility_uses_bonferroni_threshold():
     df, rng = simulate(10)
     df["X"] = df["SPY"] + 0.3 * df[["H1", "H2", "H3"]].mean(axis=1) + rng.normal(0, 0.01, N_DAYS)
-    fit = sm.OLS(df["X"], sm.add_constant(df[["SPY", "TLT", "H1", "H2", "H3", "M1", "M2"]])).fit()
-    g = reg.group_stats(fit, ["H1", "H2", "H3"], n_refs=5)
-    assert g.eligible == (g.beta_sum > 0.05 and g.p_one_sided < 0.01)
+    fit = sm.OLS(df["X"], sm.add_constant(df[["SPY", "TLT", "H1", "H2", "H3", "M1", "M2", "CTRL"]])).fit()
+    g = reg.group_stats(fit, ["H1", "H2", "H3"], n_refs=6)
+    assert g.eligible == (g.beta_sum > 0.05 and g.p_one_sided < 0.05 / 6)
+
+
+def test_control_company_is_a_regressor_but_never_in_a_group():
+    df, rng = simulate(11)
+    df["X"] = df["SPY"] + 0.8 * df["CTRL"] + rng.normal(0, 0.005, N_DAYS)  # moves only with the control
+    res = reg.classify("X", make_theme(), df)
+    assert all("CTRL" not in g.names for g in res.groups.values())
+    assert res.tier == reg.LIMITED  # the control's co-movement is absorbed, not counted as theme exposure
+
+
+def test_holding_that_is_the_control_company_is_left_off_the_right_hand_side():
+    df, _ = simulate(12)
+    res = reg.classify("CTRL", make_theme(), df)
+    assert res.method == "regression" and res.p_threshold == pytest.approx(0.05 / 5)
+
+
+def test_plain_phrase_is_used_in_sentences():
+    df, rng = simulate(13)
+    df["X"] = df["SPY"] + 0.8 * df[["H1", "H2", "H3"]].mean(axis=1) + rng.normal(0, 0.005, N_DAYS)
+    theme = make_theme() | {"plain": "banks that earn mostly from lending"}
+    assert reg.classify("X", theme, df).sentence == (
+        "X moves strongly with banks that earn mostly from lending, beyond what the overall market explains.")
