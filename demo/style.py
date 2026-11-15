@@ -140,6 +140,23 @@ div[data-baseweb="select"] > div, input, textarea {{ background: {RAISED} !impor
 .tf-banner.good {{ background: #13261E; border: 1px solid #2B5A46; color: #A6EBCF; }}
 .tf-banner small {{ display: block; font-size: 14px; font-weight: 500; color: {MUTED}; margin-top: 6px; }}
 .tf-addr {{ font-family: ui-monospace, Menlo, monospace; font-size: 14px; color: {MUTED}; word-break: break-all; }}
+.tf-empty {{ background: {CARD}; border: 1px dashed {LINE}; border-radius: 16px; padding: 48px 24px; text-align: center;
+  color: {MUTED}; font-size: 17px; margin-top: 24px; }}
+.tf-empty b {{ display: block; font-family: {SERIF}; font-weight: 500; font-size: 28px; color: {TEXT}; margin-bottom: 8px; }}
+.tf-entry {{ background: {CARD}; border: 1px solid {LINE}; border-radius: 16px; padding: 24px; margin-bottom: 16px; }}
+.tf-entry .k {{ font-size: 13px; color: {MUTED}; }}
+.tf-entry .nm {{ font-family: {SERIF}; font-size: 32px; font-weight: 500; margin: 4px 0 16px; }}
+.tf-entry .row {{ display: grid; grid-template-columns: 72px minmax(0, 1fr) 48px; gap: 12px; align-items: center;
+  padding: 8px 0; border-top: 1px solid {LINE}; }}
+.tf-entry .tk {{ font-weight: 700; letter-spacing: 0.02em; }}
+.tf-entry .bar {{ background: {RAISED}; border-radius: 6px; height: 8px; overflow: hidden; }}
+.tf-entry .bar span {{ display: block; height: 100%; background: {ROSE}; border-radius: 6px; }}
+.tf-entry .w {{ text-align: right; font-variant-numeric: tabular-nums; color: {MUTED}; }}
+.tf-qr {{ background: {CARD}; border: 1px solid {LINE}; border-radius: 16px; padding: 24px; text-align: center; }}
+.tf-qr .code {{ display: inline-block; border-radius: 12px; overflow: hidden; line-height: 0; }}
+.tf-qr .code svg {{ width: 232px; height: 232px; }}
+.tf-qr h3 {{ font-size: 22px; margin: 16px 0 8px; }}
+.tf-qr p {{ color: {MUTED}; font-size: 14px; line-height: 1.5; margin: 0 auto; max-width: 320px; }}
 </style>
 """
 
@@ -289,3 +306,28 @@ def plotly_dark(fig, height: int | None = None):
     if height:
         fig.update_layout(height=height)
     return fig
+
+
+# ---------------------------------------------------------------------------------------------
+# Fantasy Fund League tab
+# ---------------------------------------------------------------------------------------------
+
+def empty_state(text: str, title: str = "Nothing here yet") -> str:
+    return f'<div class="tf-empty"><b>{escape(title)}</b>{escape(text)}</div>'
+
+
+def league_entry(name: str, etf: dict[str, int]) -> str:
+    """The fund as it will be entered in the League: name plus each stock's whole-percent weight."""
+    top = max(etf.values())
+    rows = "".join(f'<div class="row"><span class="tk">{escape(t)}</span>'
+                   f'<div class="bar"><span style="width:{100 * w / top:.0f}%"></span></div>'
+                   f'<span class="w">{w}%</span></div>'
+                   for t, w in etf.items())
+    return (f'<div class="tf-entry"><div class="k">Your League entry</div><div class="nm">{escape(name)}</div>'
+            f'{rows}</div>')
+
+
+def qr_card(svg: str, title: str, sentence: str) -> str:
+    """svg comes from segno (generated locally), so it is inserted as is."""
+    return (f'<div class="tf-qr"><div class="code">{svg}</div><h3>{escape(title)}</h3>'
+            f'<p>{escape(sentence)}</p></div>')

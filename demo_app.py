@@ -22,7 +22,7 @@ import streamlit as st
 
 from chain import app_actions
 from chain.publish import PublishError
-from demo import style
+from demo import league, style
 from engine import assistant, builder, dashboard, risk, screen
 from engine.data import DEFAULT_END, DEFAULT_START, DataError
 from engine.monte_carlo import SimulationError
@@ -455,13 +455,12 @@ def ask_section(portfolio: dict, weights: dict[str, float]) -> None:
 # Page
 # ---------------------------------------------------------------------------------------------
 
-def main() -> None:
-    portfolio = st.session_state.get("portfolio")
-    reached = 1 if not portfolio else 4 if st.session_state.get("fund") else 3
-    st.html(style.hero(reached))
+def build_tab() -> None:
+    """Everything the demo had before the League tab, unchanged."""
     mode = st.segmented_control("Start from", [BUILD, CHECK], default=BUILD, key="demo_mode") or BUILD
     choose_step(mode)
     portfolio = st.session_state.get("portfolio")
+    st.session_state.pop("demo_weights", None)
     if not portfolio:
         return
     if portfolio["kind"] == "build":
@@ -470,9 +469,60 @@ def main() -> None:
         weights = own_step_check(portfolio["report"])
     if not weights:
         return
+    st.session_state["demo_weights"] = weights  # the League tab enters this fund
     stress_step(weights)
     launch_step(portfolio)
     ask_section(portfolio, weights)
+
+
+# ---------------------------------------------------------------------------------------------
+# Fantasy Fund League
+# ---------------------------------------------------------------------------------------------
+
+def league_tab() -> None:
+    weights = st.session_state.get("demo_weights")
+    portfolio = st.session_state.get("portfolio")
+    if not weights or not portfolio:
+        st.html(style.empty_state("Build a fund first, then enter it in the League."))
+        return
+    prefs = portfolio.get("prefs", {}) if portfolio["kind"] == "build" else {}
+    name = league.fund_name(prefs, {k: t["name"] for k, t in themes().items()})
+    etf, notes = league.league_fund(weights)
+    st.html(style.step(0, "Fantasy Fund League", "Race your fund against everyone else's over a random month of "
+                       "real past prices, replayed live on Monad. Best return takes the pot. Testnet MON only."))
+    left, right = st.columns([3, 2], gap="large")
+    with left:
+        if etf:
+            url = league.prefill_url(etf, name)
+            st.html(style.league_entry(name, etf))
+            for n in notes:
+                st.caption(n)
+            st.link_button("Enter my fund", url, type="primary", width="stretch")
+        else:
+            url = league.LEAGUE_URL
+            for n in notes:
+                st.warning(n)
+        st.link_button("Open the League", league.LEAGUE_URL, width="stretch")
+    with right:
+        st.html(style.qr_card(league.qr_svg(url), "Scan to enter from your phone" if etf else "Scan to open the League",
+                              "Open this link inside the MetaMask app's browser (MetaMask → Browser, or scan with "
+                              "MetaMask's scanner) so your wallet can connect."))
+    st.caption("The live League page below is for watching the race on the big screen. To enter, use the button or "
+               "the QR code: wallets connect on the League page itself.")
+    st.iframe(league.LEAGUE_URL, height=900)
+
+
+# ---------------------------------------------------------------------------------------------
+# Page
+# ---------------------------------------------------------------------------------------------
+
+def main() -> None:
+    st.html(style.hero())
+    build, league_view = st.tabs(["Build your fund", "Fantasy Fund League"])
+    with build:
+        build_tab()
+    with league_view:
+        league_tab()
 
 
 main()

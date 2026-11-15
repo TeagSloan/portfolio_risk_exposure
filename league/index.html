@@ -584,8 +584,23 @@ if (!window.ethereum) {
 }
 try { new QRCode($("qr"), { text: url, width: 200, height: 200, correctLevel: QRCode.CorrectLevel.M }); } catch {}
 
+// Pre-fill from the dashboard's "Enter my fund" link: ?etf=NVDA:20,AVGO:20,...&name=AI%20ex-Oil
+// (only pool stocks; weights are whole percents). The player still reviews and confirms in their wallet.
+function applyPrefill() {
+  const etf = params.get("etf"), name = params.get("name");
+  if (name) $("etfname").value = name.slice(0, 32);
+  if (!etf) return;
+  const inPool = new Set(pool.stocks.map((s) => s.ticker));
+  const got = etf.split(",").map((x) => x.split(":")).filter(([t, w]) => t && inPool.has(t.trim().toUpperCase()) && Number(w) > 0)
+    .map(([t, w]) => ({ ticker: t.trim().toUpperCase(), pct: Math.round(Number(w)), theme: null }));
+  if (!got.length) return;
+  picks = got;
+  renderPicks();
+  msg(`Your fund "${esc($("etfname").value || "from the dashboard")}" is filled in below. Check it, then connect your wallet and enter.`, "ok");
+}
+
 (async () => {
-  try { await load(); await refresh(); setInterval(refresh, 2000); }
+  try { await load(); applyPrefill(); await refresh(); setInterval(refresh, 2000); }
   catch (e) { $("phase").textContent = ""; msg(esc(e.message)); }
 })();
 </script>
