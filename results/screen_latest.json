@@ -26,9 +26,9 @@
     "bank_lending": {
      "ticker": "NVDA",
      "theme": "Bank lending / net interest income",
-     "tier": "Limited",
+     "tier": "Not determined",
      "method": "regression",
-     "sentence": "NVDA doesn't rise with this theme.",
+     "sentence": "The data can't tell whether NVDA is exposed to Bank lending / net interest income. That is not the same as zero exposure.",
      "groups": {
       "High": {
        "names": [
@@ -37,10 +37,10 @@
         "CFG",
         "RF"
        ],
-       "beta_sum": -0.3285037424350805,
-       "se": 0.09481484174412642,
-       "p_one_sided": 0.9997111776510829,
-       "upper_95": -0.17253332776599253,
+       "beta_sum": 0.06766736976132104,
+       "se": 0.09041760878221874,
+       "p_one_sided": 0.22729399093776767,
+       "upper_95": 0.21640433620807087,
        "eligible": false
       },
       "Moderate": {
@@ -49,28 +49,29 @@
         "C",
         "BAC"
        ],
-       "beta_sum": -0.18847614592024836,
-       "se": 0.09818318915185867,
-       "p_one_sided": 0.9722567943081067,
-       "upper_95": -0.02696479976544086,
+       "beta_sum": -0.1365100736378686,
+       "se": 0.08693750816463885,
+       "p_one_sided": 0.9414920420062339,
+       "upper_95": 0.0065021272929623175,
        "eligible": false
       }
      },
      "n_obs": 499,
-     "r_squared": 0.5721965204106838,
+     "r_squared": 0.6661435350273923,
      "p_threshold": 0.00625,
      "controls": [
       "SPY",
-      "TLT"
+      "TLT",
+      "VALUE"
      ],
      "evidence": null
     },
     "clean_energy": {
      "ticker": "NVDA",
      "theme": "Clean energy & uranium",
-     "tier": "Limited (lower confidence)",
+     "tier": "Not determined",
      "method": "regression",
-     "sentence": "NVDA shows little sign of rising with Clean energy & uranium, but the data isn't precise enough to rule out a small link.",
+     "sentence": "The data can't tell whether NVDA is exposed to Clean energy & uranium. That is not the same as zero exposure.",
      "groups": {
       "High": {
        "names": [
@@ -78,10 +79,10 @@
         "SEDG",
         "LEU"
        ],
-       "beta_sum": 0.012046129409332772,
-       "se": 0.03031162241649276,
-       "p_one_sided": 0.34561925037353,
-       "upper_95": 0.06190874828446336,
+       "beta_sum": 0.0024825469504253968,
+       "se": 0.02633884507118173,
+       "p_one_sided": 0.4624729165563634,
+       "upper_95": 0.04580994709251934,
        "eligible": false
       },
       "Moderate": {
@@ -89,19 +90,20 @@
         "NEE",
         "BWXT"
        ],
-       "beta_sum": -0.02103347021942198,
-       "se": 0.07227941295513159,
-       "p_one_sided": 0.6144136256026516,
-       "upper_95": 0.09786616409176949,
+       "beta_sum": 0.14849532383695382,
+       "se": 0.06419065065602503,
+       "p_one_sided": 0.010558724340372675,
+       "upper_95": 0.254088944166115,
        "eligible": false
       }
      },
      "n_obs": 499,
-     "r_squared": 0.5571917905712449,
+     "r_squared": 0.6666145526596109,
      "p_threshold": 0.008333333333333333,
      "controls": [
       "SPY",
-      "TLT"
+      "TLT",
+      "VALUE"
      ],
      "evidence": null
     },
@@ -119,10 +121,10 @@
         "TJX",
         "RCL"
        ],
-       "beta_sum": -0.5003324829152018,
-       "se": 0.09289286593075823,
-       "p_one_sided": 0.9999999439251717,
-       "upper_95": -0.34752371845910457,
+       "beta_sum": -0.22193732799898214,
+       "se": 0.08809177981387832,
+       "p_one_sided": 0.9939625601409501,
+       "upper_95": -0.0770263502051523,
        "eligible": false
       },
       "Moderate": {
@@ -131,19 +133,20 @@
         "DIS",
         "DG"
        ],
-       "beta_sum": -0.381371175970356,
-       "se": 0.09611400345000011,
-       "p_one_sided": 0.999958304046346,
-       "upper_95": -0.22326364029510584,
+       "beta_sum": -0.12802920461157039,
+       "se": 0.09020357799877814,
+       "p_one_sided": 0.9217796239421601,
+       "upper_95": 0.020355681196419645,
        "eligible": false
       }
      },
      "n_obs": 499,
-     "r_squared": 0.595333329322165,
+     "r_squared": 0.669834621146193,
      "p_threshold": 0.00625,
      "controls": [
       "SPY",
-      "TLT"
+      "TLT",
+      "VALUE"
      ],
      "evidence": null
     },
@@ -161,29 +164,30 @@
         "FTNT",
         "CHKP"
        ],
-       "beta_sum": -0.027487046662544173,
-       "se": 0.04732361960528253,
-       "p_one_sided": 0.7191894517962663,
-       "upper_95": 0.050360307588145595,
+       "beta_sum": -0.07959647110217469,
+       "se": 0.039931539542642815,
+       "p_one_sided": 0.9766094059607355,
+       "upper_95": -0.013909088554527257,
        "eligible": false
       },
       "Moderate": {
        "names": [
         "CSCO"
        ],
-       "beta_sum": 0.008303947891813268,
-       "se": 0.054583943897500174,
-       "p_one_sided": 0.43957284236864397,
-       "upper_95": 0.09809453560320106,
+       "beta_sum": 0.020611219943214534,
+       "se": 0.04587411065417352,
+       "p_one_sided": 0.3267073032930108,
+       "upper_95": 0.09607413196932997,
        "eligible": false
       }
      },
      "n_obs": 499,
-     "r_squared": 0.5211677119882596,
+     "r_squared": 0.6625968209927829,
      "p_threshold": 0.008333333333333333,
      "controls": [
       "SPY",
-      "TLT"
+      "TLT",
+      "VALUE"
      ],
      "evidence": null
     },
@@ -201,10 +205,10 @@
         "HII",
         "GD"
        ],
-       "beta_sum": -0.5032148833844888,
-       "se": 0.0894596501205199,
-       "p_one_sided": 0.999999984359975,
-       "upper_95": -0.3560537589362336,
+       "beta_sum": -0.15381873333612905,
+       "se": 0.080329746071532,
+       "p_one_sided": 0.9719508784704257,
+       "upper_95": -0.021676301048458912,
        "eligible": false
       },
       "Moderate": {
@@ -213,19 +217,20 @@
         "BA",
         "GE"
        ],
-       "beta_sum": 0.05771149645340051,
-       "se": 0.08485948711640984,
-       "p_one_sided": 0.24838719453742777,
-       "upper_95": 0.1973053527598947,
+       "beta_sum": 0.10311428052976923,
+       "se": 0.07230828979897082,
+       "p_one_sided": 0.07724920525553114,
+       "upper_95": 0.22206141724907624,
        "eligible": false
       }
      },
      "n_obs": 499,
-     "r_squared": 0.5308503087041438,
+     "r_squared": 0.6607834251031451,
      "p_threshold": 0.00625,
      "controls": [
       "SPY",
-      "TLT"
+      "TLT",
+      "VALUE"
      ],
      "evidence": null
     },
@@ -243,10 +248,10 @@
         "PAAS",
         "NEM"
        ],
-       "beta_sum": -0.0006155258985182932,
-       "se": 0.039329892367583295,
-       "p_one_sided": 0.506240132941624,
-       "upper_95": 0.06408214704615622,
+       "beta_sum": 0.039076865404734575,
+       "se": 0.034053511265564655,
+       "p_one_sided": 0.12586584425617459,
+       "upper_95": 0.09509489143658843,
        "eligible": false
       },
       "Moderate": {
@@ -254,19 +259,20 @@
         "FCX",
         "SCCO"
        ],
-       "beta_sum": -0.003117369120767415,
-       "se": 0.04745265874641065,
-       "p_one_sided": 0.5261759698025797,
-       "upper_95": 0.0749422545170781,
+       "beta_sum": 0.00515620749028105,
+       "se": 0.04092653481635868,
+       "p_one_sided": 0.449897088696963,
+       "upper_95": 0.07248035726319108,
        "eligible": false
       }
      },
      "n_obs": 499,
-     "r_squared": 0.5392599985613598,
+     "r_squared": 0.6580591122800149,
      "p_threshold": 0.0071428571428571435,
      "controls": [
       "SPY",
-      "TLT"
+      "TLT",
+      "VALUE"
      ],
      "evidence": null
     },
@@ -284,38 +290,39 @@
         "LLY",
         "GEHC"
        ],
-       "beta_sum": -0.46988461393056297,
-       "se": 0.06845603455205142,
-       "p_one_sided": 0.9999999999898407,
-       "upper_95": -0.3572744370924384,
+       "beta_sum": -0.07153868351028456,
+       "se": 0.06890853587685769,
+       "p_one_sided": 0.8501477000874733,
+       "upper_95": 0.04181585800714635,
        "eligible": false
       },
       "Moderate": {
        "names": [
         "KR"
        ],
-       "beta_sum": -0.21703769455347466,
-       "se": 0.04970410221047582,
-       "p_one_sided": 0.9999922965775634,
-       "upper_95": -0.13527444641724196,
+       "beta_sum": -0.05742001790536805,
+       "se": 0.04577446713049629,
+       "p_one_sided": 0.8948541330013929,
+       "upper_95": 0.017878980524298344,
        "eligible": false
       }
      },
      "n_obs": 499,
-     "r_squared": 0.5602053862383507,
+     "r_squared": 0.6594997433821486,
      "p_threshold": 0.008333333333333333,
      "controls": [
       "SPY",
-      "TLT"
+      "TLT",
+      "VALUE"
      ],
      "evidence": null
     },
     "metals": {
      "ticker": "NVDA",
      "theme": "Industrial / EV metals (copper + lithium)",
-     "tier": "Limited (lower confidence)",
+     "tier": "Not determined",
      "method": "regression",
-     "sentence": "NVDA shows little sign of rising with Industrial / EV metals (copper + lithium), but the data isn't precise enough to rule out a small link.",
+     "sentence": "The data can't tell whether NVDA is exposed to Industrial / EV metals (copper + lithium). That is not the same as zero exposure.",
      "groups": {
       "High": {
        "names": [
@@ -325,10 +332,10 @@
         "ALB",
         "SQM"
        ],
-       "beta_sum": -0.08695648039803495,
-       "se": 0.11494707294633558,
-       "p_one_sided": 0.7751401859101801,
-       "upper_95": 0.10213145459868707,
+       "beta_sum": -0.12361905332225402,
+       "se": 0.09549473719360134,
+       "p_one_sided": 0.9019489050952346,
+       "upper_95": 0.03346978936122018,
        "eligible": false
       },
       "Moderate": {
@@ -336,28 +343,29 @@
         "RIO",
         "VALE"
        ],
-       "beta_sum": -0.0351094514878287,
-       "se": 0.12278904207338391,
-       "p_one_sided": 0.6124746523820936,
-       "upper_95": 0.16687852272288783,
+       "beta_sum": 0.12803275294621358,
+       "se": 0.10256555930496383,
+       "p_one_sided": 0.10626021098598812,
+       "upper_95": 0.2967530980028791,
        "eligible": false
       }
      },
      "n_obs": 499,
-     "r_squared": 0.5037059968379249,
+     "r_squared": 0.6583976529758877,
      "p_threshold": 0.00625,
      "controls": [
       "SPY",
-      "TLT"
+      "TLT",
+      "VALUE"
      ],
      "evidence": null
     },
     "oil": {
      "ticker": "NVDA",
      "theme": "Oil",
-     "tier": "Limited (lower confidence)",
+     "tier": "Not determined",
      "method": "regression",
-     "sentence": "NVDA shows little sign of rising with Oil, but the data isn't precise enough to rule out a small link.",
+     "sentence": "The data can't tell whether NVDA is exposed to Oil. That is not the same as zero exposure.",
      "groups": {
       "High": {
        "names": [
@@ -366,10 +374,10 @@
         "COP",
         "EOG"
        ],
-       "beta_sum": 0.04189064024008132,
-       "se": 0.09928944363093668,
-       "p_one_sided": 0.3366401551267752,
-       "upper_95": 0.20522177501297217,
+       "beta_sum": 0.05970711624920083,
+       "se": 0.08137400381527395,
+       "p_one_sided": 0.23173070390599562,
+       "upper_95": 0.19356735252532647,
        "eligible": false
       },
       "Moderate": {
@@ -377,19 +385,20 @@
         "CVX",
         "SHEL"
        ],
-       "beta_sum": -0.1969729627078124,
-       "se": 0.1303523377104468,
-       "p_one_sided": 0.9342931530197127,
-       "upper_95": 0.017456632825872592,
+       "beta_sum": 0.08689436348621223,
+       "se": 0.10838045408019989,
+       "p_one_sided": 0.2115430135825227,
+       "upper_95": 0.26518021044814105,
        "eligible": false
       }
      },
      "n_obs": 499,
-     "r_squared": 0.5116846370107557,
+     "r_squared": 0.6727423009405068,
      "p_threshold": 0.0071428571428571435,
      "controls": [
       "SPY",
-      "TLT"
+      "TLT",
+      "VALUE"
      ],
      "evidence": null
     }
@@ -402,9 +411,9 @@
     "ai": {
      "ticker": "XOM",
      "theme": "AI",
-     "tier": "Limited (lower confidence)",
+     "tier": "Not determined",
      "method": "regression",
-     "sentence": "XOM shows little sign of rising with AI, but the data isn't precise enough to rule out a small link.",
+     "sentence": "The data can't tell whether XOM is exposed to AI. That is not the same as zero exposure.",
      "groups": {
       "High": {
        "names": [
@@ -413,10 +422,10 @@
         "VRT",
         "AVGO"
        ],
-       "beta_sum": 0.0038026981826211406,
-       "se": 0.04924976381260936,
-       "p_one_sided": 0.46924306561863666,
-       "upper_95": 0.08481855965436352,
+       "beta_sum": 0.1327779985570347,
+       "se": 0.055359336832939005,
+       "p_one_sided": 0.008419345800754012,
+       "upper_95": 0.22384410764721935,
        "eligible": false
       },
       "Moderate": {
@@ -425,28 +434,29 @@
         "MSFT",
         "VST"
        ],
-       "beta_sum": -0.18005398278139417,
-       "se": 0.06443701865513458,
-       "p_one_sided": 0.9972967368178562,
-       "upper_95": -0.07405508709369778,
+       "beta_sum": -0.06974634625896897,
+       "se": 0.06722751570629328,
+       "p_one_sided": 0.8499835064473344,
+       "upper_95": 0.04084291707788347,
        "eligible": false
       }
      },
      "n_obs": 499,
-     "r_squared": 0.22034728322943486,
+     "r_squared": 0.25469347914341367,
      "p_threshold": 0.00625,
      "controls": [
       "SPY",
-      "TLT"
+      "TLT",
+      "VALUE"
      ],
      "evidence": null
     },
     "bank_lending": {
      "ticker": "XOM",
      "theme": "Bank lending / net interest income",
-     "tier": "High",
+     "tier": "Not determined",
      "method": "regression",
-     "sentence": "XOM moves strongly with banks that earn mostly from lending, beyond what the overall market explains.",
+     "sentence": "The data can't tell whether XOM is exposed to Bank lending / net interest income. That is not the same as zero exposure.",
      "groups": {
       "High": {
        "names": [
@@ -455,11 +465,11 @@
         "CFG",
         "RF"
        ],
-       "beta_sum": 0.29981629793985204,
-       "se": 0.07838159032713585,
-       "p_one_sided": 7.384219515921469e-05,
-       "upper_95": 0.4287540140279905,
-       "eligible": true
+       "beta_sum": 0.11256069176628272,
+       "se": 0.08151846994819129,
+       "p_one_sided": 0.08398692118709083,
+       "upper_95": 0.24665857483105738,
+       "eligible": false
       },
       "Moderate": {
        "names": [
@@ -467,28 +477,29 @@
         "C",
         "BAC"
        ],
-       "beta_sum": -0.11873943105088586,
-       "se": 0.0811661377854845,
-       "p_one_sided": 0.9279332661523215,
-       "upper_95": 0.014778865606236147,
+       "beta_sum": -0.14330189425459638,
+       "se": 0.0783808899852642,
+       "p_one_sided": 0.9659401536087733,
+       "upper_95": -0.014365330228836765,
        "eligible": false
       }
      },
      "n_obs": 499,
-     "r_squared": 0.09058302565955545,
+     "r_squared": 0.15587056232663765,
      "p_threshold": 0.00625,
      "controls": [
       "SPY",
-      "TLT"
+      "TLT",
+      "VALUE"
      ],
      "evidence": null
     },
     "clean_energy": {
      "ticker": "XOM",
      "theme": "Clean energy & uranium",
-     "tier": "Not determined",
+     "tier": "Limited (lower confidence)",
      "method": "regression",
-     "sentence": "The data can't tell whether XOM is exposed to Clean energy & uranium. That is not the same as zero exposure.",
+     "sentence": "XOM shows little sign of rising with Clean energy & uranium, but the data isn't precise enough to rule out a small link.",
      "groups": {
       "High": {
        "names": [
@@ -496,10 +507,10 @@
         "SEDG",
         "LEU"
        ],
-       "beta_sum": -0.0327791733173179,
-       "se": 0.024380506377823758,
-       "p_one_sided": 0.9102928259360776,
-       "upper_95": 0.007326759674202182,
+       "beta_sum": -0.02887818540731074,
+       "se": 0.023626886071722145,
+       "p_one_sided": 0.8889008340706649,
+       "upper_95": 0.009988042180672188,
        "eligible": false
       },
       "Moderate": {
@@ -507,28 +518,29 @@
         "NEE",
         "BWXT"
        ],
-       "beta_sum": 0.08396660130594702,
-       "se": 0.05813640274098667,
-       "p_one_sided": 0.07464638163220821,
-       "upper_95": 0.1796009838148701,
+       "beta_sum": 0.014815759677965126,
+       "se": 0.05758130950012739,
+       "p_one_sided": 0.3985271180607208,
+       "upper_95": 0.10953701380567468,
        "eligible": false
       }
      },
      "n_obs": 499,
-     "r_squared": 0.10890092487934555,
+     "r_squared": 0.16553253625024233,
      "p_threshold": 0.008333333333333333,
      "controls": [
       "SPY",
-      "TLT"
+      "TLT",
+      "VALUE"
      ],
      "evidence": null
     },
     "consumer_disc": {
      "ticker": "XOM",
      "theme": "Consumer discretionary",
-     "tier": "Moderate",
+     "tier": "Not determined",
      "method": "regression",
-     "sentence": "XOM moves partly with consumer discretionary companies, beyond what the overall market explains.",
+     "sentence": "The data can't tell whether XOM is exposed to Consumer discretionary. That is not the same as zero exposure.",
      "groups": {
       "High": {
        "names": [
@@ -537,10 +549,10 @@
         "TJX",
         "RCL"
        ],
-       "beta_sum": -0.19095118646773485,
-       "se": 0.07180287021449783,
-       "p_one_sided": 0.9959570905685903,
-       "upper_95": -0.07283546496488592,
+       "beta_sum": -0.33715709127002097,
+       "se": 0.07210931074071024,
+       "p_one_sided": 0.9999981000766074,
+       "upper_95": -0.21853727510155263,
        "eligible": false
       },
       "Moderate": {
@@ -549,19 +561,20 @@
         "DIS",
         "DG"
        ],
-       "beta_sum": 0.19483793460710017,
-       "se": 0.07429269456128432,
-       "p_one_sided": 0.004499867216109229,
-       "upper_95": 0.31704941716041285,
-       "eligible": true
+       "beta_sum": 0.06178931112062786,
+       "se": 0.0738379659212316,
+       "p_one_sided": 0.2015512406457051,
+       "upper_95": 0.18325276506105384,
+       "eligible": false
       }
      },
      "n_obs": 499,
-     "r_squared": 0.24792773518636346,
+     "r_squared": 0.31184431594375717,
      "p_threshold": 0.00625,
      "controls": [
       "SPY",
-      "TLT"
+      "TLT",
+      "VALUE"
      ],
      "evidence": null
     },
@@ -579,38 +592,39 @@
         "FTNT",
         "CHKP"
        ],
-       "beta_sum": 0.005322000853790365,
-       "se": 0.03728767916946895,
-       "p_one_sided": 0.44328178336401075,
-       "upper_95": 0.06666023308756679,
+       "beta_sum": 0.03375764400424314,
+       "se": 0.03472546240400455,
+       "p_one_sided": 0.165733386296547,
+       "upper_95": 0.09088102965883063,
        "eligible": false
       },
       "Moderate": {
        "names": [
         "CSCO"
        ],
-       "beta_sum": 0.06787667341279446,
-       "se": 0.043008303355288706,
-       "p_one_sided": 0.057579907797836,
-       "upper_95": 0.1386253324322444,
+       "beta_sum": 0.06116070600435345,
+       "se": 0.039893270409408724,
+       "p_one_sided": 0.06294792494505591,
+       "upper_95": 0.1267851358278308,
        "eligible": false
       }
      },
      "n_obs": 499,
-     "r_squared": 0.07529868538266604,
+     "r_squared": 0.20629998808062344,
      "p_threshold": 0.008333333333333333,
      "controls": [
       "SPY",
-      "TLT"
+      "TLT",
+      "VALUE"
      ],
      "evidence": null
     },
     "defense": {
      "ticker": "XOM",
      "theme": "Defense & aerospace",
-     "tier": "High",
+     "tier": "Not determined",
      "method": "regression",
-     "sentence": "XOM moves strongly with defense contractors, beyond what the overall market explains.",
+     "sentence": "The data can't tell whether XOM is exposed to Defense & aerospace. That is not the same as zero exposure.",
      "groups": {
       "High": {
        "names": [
@@ -619,11 +633,11 @@
         "HII",
         "GD"
        ],
-       "beta_sum": 0.32082372505576173,
-       "se": 0.06820793965473256,
-       "p_one_sided": 1.6661345015692526e-06,
-       "upper_95": 0.43302578578779677,
-       "eligible": true
+       "beta_sum": 0.16694103066494317,
+       "se": 0.06861914219929109,
+       "p_one_sided": 0.007669460459019932,
+       "upper_95": 0.279819519582777,
+       "eligible": false
       },
       "Moderate": {
        "names": [
@@ -631,19 +645,20 @@
         "BA",
         "GE"
        ],
-       "beta_sum": -0.2581129969524577,
-       "se": 0.06470057471239747,
-       "p_one_sided": 0.999961790499093,
-       "upper_95": -0.15168055155056387,
+       "beta_sum": -0.2781095044856658,
+       "se": 0.061767067151996306,
+       "p_one_sided": 0.9999957944397244,
+       "upper_95": -0.17650267902063188,
        "eligible": false
       }
      },
      "n_obs": 499,
-     "r_squared": 0.1516595853280931,
+     "r_squared": 0.2300578480660913,
      "p_threshold": 0.00625,
      "controls": [
       "SPY",
-      "TLT"
+      "TLT",
+      "VALUE"
      ],
      "evidence": null
     },
@@ -661,10 +676,10 @@
         "PAAS",
         "NEM"
        ],
-       "beta_sum": -0.07057307217684891,
-       "se": 0.031016860091764353,
-       "p_one_sided": 0.9883404685088176,
-       "upper_95": -0.019550337325896547,
+       "beta_sum": -0.08825691105425353,
+       "se": 0.02986360324305574,
+       "p_one_sided": 0.9983628132552264,
+       "upper_95": -0.03913128371942683,
        "eligible": false
       },
       "Moderate": {
@@ -672,28 +687,29 @@
         "FCX",
         "SCCO"
        ],
-       "beta_sum": 0.06659536119627817,
-       "se": 0.037422743585557826,
-       "p_one_sided": 0.03788592503231698,
-       "upper_95": 0.1281557743945208,
+       "beta_sum": 0.06290929968862527,
+       "se": 0.035890977242771474,
+       "p_one_sided": 0.040133107719750004,
+       "upper_95": 0.12194995725298435,
        "eligible": false
       }
      },
      "n_obs": 499,
-     "r_squared": 0.10864784995331012,
+     "r_squared": 0.18199698917731233,
      "p_threshold": 0.0071428571428571435,
      "controls": [
       "SPY",
-      "TLT"
+      "TLT",
+      "VALUE"
      ],
      "evidence": null
     },
     "healthcare": {
      "ticker": "XOM",
      "theme": "Healthcare",
-     "tier": "Moderate",
+     "tier": "Not determined",
      "method": "regression",
-     "sentence": "XOM moves partly with healthcare companies, beyond what the overall market explains.",
+     "sentence": "The data can't tell whether XOM is exposed to Healthcare. That is not the same as zero exposure.",
      "groups": {
       "High": {
        "names": [
@@ -702,38 +718,39 @@
         "LLY",
         "GEHC"
        ],
-       "beta_sum": 0.13409322393372247,
-       "se": 0.056130773970511326,
-       "p_one_sided": 0.008637151275494285,
-       "upper_95": 0.2264283471152136,
+       "beta_sum": -0.0591080636944479,
+       "se": 0.06162539598196324,
+       "p_one_sided": 0.8310216794596264,
+       "upper_95": 0.042265712695881634,
        "eligible": false
       },
       "Moderate": {
        "names": [
         "KR"
        ],
-       "beta_sum": 0.1406527628370423,
-       "se": 0.04075505899282045,
-       "p_one_sided": 0.00030321038680310776,
-       "upper_95": 0.20769483488023194,
-       "eligible": true
+       "beta_sum": 0.06323678265093954,
+       "se": 0.040936433010580885,
+       "p_one_sided": 0.061526142039433386,
+       "upper_95": 0.1305772149533451,
+       "eligible": false
       }
      },
      "n_obs": 499,
-     "r_squared": 0.08024588032054503,
+     "r_squared": 0.15290114392933263,
      "p_threshold": 0.008333333333333333,
      "controls": [
       "SPY",
-      "TLT"
+      "TLT",
+      "VALUE"
      ],
      "evidence": null
     },
     "metals": {
      "ticker": "XOM",
      "theme": "Industrial / EV metals (copper + lithium)",
-     "tier": "Not determined",
+     "tier": "Limited (lower confidence)",
      "method": "regression",
-     "sentence": "The data can't tell whether XOM is exposed to Industrial / EV metals (copper + lithium). That is not the same as zero exposure.",
+     "sentence": "XOM shows little sign of rising with Industrial / EV metals (copper + lithium), but the data isn't precise enough to rule out a small link.",
      "groups": {
       "High": {
        "names": [
@@ -743,10 +760,10 @@
         "ALB",
         "SQM"
        ],
-       "beta_sum": 0.00028873335058260396,
-       "se": 0.08873767518258488,
-       "p_one_sided": 0.4987025945580906,
-       "upper_95": 0.14626220902593473,
+       "beta_sum": 0.015530888074095722,
+       "se": 0.08474704791062136,
+       "p_one_sided": 0.42733447787232426,
+       "upper_95": 0.15493978188706786,
        "eligible": false
       },
       "Moderate": {
@@ -754,19 +771,20 @@
         "RIO",
         "VALE"
        ],
-       "beta_sum": 0.11249199166766631,
-       "se": 0.09479157539379561,
-       "p_one_sided": 0.11795579721765552,
-       "upper_95": 0.2684241331904601,
+       "beta_sum": 0.04466699948671589,
+       "se": 0.09102206701480785,
+       "p_one_sided": 0.31192024021065023,
+       "upper_95": 0.1943982997260748,
        "eligible": false
       }
      },
      "n_obs": 499,
-     "r_squared": 0.07996883688926826,
+     "r_squared": 0.16313697745012734,
      "p_threshold": 0.00625,
      "controls": [
       "SPY",
-      "TLT"
+      "TLT",
+      "VALUE"
      ],
      "evidence": null
     },
@@ -784,10 +802,10 @@
         "COP",
         "EOG"
        ],
-       "beta_sum": 0.28833670819634527,
-       "se": 0.036486767722960896,
-       "p_one_sided": 9.124495660946889e-15,
-       "upper_95": 0.34835744110061595,
+       "beta_sum": 0.28767711729562095,
+       "se": 0.036466588401702645,
+       "p_one_sided": 1.0095228900657831e-14,
+       "upper_95": 0.3476646552164218,
        "eligible": true
       },
       "Moderate": {
@@ -795,19 +813,20 @@
         "CVX",
         "SHEL"
        ],
-       "beta_sum": 0.6381968567567113,
-       "se": 0.04790172342857311,
-       "p_one_sided": 4.541931286092845e-35,
-       "upper_95": 0.7169951917967141,
+       "beta_sum": 0.6276876906749984,
+       "se": 0.048569140320344435,
+       "p_one_sided": 2.286245507561067e-33,
+       "upper_95": 0.707583926501965,
        "eligible": true
       }
      },
      "n_obs": 499,
-     "r_squared": 0.7948798770017095,
+     "r_squared": 0.7955665189678092,
      "p_threshold": 0.0071428571428571435,
      "controls": [
       "SPY",
-      "TLT"
+      "TLT",
+      "VALUE"
      ],
      "evidence": null
     }
@@ -827,24 +846,24 @@
     "High": 30.0,
     "Moderate": 0.0,
     "Limited": 0.0,
-    "Limited (lower confidence)": 20.0,
-    "Not determined": 0.0
+    "Limited (lower confidence)": 0.0,
+    "Not determined": 20.0
    },
    "cash_pct": 50.0,
-   "sentence": "30% of your portfolio is in stocks with High or Moderate AI exposure (NVDA)."
+   "sentence": "30% of your portfolio is in stocks with High or Moderate AI exposure (NVDA). For 20% the data can't tell."
   },
   "bank_lending": {
    "name": "Bank lending / net interest income",
-   "high_moderate_pct": 20.0,
+   "high_moderate_pct": 0.0,
    "by_tier_pct": {
-    "High": 20.0,
+    "High": 0.0,
     "Moderate": 0.0,
-    "Limited": 30.0,
+    "Limited": 0.0,
     "Limited (lower confidence)": 0.0,
-    "Not determined": 0.0
+    "Not determined": 50.0
    },
    "cash_pct": 50.0,
-   "sentence": "20% of your portfolio is in stocks with High or Moderate Bank lending / net interest income exposure (XOM)."
+   "sentence": "None of your portfolio is in stocks with High or Moderate Bank lending / net interest income exposure. For 50% the data can't tell."
   },
   "clean_energy": {
    "name": "Clean energy & uranium",
@@ -853,24 +872,24 @@
     "High": 0.0,
     "Moderate": 0.0,
     "Limited": 0.0,
-    "Limited (lower confidence)": 30.0,
-    "Not determined": 20.0
+    "Limited (lower confidence)": 20.0,
+    "Not determined": 30.0
    },
    "cash_pct": 50.0,
-   "sentence": "None of your portfolio is in stocks with High or Moderate Clean energy & uranium exposure. For 20% the data can't tell."
+   "sentence": "None of your portfolio is in stocks with High or Moderate Clean energy & uranium exposure. For 30% the data can't tell."
   },
   "consumer_disc": {
    "name": "Consumer discretionary",
-   "high_moderate_pct": 20.0,
+   "high_moderate_pct": 0.0,
    "by_tier_pct": {
     "High": 0.0,
-    "Moderate": 20.0,
+    "Moderate": 0.0,
     "Limited": 30.0,
     "Limited (lower confidence)": 0.0,
-    "Not determined": 0.0
+    "Not determined": 20.0
    },
    "cash_pct": 50.0,
-   "sentence": "20% of your portfolio is in stocks with High or Moderate Consumer discretionary exposure (XOM)."
+   "sentence": "None of your portfolio is in stocks with High or Moderate Consumer discretionary exposure. For 20% the data can't tell."
   },
   "cyber": {
    "name": "Cybersecurity",
@@ -887,16 +906,16 @@
   },
   "defense": {
    "name": "Defense & aerospace",
-   "high_moderate_pct": 20.0,
+   "high_moderate_pct": 0.0,
    "by_tier_pct": {
-    "High": 20.0,
+    "High": 0.0,
     "Moderate": 0.0,
     "Limited": 0.0,
     "Limited (lower confidence)": 0.0,
-    "Not determined": 30.0
+    "Not determined": 50.0
    },
    "cash_pct": 50.0,
-   "sentence": "20% of your portfolio is in stocks with High or Moderate Defense & aerospace exposure (XOM). For 30% the data can't tell."
+   "sentence": "None of your portfolio is in stocks with High or Moderate Defense & aerospace exposure. For 50% the data can't tell."
   },
   "gold": {
    "name": "Gold & precious metals",
@@ -913,16 +932,16 @@
   },
   "healthcare": {
    "name": "Healthcare",
-   "high_moderate_pct": 20.0,
+   "high_moderate_pct": 0.0,
    "by_tier_pct": {
     "High": 0.0,
-    "Moderate": 20.0,
+    "Moderate": 0.0,
     "Limited": 30.0,
     "Limited (lower confidence)": 0.0,
-    "Not determined": 0.0
+    "Not determined": 20.0
    },
    "cash_pct": 50.0,
-   "sentence": "20% of your portfolio is in stocks with High or Moderate Healthcare exposure (XOM)."
+   "sentence": "None of your portfolio is in stocks with High or Moderate Healthcare exposure. For 20% the data can't tell."
   },
   "metals": {
    "name": "Industrial / EV metals (copper + lithium)",
@@ -931,11 +950,11 @@
     "High": 0.0,
     "Moderate": 0.0,
     "Limited": 0.0,
-    "Limited (lower confidence)": 30.0,
-    "Not determined": 20.0
+    "Limited (lower confidence)": 20.0,
+    "Not determined": 30.0
    },
    "cash_pct": 50.0,
-   "sentence": "None of your portfolio is in stocks with High or Moderate Industrial / EV metals (copper + lithium) exposure. For 20% the data can't tell."
+   "sentence": "None of your portfolio is in stocks with High or Moderate Industrial / EV metals (copper + lithium) exposure. For 30% the data can't tell."
   },
   "oil": {
    "name": "Oil",
@@ -944,11 +963,11 @@
     "High": 0.0,
     "Moderate": 20.0,
     "Limited": 0.0,
-    "Limited (lower confidence)": 30.0,
-    "Not determined": 0.0
+    "Limited (lower confidence)": 0.0,
+    "Not determined": 30.0
    },
    "cash_pct": 50.0,
-   "sentence": "20% of your portfolio is in stocks with High or Moderate Oil exposure (XOM)."
+   "sentence": "20% of your portfolio is in stocks with High or Moderate Oil exposure (XOM). For 30% the data can't tell."
   }
  }
 }

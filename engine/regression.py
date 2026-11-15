@@ -1,7 +1,7 @@
 """Theme exposure regression: classifies one holding for one theme.
 
 The method (from CLAUDE.md; don't change it without asking):
-1. Regress the holding's daily return on the market controls (SPY and TLT)
+1. Regress the holding's daily return on the market controls (SPY, TLT, and VALUE = IWD minus IWF, the value-minus-growth swing)
    plus the daily returns of every High and Moderate reference company AND the theme's zero-exposure control
    company, using ordinary least squares. The control company never belongs to a High/Moderate group.
 2. For each group (High, Moderate): add up that group's betas. Its standard error comes from the full

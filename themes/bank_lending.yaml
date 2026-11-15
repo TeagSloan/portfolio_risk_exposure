@@ -6,6 +6,7 @@ measures: Net interest income as a share of revenue
 controls:
 - SPY
 - TLT
+- VALUE
 ground_truth: null
 references:
   High:

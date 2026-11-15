@@ -6,6 +6,7 @@ measures: Gold and silver share of revenue
 controls:
 - SPY
 - TLT
+- VALUE
 ground_truth: GLD
 references:
   High:

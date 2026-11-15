@@ -110,3 +110,14 @@ def test_yahoo_failure_or_empty_means_no_data(monkeypatch):
 def test_fmp_rows_without_prices_count_as_no_data(monkeypatch):
     monkeypatch.setattr(fmp, "dividend_adjusted_prices", lambda t, s, e: [{"date": "2025-01-02"}])
     assert data._from_fmp("AAA", "2025-01-01", "2025-01-31") is None
+
+
+def test_value_factor_is_iwd_minus_iwf(monkeypatch):
+    monkeypatch.setattr(fmp, "dividend_adjusted_prices", fake_fmp({
+        "IWD": {"2025-01-02": 100.0, "2025-01-03": 102.0, "2025-01-06": 102.0},
+        "IWF": {"2025-01-02": 100.0, "2025-01-03": 101.0, "2025-01-06": 103.02},
+        "AAA": {"2025-01-02": 10.0, "2025-01-03": 11.0, "2025-01-06": 11.0},
+    }))
+    r = data.get_returns(["AAA", "value"], "2025-01-01", "2025-01-31")
+    assert list(r.columns) == ["AAA", "VALUE"]  # IWD/IWF only used to build VALUE
+    assert r["VALUE"].tolist() == pytest.approx([0.02 - 0.01, 0.0 - 0.02])

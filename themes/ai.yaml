@@ -6,6 +6,7 @@ measures: AI share of revenue
 controls:
 - SPY
 - TLT
+- VALUE
 ground_truth: null
 references:
   High:

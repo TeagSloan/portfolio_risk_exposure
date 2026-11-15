@@ -1,7 +1,8 @@
 """Price check: do the theme's reference companies actually trade like the theme?
 
 For each theme:
-- Each reference should move with its OWN group beyond the market: regress it on SPY plus the average
+"Beyond the market" means after controlling for SPY and VALUE (IWD minus IWF, the value-vs-growth swing).
+- Each reference should move with its OWN group beyond the market: regress it on SPY, VALUE and the average
   return of the other members of its group. Pass = that coefficient is positive and significant
   (one-sided p < 0.05). If its group has no other members, the other group's average is used instead.
 - Each reference should also move with the ground-truth ETF (if the theme has one) beyond SPY.
@@ -28,9 +29,10 @@ from engine.theme_loader import load_all, load_theme
 P_PASS = 0.05
 
 
-def _slope(y: pd.Series, x: pd.Series, spy: pd.Series) -> tuple[float, float]:
-    """Coefficient on x (controlling for SPY) and its one-sided p-value for 'greater than zero'."""
-    X = sm.add_constant(pd.DataFrame({"SPY": spy, "x": x}))
+def _slope(y: pd.Series, x: pd.Series, spy: pd.Series, value: pd.Series | None = None) -> tuple[float, float]:
+    """Coefficient on x (controlling for SPY, and VALUE if given) and its one-sided p-value for '> 0'."""
+    cols = {"SPY": spy, "x": x} if value is None else {"SPY": spy, "VALUE": value, "x": x}
+    X = sm.add_constant(pd.DataFrame(cols))
     fit = sm.OLS(y, X).fit()
     b, t = fit.params["x"], fit.tvalues["x"]
     from scipy import stats
@@ -41,9 +43,9 @@ def check_theme(theme: dict) -> list[dict]:
     refs = reference_names(theme)
     gt, sign = theme.get("ground_truth"), theme.get("ground_truth_sign", 1)
     ctrl = theme["control"]["ticker"]
-    tickers = ["SPY"] + refs["High"] + refs["Moderate"] + [ctrl] + ([gt] if gt else [])
+    tickers = ["SPY", "VALUE"] + refs["High"] + refs["Moderate"] + [ctrl] + ([gt] if gt else [])
     r = get_returns(tickers)
-    spy = r["SPY"]
+    spy, value = r["SPY"], r["VALUE"]
     all_refs = refs["High"] + refs["Moderate"]
     rows = []
 
@@ -54,19 +56,19 @@ def check_theme(theme: dict) -> list[dict]:
             if not peers:
                 other = "Moderate" if g == "High" else "High"
                 peers, basis = refs[other], f"{other} group (only one {g} name)"
-            b, p = _slope(r[t], r[peers].mean(axis=1), spy)
+            b, p = _slope(r[t], r[peers].mean(axis=1), spy, value)
             row = {"theme": theme["key"], "ticker": t, "role": g, "group_basis": basis,
                    "group_beta": round(b, 3), "group_p": round(p, 4), "group_pass": b > 0 and p < P_PASS}
             if gt:
-                bg, pg = _slope(r[t], sign * r[gt], spy)
+                bg, pg = _slope(r[t], sign * r[gt], spy, value)
                 row.update(gt_beta=round(bg, 3), gt_p=round(pg, 4), gt_pass=bg > 0 and pg < P_PASS)
             rows.append(row)
 
-    b, p = _slope(r[ctrl], r[all_refs].mean(axis=1), spy)
+    b, p = _slope(r[ctrl], r[all_refs].mean(axis=1), spy, value)
     row = {"theme": theme["key"], "ticker": ctrl, "role": "Control", "group_basis": "all references",
            "group_beta": round(b, 3), "group_p": round(p, 4), "group_pass": not (b > 0 and p < P_PASS)}
     if gt:
-        bg, pg = _slope(r[ctrl], sign * r[gt], spy)
+        bg, pg = _slope(r[ctrl], sign * r[gt], spy, value)
         row.update(gt_beta=round(bg, 3), gt_p=round(pg, 4), gt_pass=not (bg > 0 and pg < P_PASS))
     rows.append(row)
     for row in rows:

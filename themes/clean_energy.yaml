@@ -6,6 +6,7 @@ measures: Solar, renewables and nuclear-fuel share of revenue
 controls:
 - SPY
 - TLT
+- VALUE
 ground_truth: ICLN
 references:
   High:

@@ -6,6 +6,7 @@ measures: Healthcare share of revenue
 controls:
 - SPY
 - TLT
+- VALUE
 ground_truth: XLV
 references:
   High:

@@ -6,6 +6,7 @@ measures: 'Crude-oil share of revenue (CVX: upstream oil & gas production share)
 controls:
 - SPY
 - TLT
+- VALUE
 ground_truth: USO
 references:
   High:

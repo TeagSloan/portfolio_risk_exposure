@@ -99,12 +99,29 @@ def get_prices(tickers: list[str], start: str = DEFAULT_START, end: str = DEFAUL
     return prices, sources
 
 
+# Built-in factor series that aren't single tickers. VALUE = value-minus-growth: the daily return of the
+# large-cap value ETF (IWD) minus the large-cap growth ETF (IWF). It soaks up days when "value" stocks
+# (banks, energy, defense, pharma) and "growth" stocks (tech) move in opposite directions, so that swing
+# isn't mistaken for theme exposure.
+SYNTHETIC = {"VALUE": ("IWD", "IWF")}
+
+
 def get_returns(tickers: list[str], start: str = DEFAULT_START, end: str = DEFAULT_END) -> pd.DataFrame:
-    """Simple daily returns (decimal, e.g. 0.01 = +1%) on the dates all tickers share."""
-    prices, _ = get_prices(tickers, start, end)
+    """Simple daily returns (decimal, e.g. 0.01 = +1%) on the dates all tickers share.
+
+    Also understands the built-in series in SYNTHETIC (e.g. "VALUE").
+    """
+    wanted = list(dict.fromkeys(t.upper() for t in tickers))
+    fetch = []
+    for t in wanted:
+        fetch += list(SYNTHETIC[t]) if t in SYNTHETIC else [t]
+    prices, _ = get_prices(fetch, start, end)
     returns = prices.pct_change(fill_method=None).iloc[1:]
     if returns.isna().any().any():
         raise DataError("Unexpected gaps in returns after joining dates.")
     if len(returns) < 2:
         raise DataError(f"Only {len(returns)} shared trading days for {', '.join(prices.columns)}; need more history.")
-    return returns
+    for name, (long, short) in SYNTHETIC.items():
+        if name in wanted:
+            returns[name] = returns[long] - returns[short]
+    return returns[wanted]

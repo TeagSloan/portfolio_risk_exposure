@@ -36,7 +36,7 @@ AI = {
     "key": "ai",
     "name": "AI",
     "measures": "AI share of revenue",
-    "controls": ["SPY", "TLT"],
+    "controls": ["SPY", "TLT", "VALUE"],
     "ground_truth": None,
     "references": {
         "High": [
@@ -339,7 +339,7 @@ def build_theme(theme: dict, warnings: list) -> dict:
             warnings.append(f"{theme['key']}: {r['ticker']} is also an AI reference")
     out = {
         "key": theme["key"], "name": theme["name"], "plain": theme["plain"], "measures": theme["measures"],
-        "controls": theme.get("controls", ["SPY", "TLT"]),
+        "controls": theme.get("controls", ["SPY", "TLT", "VALUE"]),
         "ground_truth": theme.get("ground_truth"),
         "references": refs,
         "control": {"ticker": ct, "name": _name(ct), "measures": theme["measures"], **control, "reason": cwhy},

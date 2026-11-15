@@ -6,6 +6,7 @@ measures: Discretionary-spending share of revenue
 controls:
 - SPY
 - TLT
+- VALUE
 ground_truth: XLY
 references:
   High:

@@ -1,73 +1,73 @@
 theme,ticker,role,group_basis,group_beta,group_p,group_pass,n_obs,pass,gt_beta,gt_p,gt_pass
-ai,NVDA,High,rest of High,0.311,0.0,True,499,True,,,
-ai,MU,High,rest of High,0.749,0.0,True,499,True,,,
-ai,VRT,High,rest of High,0.957,0.0,True,499,True,,,
-ai,AVGO,High,rest of High,0.457,0.0,True,499,True,,,
-ai,TSM,Moderate,rest of Moderate,0.338,0.0,True,499,True,,,
-ai,MSFT,Moderate,rest of Moderate,-0.06,0.9701,False,499,False,,,
-ai,VST,Moderate,rest of Moderate,0.722,0.0,True,499,True,,,
-ai,ADM,Control,all references,-0.199,1.0,True,499,True,,,
-bank_lending,MTB,High,rest of High,0.777,0.0,True,499,True,,,
-bank_lending,ZION,High,rest of High,1.1,0.0,True,499,True,,,
-bank_lending,CFG,High,rest of High,0.96,0.0,True,499,True,,,
-bank_lending,RF,High,rest of High,0.902,0.0,True,499,True,,,
-bank_lending,WFC,Moderate,rest of Moderate,0.902,0.0,True,499,True,,,
-bank_lending,C,Moderate,rest of Moderate,0.741,0.0,True,499,True,,,
-bank_lending,BAC,Moderate,rest of Moderate,0.721,0.0,True,499,True,,,
-bank_lending,COST,Control,all references,0.074,0.0747,True,499,True,,,
-clean_energy,FSLR,High,rest of High,0.289,0.0,True,499,True,1.433,0.0,True
-clean_energy,SEDG,High,rest of High,0.543,0.0,True,499,True,2.199,0.0,True
-clean_energy,LEU,High,rest of High,0.204,0.0002,True,499,True,0.945,0.0,True
-clean_energy,NEE,Moderate,rest of Moderate,0.001,0.4804,False,499,False,0.249,0.0,True
-clean_energy,BWXT,Moderate,rest of Moderate,0.003,0.4804,False,499,False,0.368,0.0,True
-clean_energy,KO,Control,all references,-0.085,0.9999,True,499,True,-0.126,0.9998,True
-consumer_disc,HD,High,rest of High,0.51,0.0,True,499,True,0.974,0.0,True
-consumer_disc,NKE,High,rest of High,0.6,0.0,True,499,True,1.051,0.0,True
-consumer_disc,TJX,High,rest of High,0.288,0.0,True,499,True,0.458,0.0,True
-consumer_disc,RCL,High,rest of High,0.506,0.0,True,499,True,0.79,0.0,True
-consumer_disc,COST,Moderate,rest of Moderate,0.162,0.0,True,499,True,0.334,0.0,True
-consumer_disc,DIS,Moderate,rest of Moderate,0.165,0.0002,True,499,True,0.519,0.0,True
-consumer_disc,DG,Moderate,rest of Moderate,0.43,0.0,True,499,True,0.51,0.0001,True
-consumer_disc,ADM,Control,all references,0.047,0.2698,True,499,True,-0.208,0.9772,True
-cyber,CRWD,High,rest of High,1.028,0.0,True,499,True,1.783,0.0,True
-cyber,PANW,High,rest of High,0.926,0.0,True,499,True,1.459,0.0,True
-cyber,FTNT,High,rest of High,0.811,0.0,True,499,True,1.336,0.0,True
-cyber,CHKP,High,rest of High,0.394,0.0,True,499,True,0.83,0.0,True
-cyber,CSCO,Moderate,High group (only one Moderate name),0.091,0.0061,True,499,True,0.29,0.0,True
-cyber,VMC,Control,all references,-0.139,0.9997,True,499,True,-0.161,0.9992,True
-defense,LMT,High,rest of High,0.756,0.0,True,499,True,0.906,0.0,True
-defense,NOC,High,rest of High,0.728,0.0,True,499,True,0.94,0.0,True
-defense,HII,High,rest of High,0.983,0.0,True,499,True,1.016,0.0,True
-defense,GD,High,rest of High,0.566,0.0,True,499,True,0.637,0.0,True
-defense,RTX,Moderate,rest of Moderate,0.493,0.0,True,499,True,1.125,0.0,True
-defense,BA,Moderate,rest of Moderate,0.44,0.0,True,499,True,0.791,0.0,True
-defense,GE,Moderate,rest of Moderate,0.471,0.0,True,499,True,1.105,0.0,True
-defense,INTU,Control,all references,-0.063,0.7382,True,499,True,-0.235,0.9865,True
-gold,SSRM,High,rest of High,0.949,0.0,True,499,True,1.601,0.0,True
-gold,CDE,High,rest of High,1.082,0.0,True,499,True,1.653,0.0,True
+ai,NVDA,High,rest of High,0.157,0.0,True,499,True,,,
+ai,MU,High,rest of High,0.803,0.0,True,499,True,,,
+ai,VRT,High,rest of High,0.918,0.0,True,499,True,,,
+ai,AVGO,High,rest of High,0.315,0.0,True,499,True,,,
+ai,TSM,Moderate,rest of Moderate,0.198,0.0,True,499,True,,,
+ai,MSFT,Moderate,rest of Moderate,-0.161,1.0,False,499,False,,,
+ai,VST,Moderate,rest of Moderate,0.547,0.0001,True,499,True,,,
+ai,ADM,Control,all references,-0.029,0.7152,True,499,True,,,
+bank_lending,MTB,High,rest of High,0.729,0.0,True,499,True,,,
+bank_lending,ZION,High,rest of High,1.153,0.0,True,499,True,,,
+bank_lending,CFG,High,rest of High,0.932,0.0,True,499,True,,,
+bank_lending,RF,High,rest of High,0.863,0.0,True,499,True,,,
+bank_lending,WFC,Moderate,rest of Moderate,0.858,0.0,True,499,True,,,
+bank_lending,C,Moderate,rest of Moderate,0.758,0.0,True,499,True,,,
+bank_lending,BAC,Moderate,rest of Moderate,0.684,0.0,True,499,True,,,
+bank_lending,COST,Control,all references,-0.091,0.9505,True,499,True,,,
+clean_energy,FSLR,High,rest of High,0.289,0.0,True,499,True,1.434,0.0,True
+clean_energy,SEDG,High,rest of High,0.568,0.0,True,499,True,2.208,0.0,True
+clean_energy,LEU,High,rest of High,0.216,0.0001,True,499,True,0.93,0.0,True
+clean_energy,NEE,Moderate,rest of Moderate,0.028,0.1446,False,499,False,0.26,0.0,True
+clean_energy,BWXT,Moderate,rest of Moderate,0.08,0.1446,False,499,False,0.364,0.0,True
+clean_energy,KO,Control,all references,-0.084,1.0,True,499,True,-0.117,0.9999,True
+consumer_disc,HD,High,rest of High,0.384,0.0,True,499,True,0.864,0.0,True
+consumer_disc,NKE,High,rest of High,0.464,0.0,True,499,True,0.945,0.0,True
+consumer_disc,TJX,High,rest of High,0.219,0.0,True,499,True,0.393,0.0,True
+consumer_disc,RCL,High,rest of High,0.42,0.0,True,499,True,0.714,0.0,True
+consumer_disc,COST,Moderate,rest of Moderate,0.076,0.0333,True,499,True,0.268,0.0002,True
+consumer_disc,DIS,Moderate,rest of Moderate,0.045,0.1694,False,499,False,0.43,0.0,True
+consumer_disc,DG,Moderate,rest of Moderate,0.194,0.0347,True,499,True,0.384,0.0023,True
+consumer_disc,ADM,Control,all references,-0.334,1.0,True,499,True,-0.332,0.9996,True
+cyber,CRWD,High,rest of High,0.975,0.0,True,499,True,1.722,0.0,True
+cyber,PANW,High,rest of High,0.91,0.0,True,499,True,1.462,0.0,True
+cyber,FTNT,High,rest of High,0.789,0.0,True,499,True,1.326,0.0,True
+cyber,CHKP,High,rest of High,0.456,0.0,True,499,True,0.945,0.0,True
+cyber,CSCO,Moderate,High group (only one Moderate name),0.089,0.009,True,499,True,0.301,0.0,True
+cyber,VMC,Control,all references,-0.066,0.9547,True,499,True,-0.042,0.8004,True
+defense,LMT,High,rest of High,0.735,0.0,True,499,True,0.856,0.0,True
+defense,NOC,High,rest of High,0.686,0.0,True,499,True,0.879,0.0,True
+defense,HII,High,rest of High,0.988,0.0,True,499,True,0.967,0.0,True
+defense,GD,High,rest of High,0.515,0.0,True,499,True,0.567,0.0,True
+defense,RTX,Moderate,rest of Moderate,0.461,0.0,True,499,True,1.096,0.0,True
+defense,BA,Moderate,rest of Moderate,0.424,0.0,True,499,True,0.779,0.0,True
+defense,GE,Moderate,rest of Moderate,0.46,0.0,True,499,True,1.108,0.0,True
+defense,INTU,Control,all references,-0.108,0.8481,True,499,True,-0.263,0.9926,True
+gold,SSRM,High,rest of High,0.953,0.0,True,499,True,1.607,0.0,True
+gold,CDE,High,rest of High,1.083,0.0,True,499,True,1.656,0.0,True
 gold,PAAS,High,rest of High,0.901,0.0,True,499,True,1.502,0.0,True
-gold,NEM,High,rest of High,0.636,0.0,True,499,True,1.32,0.0,True
-gold,FCX,Moderate,rest of Moderate,0.693,0.0,True,499,True,0.699,0.0,True
-gold,SCCO,Moderate,rest of Moderate,0.696,0.0,True,499,True,0.803,0.0,True
-gold,KO,Control,all references,-0.028,0.9164,True,499,True,-0.025,0.7741,True
-healthcare,PFE,High,rest of High,0.531,0.0,True,499,True,0.905,0.0,True
-healthcare,MRK,High,rest of High,0.692,0.0,True,499,True,1.283,0.0,True
-healthcare,LLY,High,rest of High,0.767,0.0,True,499,True,1.576,0.0,True
-healthcare,GEHC,High,rest of High,0.428,0.0,True,499,True,0.873,0.0,True
-healthcare,KR,Moderate,High group (only one Moderate name),0.193,0.0003,True,499,True,0.443,0.0,True
-healthcare,CRM,Control,all references,0.107,0.1242,True,499,True,0.128,0.1281,True
-metals,SCCO,High,rest of High,0.739,0.0,True,499,True,0.981,0.0,True
-metals,FCX,High,rest of High,0.686,0.0,True,499,True,0.836,0.0,True
-metals,BHP,High,rest of High,0.53,0.0,True,499,True,0.602,0.0,True
-metals,ALB,High,rest of High,0.971,0.0,True,499,True,0.473,0.0,True
-metals,SQM,High,rest of High,0.962,0.0,True,499,True,0.524,0.0,True
-metals,RIO,Moderate,rest of Moderate,0.619,0.0,True,499,True,0.552,0.0,True
-metals,VALE,Moderate,rest of Moderate,0.835,0.0,True,499,True,0.514,0.0,True
-metals,INTU,Control,all references,-0.386,1.0,True,499,True,-0.308,1.0,True
-oil,PR,High,rest of High,1.105,0.0,True,499,True,0.586,0.0,True
-oil,FANG,High,rest of High,1.013,0.0,True,499,True,0.576,0.0,True
-oil,COP,High,rest of High,0.878,0.0,True,499,True,0.506,0.0,True
-oil,EOG,High,rest of High,0.784,0.0,True,499,True,0.454,0.0,True
-oil,CVX,Moderate,rest of Moderate,0.785,0.0,True,499,True,0.356,0.0,True
-oil,SHEL,Moderate,rest of Moderate,0.657,0.0,True,499,True,0.312,0.0,True
-oil,ADBE,Control,all references,0.086,0.0754,True,499,True,0.033,0.1976,True
+gold,NEM,High,rest of High,0.635,0.0,True,499,True,1.314,0.0,True
+gold,FCX,Moderate,rest of Moderate,0.693,0.0,True,499,True,0.7,0.0,True
+gold,SCCO,Moderate,rest of Moderate,0.696,0.0,True,499,True,0.804,0.0,True
+gold,KO,Control,all references,-0.036,0.9758,True,499,True,-0.045,0.9333,True
+healthcare,PFE,High,rest of High,0.436,0.0,True,499,True,0.813,0.0,True
+healthcare,MRK,High,rest of High,0.559,0.0,True,499,True,1.233,0.0,True
+healthcare,LLY,High,rest of High,0.793,0.0,True,499,True,1.912,0.0,True
+healthcare,GEHC,High,rest of High,0.271,0.0,True,499,True,0.665,0.0,True
+healthcare,KR,Moderate,High group (only one Moderate name),-0.002,0.5115,False,499,False,0.178,0.0263,True
+healthcare,CRM,Control,all references,0.23,0.0171,False,499,False,0.305,0.0131,False
+metals,SCCO,High,rest of High,0.744,0.0,True,499,True,0.981,0.0,True
+metals,FCX,High,rest of High,0.691,0.0,True,499,True,0.836,0.0,True
+metals,BHP,High,rest of High,0.526,0.0,True,499,True,0.599,0.0,True
+metals,ALB,High,rest of High,0.96,0.0,True,499,True,0.468,0.0,True
+metals,SQM,High,rest of High,0.963,0.0,True,499,True,0.522,0.0,True
+metals,RIO,Moderate,rest of Moderate,0.617,0.0,True,499,True,0.55,0.0,True
+metals,VALE,Moderate,rest of Moderate,0.823,0.0,True,499,True,0.51,0.0,True
+metals,INTU,Control,all references,-0.399,1.0,True,499,True,-0.31,1.0,True
+oil,PR,High,rest of High,1.121,0.0,True,499,True,0.585,0.0,True
+oil,FANG,High,rest of High,1.013,0.0,True,499,True,0.575,0.0,True
+oil,COP,High,rest of High,0.861,0.0,True,499,True,0.504,0.0,True
+oil,EOG,High,rest of High,0.776,0.0,True,499,True,0.452,0.0,True
+oil,CVX,Moderate,rest of Moderate,0.749,0.0,True,499,True,0.354,0.0,True
+oil,SHEL,Moderate,rest of Moderate,0.643,0.0,True,499,True,0.31,0.0,True
+oil,ADBE,Control,all references,0.054,0.1909,True,499,True,0.032,0.2037,True
