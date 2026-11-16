@@ -411,7 +411,7 @@ def open_round(chain: Chain, entry_seconds: int, stake_mon: float, prepared: tup
     r = chain.send(league.functions.openRound(root, len(data["tickers"]), stake, deadline,
                                               duration or RACE_DAYS * DAY_SECONDS, data_hash, windows), "opened round")
     round_id = league.events.RoundOpened().process_receipt(r)[0]["args"]["roundId"]
-    lg.update({"currentRound": round_id, "entryStake": str(stake), "pool": data["tickers"],
+    lg.update({"currentRound": round_id, "currentDeadline": deadline, "entryStake": str(stake), "pool": data["tickers"],
                "poolRoot": Web3.to_hex(root),
                "replay": {"file": "league/replay_prices.json", "dataHash": Web3.to_hex(data_hash), "windows": windows,
                           "raceDays": RACE_DAYS, "daySeconds": DAY_SECONDS, "firstDate": data["dates"][0],
@@ -556,7 +556,7 @@ def testnet_gas_price() -> int | None:
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="python -m chain.league", description="Fantasy Funds League (testnet only).")
-    ap.add_argument("command", choices=["deploy", "pool", "open", "run", "status", "demo", "weekly", "demo-day"])
+    ap.add_argument("command", choices=["deploy", "pool", "open", "run", "status", "demo", "weekly", "demo-day", "always-on"])
     ap.add_argument("--network", default="anvil", choices=list(NETWORKS))
     ap.add_argument("--rpc", help="override the RPC URL")
     ap.add_argument("--keystore", help=f"League operator keystore (Monad testnet), default league-operator in {KEYSTORE_DIR}")
@@ -569,6 +569,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--every", type=int, default=300, help="weekly: seconds between live price updates")
     ap.add_argument("--weeks", type=int, help="weekly: stop after this many matchups (default: keep going)")
     ap.add_argument("--simulate-prices", action="store_true", help="weekly (tests): random-walk prices, not live FMP")
+    ap.add_argument("--data", default="simulated", help="always-on: price data (simulated)")
+    ap.add_argument("--rounds", type=int, help="always-on (tests): stop after opening this many rounds")
     ap.add_argument("--ignore-market-hours", action="store_true", help="weekly (tests): post prices around the clock")
     args = ap.parse_args(argv)
     try:
@@ -591,6 +593,9 @@ def main(argv: list[str] | None = None) -> int:
             from chain.league_live import demo_day, run_demo_day
             demo_day(chain, args.entry_seconds, args.stake)
             run_demo_day(chain)
+        if args.command == "always-on":
+            from chain.league_live import always_on
+            always_on(chain, args.entry_seconds, args.stake, data=args.data, max_rounds=args.rounds)
         if args.command == "status":
             print_results(results(chain, args.round or league_section(args.network).get("currentRound", 1)))
         if chain.costs:

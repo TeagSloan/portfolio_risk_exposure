@@ -174,11 +174,14 @@ def update_season(chain: Chain, r: dict, week: dict) -> dict:
     return season
 
 
-def git_push(paths: list[Path], message: str, log=print) -> None:
-    """Commit only these files and push (pull --rebase first). Testnet only."""
+def git_push(paths: list[Path], message: str, log=print, force: list[Path] | None = None) -> None:
+    """Commit only these files and push (pull --rebase first). Testnet only. force: gitignored files to add anyway."""
     rel = [str(p.relative_to(ROOT)) for p in paths if p.exists()]
+    forced = {str(p.relative_to(ROOT)) for p in force or []}
     try:
-        subprocess.run(["git", "add", *rel], cwd=ROOT, check=True, capture_output=True)
+        subprocess.run(["git", "add", *[r for r in rel if r not in forced]], cwd=ROOT, check=True, capture_output=True)
+        if forced & set(rel):
+            subprocess.run(["git", "add", "-f", *sorted(forced & set(rel))], cwd=ROOT, check=True, capture_output=True)
         if subprocess.run(["git", "diff", "--cached", "--quiet", "--", *rel], check=False, cwd=ROOT).returncode == 0:
             return
         subprocess.run(["git", "commit", "-m", message, "--", *rel], cwd=ROOT, check=True, capture_output=True)
@@ -385,3 +388,107 @@ def run_demo_day(chain: Chain, log=print) -> dict:
     r = run_round(chain)
     print_results(r, log)
     return r
+
+
+# ---------------------------------------------------------------------------------------------
+# Always-on League: exactly one round open for entries at all times
+# ---------------------------------------------------------------------------------------------
+
+def always_on(chain: Chain, entry_seconds: int, stake_mon: float, data: str = "simulated", push: bool = True,
+              max_rounds: int | None = None, log=print) -> None:
+    """Keep one round open. At each deadline: open the NEXT round first, then race the closed one in the background
+    (simulated trading day, 60 s). Fewer than 2 entries: lock() cancels it and entrants claim their stake back, so
+    no round is ever left 'locked'. Ctrl+C: stop opening rounds, finish every round that has stakes, then exit.
+
+    All rounds share one simulated-day file (fixed seed, hash recorded at every openRound); each round's day is
+    still picked by its own future block after its entries close."""
+    import threading
+
+    import chain.league as lg_mod
+
+    if data != "simulated":
+        raise LeagueError("always-on supports --data simulated (live prices only trade during market hours).")
+    send_lock = threading.Lock()  # one nonce at a time: the opener and the racer share the operator wallet
+    raw_finish = chain.finish
+    chain.finish = lambda *a, **k: _locked(send_lock, raw_finish, *a, **k)
+
+    live_file = PAGE / "live.json"
+    state = {"mode": "always-on", "openRoundId": None, "deadline": None, "racingRoundId": None,
+             "lastFinishedRoundId": None, "race": None}
+
+    def save(race: dict | None = None):
+        if race is not None:
+            state["race"] = race
+        live_file.write_text(json.dumps({**state, "updated": int(time.time())}))
+
+    lg_mod.write_live = lambda st: save(st)  # run_round's progress goes into the 'race' part of live.json
+
+    prepared = write_demo_day_file(league_section(chain.network)["pool"])
+    racers: list[threading.Thread] = []
+
+    def open_next() -> int:
+        rid = open_round(chain, entry_seconds, stake_mon, prepared=prepared)
+        state.update(openRoundId=rid, deadline=league_section(chain.network)["currentDeadline"])
+        save()
+        if push and chain.network != "anvil":
+            git_push([ROOT / "deployments" / f"{chain.network}-league.json", REPLAY_FILE, live_file],
+                     f"League: round {rid} open", log, force=[live_file])
+        return rid
+
+    def race(rid: int):
+        state["racingRoundId"] = rid
+        save()
+        try:
+            r = run_round(chain, rid)
+            log(f"  round {rid}: {r['phase']}" + (f", winner {', '.join(e['name'] for e in r['entries'] if e['winner'])}"
+                                                   if r["phase"] == "Settled" else " (stakes refundable via Claim)"))
+        except Exception as exc:  # noqa: BLE001 - keep the League running; the round can still be cancelled
+            log(f"  round {rid}: ERROR {exc}")
+        finally:
+            state.update(racingRoundId=None, lastFinishedRoundId=rid)
+            save()
+
+    league = chain.contract("FundLeague", league_section(chain.network)["fundLeague"])
+    opened, rid = 0, open_next()
+    opened += 1
+    next_status = 0.0
+    try:
+        while True:
+            now = time.time()
+            if now >= next_status:
+                next_status = now + 30
+                info = league.functions.getRound(rid).call()
+                bal = chain.w3.eth.get_balance(chain.address) / 1e18
+                log(f"[{datetime.now(PT):%H:%M:%S}] open round {rid}: {info[11]} entries, pot {info[14] / 1e18:g} MON, "
+                    f"closes in {max(0, info[2] - int(now))}s · racing {state['racingRoundId'] or '-'} · "
+                    f"wallet {bal:.2f}" + ("  WARNING: League wallet below 10 MON" if bal < 10 and chain.network != "anvil" else ""))
+            if now >= state["deadline"]:
+                closed = rid
+                if max_rounds is None or opened < max_rounds:
+                    rid = open_next()  # the next round opens FIRST, so there's always one taking entries
+                    opened += 1
+                t = threading.Thread(target=race, args=(closed,), daemon=False, name=str(closed))
+                t.start()
+                racers.append(t)
+                if rid == closed:  # --rounds reached (tests): nothing new was opened
+                    break
+            time.sleep(1)
+    except KeyboardInterrupt:
+        log(f"\nStopping: no new rounds. Finishing open round {rid} at its deadline so no stake is stranded ...")
+        wait = state["deadline"] - time.time()
+        if wait > 0:
+            time.sleep(wait + 1)
+        if not any(t.is_alive() and t.name == str(rid) for t in racers):
+            t = threading.Thread(target=race, args=(rid,), daemon=False, name=str(rid))
+            t.start()
+            racers.append(t)
+    for t in racers:
+        t.join()
+    state.update(openRoundId=None, deadline=None)
+    save()
+    log("Stopped. Every round is settled or cancelled; winners and refunds can be claimed on the League page.")
+
+
+def _locked(lock, fn, *a, **k):
+    with lock:
+        return fn(*a, **k)

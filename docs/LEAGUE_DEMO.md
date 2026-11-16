@@ -220,3 +220,20 @@ python -m chain.league demo-day --network monad-testnet --entry-seconds 300 --st
   block picks the day after entries close; one step every 3 s (a 60-second race); `settle`.
 - It opens the round, pushes the deployment file and replay file for the page, then waits for the deadline and
   runs the race. Cost: the same as a replay round, about 1 MON for the operator with ~20 distinct stocks.
+
+### Always-on League (one round always open)
+
+```bash
+python -m chain.league always-on --network monad-testnet --entry-seconds 150 --stake 1 --data simulated
+```
+
+- Exactly one round takes entries at all times. At its deadline the NEXT round opens first, then the closed
+  round locks → starts → replays its simulated trading day (60 s) → settles in the background.
+- Fewer than 2 entries: `lock` cancels the round and entrants claim their stake back (no round is left locked).
+- All rounds share one simulated-day file (fixed seed, its hash recorded at every `openRound`); each round's day
+  is picked by its own future block.
+- `league/live.json`: `openRoundId` + `deadline`, `racingRoundId`, `lastFinishedRoundId`, plus the current race's
+  progress. Pushed with the deployment file on every new round.
+- Status line every 30 s with a warning below 10 MON. Ctrl+C: opens nothing new, finishes the open round at its
+  deadline (race or refund) and waits for every race, so no stake is stranded.
+- Cost: an open costs ~0.02 MON and a cancelled round ~0.01 MON; a round that races costs ~0.7 MON (15 used stocks).
