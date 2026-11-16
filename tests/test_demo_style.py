@@ -26,3 +26,12 @@ def test_fonts_are_the_scoreboard_set():
 def test_signed_tile_values_are_mint_or_coral():
     html = style.tiles([("Return", "+4%", ""), ("Bad year", "−17%", ""), ("Chance", "8%", "")])
     assert f"color:{style.GAIN}" in html and f"color:{style.LOSS}" in html and f"color:{style.TEXT}" in html
+
+
+def test_stock_rows_use_their_own_classes_and_short_chips():
+    html = style.league_entry("AI + Clean Energy", [
+        {"ticker": "FSLR", "name": "First Solar, Inc.", "industry": "Solar", "weight": 13,
+         "chips": [style.theme_chip("Clean energy (solar & renewables)", "High")]}])
+    assert 'class="tf-entry-name"' in html and 'class="tf-r-co"' in html and "Clean energy · High" in html
+    assert 'class="nm"' not in html  # the old shared class that let the card title style restyle company names
+    assert style.short_theme("bank_lending") == "Banks" and style.short_theme("Aerospace & defense") == "Aero & defense"

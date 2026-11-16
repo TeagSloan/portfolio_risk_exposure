@@ -86,9 +86,28 @@
   .check .ok { color: var(--gain); } .check .no { color: var(--muted); }
   .entry { padding: 12px 0; border-bottom: 1px solid var(--line); }
   .entry:last-child { border-bottom: 0; }
-  .entry .en { font-weight: 600; font-size: 16px; }
-  .entry .meta { font-size: 13px; color: var(--muted); }
-  .entry .stocks { font-size: 14px; margin-top: 2px; color: var(--muted); }
+  .entry { padding: var(--s2) 0; }
+  .entry .en { font: 800 22px/1.15 var(--display); letter-spacing: .02em; text-transform: uppercase; overflow-wrap: anywhere; }
+  .entry .en .you { font: 600 14px/1.35 var(--sans); text-transform: none; letter-spacing: 0; }
+  .entry .meta { font-size: 13px; color: var(--muted); line-height: 1.35; margin-top: 2px; }
+  /* One stock row (same layout as the dashboard's "Your N stocks" and League entry card):
+     TICKER | company (one line, ellipsis) / industry + theme chip | weight, then a full-width weight bar. */
+  .srows { display: flex; flex-direction: column; margin-top: var(--s1); }
+  .sr { display: grid; grid-template-columns: 72px minmax(0, 1fr) auto; gap: 4px 16px; align-items: start;
+        padding: 10px 0; border-top: 1px solid var(--line); line-height: 1.35; }
+  .sr:first-child { border-top: 0; }
+  .sr-tk { font: 700 20px/1.25 var(--display); letter-spacing: .02em; text-transform: uppercase; color: var(--ink); }
+  .sr-main { min-width: 0; }
+  .sr-co { font: 500 15px/1.35 var(--sans); text-transform: none; letter-spacing: 0; color: var(--ink);
+           white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .sr-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; margin-top: 4px; min-width: 0; }
+  .sr-ind { font-size: 13px; line-height: 1.35; color: var(--muted); }
+  .sr-w { font: 600 15px/1.35 var(--sans); text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--ink); }
+  .sr-bar { grid-column: 1 / -1; height: 6px; background: var(--raised); border-radius: 6px; overflow: hidden; margin-top: 6px; }
+  .sr-bar i { display: block; height: 100%; background: var(--rose); border-radius: 6px; }
+  .tchip { display: inline-block; font: 600 12px/1.35 var(--sans); padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+  .tchip.hi { background: var(--rose-soft); color: var(--blush-text); }
+  .tchip.mod { background: #2C1A22; color: #E9A9BF; }
   .tag { display: inline-block; font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: 999px; background: var(--rose-soft);
          color: var(--blush-text); margin: var(--s1) 4px 0 0; }
   .you { color: var(--blush); font-weight: 600; }
@@ -505,9 +524,29 @@ function entryThemes(tickers, weights) {
   for (const t of pool.themes) {
     let w = 0;
     tickers.forEach((tk, i) => { const r = s[tk] && s[tk].themes[t.key]; if (r && ["High", "Moderate"].includes(r.rating)) w += weights[i]; });
-    if (w > 0) out.push([t.name, w / 100]);
+    if (w > 0) out.push([THEME_SHORT[t.key] || t.name, w / 100]);
   }
   return out.sort((a, b) => b[1] - a[1]).slice(0, 3);
+}
+
+// ───────────── one row per stock (ticker, company, industry + strongest theme, weight, weight bar) ─────────────
+const THEME_SHORT = { ai: "AI", oil: "Oil", cyber: "Cyber", clean_energy: "Clean energy", gold: "Gold", healthcare: "Health",
+  bank_lending: "Banks", consumer_disc: "Consumer", defense: "Aero & defense", metals: "Metals" };
+function bestTheme(stock) {  // High before Moderate, then a reference company, then the strongest co-movement
+  const rank = (r) => (r.rating === "High" ? 2 : r.rating === "Moderate" ? 1 : 0);
+  const hits = Object.entries(stock.themes || {}).filter(([, r]) => rank(r) > 0);
+  hits.sort(([, a], [, b]) => rank(b) - rank(a) || (b.ref - a.ref) || ((b.t ?? -99) - (a.t ?? -99)));
+  return hits.length ? [hits[0][0], hits[0][1].rating] : null;
+}
+function stockRows(tickers, weights) {
+  const s = byTicker(), top = Math.max(...weights, 1);
+  return `<div class="srows">${tickers.map((t, j) => {
+    const st = s[t] || {}, b = bestTheme(st);
+    const chip = b ? `<span class="tchip ${b[1] === "High" ? "hi" : "mod"}">${esc(THEME_SHORT[b[0]] || b[0])} · ${b[1]}</span>` : "";
+    return `<div class="sr"><span class="sr-tk">${esc(t)}</span><div class="sr-main"><div class="sr-co" title="${esc(st.name || "")}">${esc(st.name || "")}</div>` +
+      `<div class="sr-meta"><span class="sr-ind">${esc(st.industry || "")}</span>${chip}</div></div>` +
+      `<span class="sr-w">${(weights[j] / 100).toFixed(0)}%</span><div class="sr-bar"><i style="width:${(100 * weights[j] / top).toFixed(0)}%"></i></div></div>`;
+  }).join("")}</div>`;
 }
 
 // ───────────── motion helpers (short, eased; skipped under prefers-reduced-motion) ─────────────
@@ -637,7 +676,7 @@ async function render(phase) {
     const tags = entryThemes(tk, w).map(([n, p]) => `<span class="tag">${esc(n)} ${p.toFixed(0)}%</span>`).join("");
     const mine = me && e.owner.toLowerCase() === me.toLowerCase() ? ' <span class="you">(you)</span>' : "";
     return `<div class="entry${fresh.has(i) ? " new" : ""}"><div class="en">${esc(e.name)}${mine}</div><div class="meta mono">${short(e.owner)}</div>
-      <div class="stocks">${tk.map((t, j) => `${esc(t)} ${(w[j] / 100).toFixed(0)}%`).join(" · ")}</div>${tags}</div>`;
+      ${stockRows(tk, w)}${tags}</div>`;
   }).join("") : `<div class="empty"><b>No entries yet</b>Be the first: build a fund and enter before the clock runs out.</div>`;
 
   // leaderboard: rows glide to their new rank (FLIP) and returns count to the new value

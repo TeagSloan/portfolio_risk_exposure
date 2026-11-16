@@ -110,12 +110,8 @@ div[data-baseweb="select"] > div, input, textarea {{ background: {RAISED} !impor
 @keyframes tf-count {{ from {{ --tf-a: 0; --tf-b: 0; }} }}
 .tf-tile {{ animation: tf-rise 400ms cubic-bezier(.2,.8,.2,1) both; animation-delay: var(--d, 0ms); }}
 @keyframes tf-rise {{ from {{ opacity: 0; transform: translateY(6px); }} to {{ opacity: 1; transform: none; }} }}
-.tf-hold .bar {{ grid-column: 2 / -1; height: 4px; background: {RAISED}; border-radius: 4px; overflow: hidden; margin-top: 2px; }}
-.tf-hold .bar span {{ display: block; height: 100%; background: {ROSE}; border-radius: 4px; transform-origin: left;
-  animation: tf-bar 600ms cubic-bezier(.2,.8,.2,1) both; }}
 @keyframes tf-bar {{ from {{ transform: scaleX(0); }} to {{ transform: scaleX(1); }} }}
-.tf-hold .why {{ grid-column: 2 / -1; font-size: 13px; color: {MUTED}; line-height: 1.45; }}
-@media (prefers-reduced-motion: reduce) {{ .tf-hero::before, .tf-count, .tf-tile, .tf-hold .bar span {{ animation: none; }} }}
+@media (prefers-reduced-motion: reduce) {{ .tf-hero::before, .tf-count, .tf-tile, .tf-r .bar span {{ animation: none; }} }}
 .tf-hero h1 {{ font-size: clamp(56px, 9vw, 104px); line-height: 0.9; margin: 0; font-weight: 800 !important;
   letter-spacing: 0.01em; }}
 .tf-hero p {{ margin: 16px 0 0; color: {MUTED}; font-size: 19px; max-width: 640px; line-height: 1.55; }}
@@ -150,17 +146,28 @@ div[data-baseweb="select"] > div, input, textarea {{ background: {RAISED} !impor
 .tf-funnel .num {{ font-family: {DISPLAY}; font-weight: 800; font-size: 30px; text-align: right;
   font-variant-numeric: tabular-nums; line-height: 1; }}
 
-.tf-hold {{ display: flex; flex-direction: column; }}
-.tf-hold .row {{ display: grid; grid-template-columns: 76px minmax(0, 1fr) auto 64px; column-gap: 16px; row-gap: 6px;
-  align-items: center; padding: 16px 4px; border-top: 1px solid {LINE}; }}
-.tf-hold .row:first-child {{ border-top: 0; }}
-.tf-hold .tk {{ font-family: {DISPLAY}; font-weight: 700; font-size: 20px; letter-spacing: 0.02em; }}
-.tf-hold .nm {{ font-size: 14px; color: {TEXT}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
-.tf-hold .ind {{ font-size: 13px; color: {MUTED}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
-.tf-hold .w {{ text-align: right; font-variant-numeric: tabular-nums; color: {TEXT}; font-family: {SANS};
-  font-weight: 600; font-size: 17px; }}
-.tf-chips {{ display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }}
-.tf-chip {{ font-size: 12px; font-weight: 600; padding: 4px 9px; border-radius: 999px; white-space: nowrap; }}
+/* One stock row, used by "Your N stocks" and the League entry card (same layout as the League page):
+   TICKER | company (one line, ellipsis) / industry + theme chip | weight, then a full-width weight bar.
+   Own class names (tf-r-*) so no card-level rule can restyle them. */
+.tf-rows {{ display: flex; flex-direction: column; }}
+.tf-r {{ display: grid; grid-template-columns: 72px minmax(0, 1fr) auto; gap: 4px 16px; align-items: start;
+  padding: 14px 0; border-top: 1px solid {LINE}; line-height: 1.35; }}
+.tf-r:first-child {{ border-top: 0; padding-top: 4px; }}
+.tf-r .tf-r-tk {{ font-family: {DISPLAY}; font-weight: 700; font-size: 20px; line-height: 1.25; letter-spacing: 0.02em;
+  text-transform: uppercase; color: {TEXT}; }}
+.tf-r .tf-r-main {{ min-width: 0; }}
+.tf-r .tf-r-co {{ font-family: {SANS}; font-weight: 500; font-size: 15px; line-height: 1.35; text-transform: none;
+  letter-spacing: 0; color: {TEXT}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }}
+.tf-r .tf-r-meta {{ display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; margin-top: 4px; min-width: 0; }}
+.tf-r .tf-r-ind {{ font-family: {SANS}; font-size: 13px; line-height: 1.35; color: {MUTED}; }}
+.tf-r .tf-r-w {{ font-family: {SANS}; font-weight: 600; font-size: 15px; line-height: 1.35; text-align: right;
+  font-variant-numeric: tabular-nums; color: {TEXT}; white-space: nowrap; }}
+.tf-r .tf-r-why {{ grid-column: 2 / -1; font-size: 13px; line-height: 1.45; color: {MUTED}; }}
+.tf-r .bar {{ grid-column: 1 / -1; height: 6px; background: {RAISED}; border-radius: 6px; overflow: hidden; margin-top: 8px; }}
+.tf-r .bar span {{ display: block; height: 100%; background: {ROSE}; border-radius: 6px; transform-origin: left;
+  animation: tf-bar 600ms cubic-bezier(.2,.8,.2,1) both; }}
+.tf-chip {{ display: inline-block; font-family: {SANS}; font-size: 12px; font-weight: 600; line-height: 1.35;
+  padding: 3px 9px; border-radius: 999px; white-space: nowrap; text-transform: none; letter-spacing: 0; }}
 
 .tf-tiles {{ display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }}
 @media (max-width: 900px) {{ .tf-tiles {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
@@ -195,10 +202,8 @@ div[data-baseweb="select"] > div, input, textarea {{ background: {RAISED} !impor
 .tf-entry {{ background: {CARD}; border: 1px solid {LINE}; border-radius: 16px; padding: 24px; margin-bottom: 16px; }}
 .tf-entry .k {{ font-family: {DISPLAY}; font-weight: 700; font-size: 15px; letter-spacing: 0.04em;
   text-transform: uppercase; color: {MUTED}; }}
-.tf-entry .nm {{ font-family: {DISPLAY}; font-size: 40px; font-weight: 800; text-transform: uppercase;
-  letter-spacing: 0.01em; line-height: 1; margin: 6px 0 16px; overflow-wrap: anywhere; }}
-.tf-entry .tf-hold .row {{ padding: 10px 0; row-gap: 4px; }}
-.tf-entry .tf-hold .tk {{ font-size: 15px; }}
+.tf-entry .tf-entry-name {{ font-family: {DISPLAY}; font-size: clamp(22px, 3vw, 28px); font-weight: 800;
+  text-transform: uppercase; letter-spacing: 0.02em; line-height: 1.15; margin: 6px 0 12px; overflow-wrap: anywhere; }}
 .tf-entry .note {{ font-size: 13px; color: {MUTED}; margin-top: 12px; line-height: 1.45; }}
 .tf-intro {{ margin: 32px 0 24px; }}
 .tf-intro h2 {{ font-size: 40px; margin: 0; line-height: 1.1; }}
@@ -212,12 +217,6 @@ div[data-baseweb="select"] > div, input, textarea {{ background: {RAISED} !impor
 .st-key-tf_qr [data-testid="stCode"] pre {{ font-size: 12px; background: {RAISED}; }}
 .tf-qrtext h3 {{ font-family: {DISPLAY}; font-size: 26px; font-weight: 800; text-transform: uppercase; margin: 0 0 8px; }}
 .tf-qrtext p {{ color: {MUTED}; font-size: 14px; line-height: 1.5; margin: 0; }}
-.tf-entry .row {{ display: grid; grid-template-columns: 72px minmax(0, 1fr) 48px; gap: 12px; align-items: center;
-  padding: 8px 0; border-top: 1px solid {LINE}; }}
-.tf-entry .tk {{ font-family: {DISPLAY}; font-weight: 700; font-size: 19px; letter-spacing: 0.02em; }}
-.tf-entry .bar {{ background: {RAISED}; border-radius: 6px; height: 8px; overflow: hidden; }}
-.tf-entry .bar span {{ display: block; height: 100%; background: {ROSE}; border-radius: 6px; }}
-.tf-entry .w {{ text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; color: {MUTED}; }}
 .tf-qr {{ background: {CARD}; border: 1px solid {LINE}; border-radius: 16px; padding: 24px; text-align: center; }}
 .tf-qr .code {{ display: inline-block; border-radius: 12px; overflow: hidden; line-height: 0; }}
 .tf-qr .code svg {{ width: 232px; height: 232px; }}
@@ -225,6 +224,27 @@ div[data-baseweb="select"] > div, input, textarea {{ background: {RAISED} !impor
 .tf-qr p {{ color: {MUTED}; font-size: 14px; line-height: 1.5; margin: 0 auto; max-width: 320px; }}
 </style>
 """
+
+
+THEME_SHORT = {  # short chip labels, by theme key and by display name
+    "ai": "AI", "oil": "Oil", "cyber": "Cyber", "clean_energy": "Clean energy", "gold": "Gold",
+    "healthcare": "Health", "bank_lending": "Banks", "consumer_disc": "Consumer", "defense": "Aero & defense",
+    "metals": "Metals",
+    "AI": "AI", "Oil": "Oil", "Cybersecurity": "Cyber", "Clean energy (solar & renewables)": "Clean energy",
+    "Gold & precious metals": "Gold", "Healthcare": "Health", "Bank lending / net interest income": "Banks",
+    "Consumer discretionary": "Consumer", "Aerospace & defense": "Aero & defense",
+    "Industrial / EV metals (copper + lithium)": "Metals",
+}
+
+
+def short_theme(theme: str) -> str:
+    """A theme key or display name -> its short chip label (unknown names pass through)."""
+    return THEME_SHORT.get(theme, theme)
+
+
+def theme_chip(theme: str, tier: str) -> str:
+    """'Clean energy · High', colored by tier."""
+    return chip(f"{short_theme(theme)} · {tier}", tier)
 
 
 def chip(text: str, kind: str) -> str:
@@ -296,21 +316,23 @@ def funnel(steps: list[dict]) -> str:
     return f'<div class="tf-funnel">{"".join(rows)}</div>'
 
 
-def holdings(rows: list[dict]) -> str:
+def holdings(rows: list[dict], decimals: int = 1) -> str:
     """rows: [{"ticker", "name", "industry", "weight", "chips": [html], "why" (optional one line)}]
-    Each row: ticker, company, theme chips, weight, a weight bar (relative to the largest holding) and why it's in."""
+    Each row: TICKER | company (one line) over industry + theme chips | weight, then a full-width weight bar
+    (relative to the largest holding). Used for "Your N stocks" and the League entry card."""
     top = max([r["weight"] for r in rows] or [1]) or 1
     out = []
     for i, r in enumerate(rows):
-        why = f'<div class="why">{escape(r["why"])}</div>' if r.get("why") else ""
-        out.append(f'<div class="row"><span class="tk">{escape(r["ticker"])}</span>'
-                   f'<div style="min-width:0"><div class="nm">{escape(r.get("name") or "")}</div>'
-                   f'<div class="ind">{escape(r.get("industry") or "")}</div></div>'
-                   f'<div class="tf-chips">{"".join(r.get("chips", []))}</div>'
-                   f'<span class="w">{r["weight"]:.1f}%</span>'
+        name = r.get("name") or ""
+        why = f'<div class="tf-r-why">{escape(r["why"])}</div>' if r.get("why") else ""
+        out.append(f'<div class="tf-r"><span class="tf-r-tk">{escape(r["ticker"])}</span>'
+                   f'<div class="tf-r-main"><div class="tf-r-co" title="{escape(name)}">{escape(name)}</div>'
+                   f'<div class="tf-r-meta"><span class="tf-r-ind">{escape(r.get("industry") or "")}</span>'
+                   f'{"".join(r.get("chips", []))}</div></div>'
+                   f'<span class="tf-r-w">{r["weight"]:.{decimals}f}%</span>{why}'
                    f'<div class="bar"><span style="width:{100 * r["weight"] / top:.0f}%;animation-delay:{i * 30}ms">'
-                   f'</span></div>{why}</div>')
-    return f'<div class="tf-hold">{"".join(out)}</div>'
+                   f'</span></div></div>')
+    return f'<div class="tf-rows">{"".join(out)}</div>'
 
 
 _NUM = re.compile(r"^([−+-]?)(\d+)(?:\.(\d{1,2}))?(%?)$")
@@ -427,8 +449,8 @@ def league_entry(name: str, rows: list[dict], note: str = "") -> str:
     """The fund as it will be entered in the League: full name (wraps, never cut) over a compact holdings table.
     rows: same as holdings() (ticker, name, industry, weight, chips)."""
     extra = f'<div class="note">{escape(note)}</div>' if note else ""
-    return (f'<div class="tf-entry"><div class="k">Your League entry</div><div class="nm">{escape(name)}</div>'
-            f'{holdings(rows)}{extra}</div>')
+    return (f'<div class="tf-entry"><div class="k">Your League entry</div>'
+            f'<div class="tf-entry-name">{escape(name)}</div>{holdings(rows, decimals=0)}{extra}</div>')
 
 
 def qr_card(svg: str, title: str, sentence: str) -> str:

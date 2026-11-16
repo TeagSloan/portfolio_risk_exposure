@@ -218,7 +218,11 @@ def own_step_build(build: dict, prefs: dict[str, str]) -> dict[str, float]:
         st.subheader(f"Your {len([t for t in weights if t != dashboard.CASH])} stocks")
         rows = []
         for h in build["holdings"]:
-            chips = [style.chip(f"{name}: {tier}", tier) for name, tier in (h.get("tiers") or {}).items()]
+            # one chip for the theme it was picked for, plus each avoided theme (shows it stays clear of it)
+            shown = list((h.get("avoid_tiers") or {}).items())
+            if h.get("picked_for") not in (None, "_cap") and h.get("picked_tier"):
+                shown.insert(0, (h["picked_for"], h["picked_tier"]))
+            chips = [style.theme_chip(name, tier) for name, tier in shown]
             rows.append({"ticker": h["ticker"], "name": h.get("name", "Cash" if h["ticker"] == "CASH" else ""),
                          "industry": h.get("industry", ""), "weight": h["weight_pct"], "chips": chips,
                          "why": why_in(h)})
@@ -505,7 +509,7 @@ def league_rows(etf: dict[str, int], portfolio: dict) -> list[dict]:
     for t, w in etf.items():
         h = picked.get(t, {})
         theme, tier = h.get("picked_for"), h.get("picked_tier")
-        chips = [style.chip(f"{theme}: {tier}", tier)] if theme and theme != "_cap" and tier else []
+        chips = [style.theme_chip(theme, tier)] if theme and theme != "_cap" and tier else []
         rows.append({"ticker": t, "name": info.get(t, {}).get("name", ""), "industry": info.get(t, {}).get("industry", ""),
                      "weight": float(w), "chips": chips})
     return rows
