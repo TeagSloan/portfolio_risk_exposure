@@ -20,14 +20,21 @@ from __future__ import annotations
 
 import argparse
 import json
-import time
 import sys
+import time
 from pathlib import Path
 
 from eth_account import Account
 from web3 import Web3
 
-from chain.league import merkle_proof, NETWORKS, PRESETS_FILE, Chain, LeagueError, league_section
+from chain.league import (
+    NETWORKS,
+    PRESETS_FILE,
+    Chain,
+    LeagueError,
+    league_section,
+    merkle_proof,
+)
 from chain.publish import to_bytes32
 
 ROOT = Path(__file__).resolve().parent.parent

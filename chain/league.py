@@ -47,7 +47,6 @@ import os
 import subprocess
 import sys
 import time
-from collections import Counter
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -393,31 +392,37 @@ def post_prices(chain: Chain, oracle, prices: dict[str, float], label: str):
                f"posted {len(ts)} prices: {label}", extra_gas=GAS_PER_PRICE * len(ts))
 
 
-def open_round(chain: Chain, entry_seconds: int, stake_mon: float) -> int:
+def open_round(chain: Chain, entry_seconds: int, stake_mon: float, prepared: tuple | None = None,
+               deadline: int | None = None, duration: int | None = None, extra: dict | None = None) -> int:
+    """Open a round. prepared = (data_hash, windows, data) from another replay source (demo day, weekly);
+    deadline / duration override entry_seconds and the replay length (weekly matchups); extra is saved in the
+    deployment file's league section (e.g. the week's lock and end times for the page)."""
     lg = league_section(chain.network)
     if not lg.get("pool"):
         raise LeagueError("No pool yet. Run: python -m chain.league pool")
     chain.phase = "open"
-    data_hash, windows, data = write_replay_file(lg["pool"])
+    data_hash, windows, data = prepared or write_replay_file(lg["pool"])
     league = chain.contract("FundLeague", lg["fundLeague"])
-    oracle = chain.contract("ExposureOracle", lg["oracle"])
     # No prices at open: only the tickers entries actually use get prices, right before start (see run_round).
     root = merkle_root(data["tickers"])
     now = chain.w3.eth.get_block("latest").timestamp
-    deadline = max(now, int(time.time())) + entry_seconds
+    deadline = deadline or max(now, int(time.time())) + entry_seconds
     stake = Web3.to_wei(stake_mon, "ether")
     r = chain.send(league.functions.openRound(root, len(data["tickers"]), stake, deadline,
-                                              RACE_DAYS * DAY_SECONDS, data_hash, windows), "opened round")
+                                              duration or RACE_DAYS * DAY_SECONDS, data_hash, windows), "opened round")
     round_id = league.events.RoundOpened().process_receipt(r)[0]["args"]["roundId"]
     lg.update({"currentRound": round_id, "entryStake": str(stake), "pool": data["tickers"],
                "poolRoot": Web3.to_hex(root),
                "replay": {"file": "league/replay_prices.json", "dataHash": Web3.to_hex(data_hash), "windows": windows,
                           "raceDays": RACE_DAYS, "daySeconds": DAY_SECONDS, "firstDate": data["dates"][0],
-                          "lastDate": data["dates"][-1]}})
+                          "lastDate": data["dates"][-1], "mode": data.get("mode", "replay"),
+                          "windowStride": data.get("window_stride", 1)}})
+    lg.pop("weekly", None)
+    lg.update(extra or {})
     write_league_section(chain.network, lg)
     write_live({"round": round_id, "phase": "entries", "deadline": deadline})
     chain.log(f"Round {round_id} open: entry {stake_mon} {NETWORKS[chain.network]['currency']}, entries close in "
-              f"{entry_seconds}s. Pool: {len(data['tickers'])} stocks (Merkle root). Replay hash {Web3.to_hex(data_hash)}, {windows} windows "
+              f"{deadline - int(time.time())}s. Pool: {len(data['tickers'])} stocks (Merkle root). Replay hash {Web3.to_hex(data_hash)}, {windows} windows "
               f"({data['dates'][0]} to {data['dates'][-1]}).")
     return round_id
 
@@ -458,7 +463,9 @@ def run_round(chain: Chain, round_id: int | None = None) -> dict:
     r = chain.send(league.functions.start(round_id), "start")
     w = league.events.Started().process_receipt(r)[0]["args"]["windowIndex"]
     check = expected_window(chain.w3.eth.get_block(target).hash, round_id, bytes(info[8]), info[6])
-    dates = replay["dates"][w:w + RACE_DAYS + 1]
+    stride = replay.get("window_stride", 1)  # demo day: each window is its own block of rows
+    rows = [w * stride + d for d in range(RACE_DAYS + 1)]
+    dates = [replay["dates"][r] for r in rows]
     chain.log(f"Window {w} of {info[6]} picked by block {target}'s hash (recomputed off-chain: {check}): "
               f"{dates[0]} to {dates[-1]}")
 
@@ -466,7 +473,7 @@ def run_round(chain: Chain, round_id: int | None = None) -> dict:
     closes, col = replay["closes"], {t: i for i, t in enumerate(replay["tickers"])}
     for d in range(1, RACE_DAYS + 1):
         t0 = time.time()
-        post_prices(chain, oracle, {t: BASE_PRICE * closes[w + d][col[t]] / closes[w][col[t]] for t in used},
+        post_prices(chain, oracle, {t: BASE_PRICE * closes[rows[d]][col[t]] / closes[rows[0]][col[t]] for t in used},
                     f"day {d}/{RACE_DAYS} ({dates[d]})")
         scores = league.functions.liveScores(round_id).call()
         write_live({"round": round_id, "phase": "racing", "day": d, "days": RACE_DAYS, "date": dates[d], "window": w,
@@ -485,7 +492,8 @@ def results(chain: Chain, round_id: int) -> dict:
     league = chain.contract("FundLeague", lg["fundLeague"])
     info = league.functions.getRound(round_id).call()
     phase = PHASES[info[10]]
-    replay = json.loads(REPLAY_FILE.read_bytes())
+    live_round = lg.get("replay", {}).get("mode") == "live-weekly"  # weekly matchups use live prices, no replay file
+    replay = {} if live_round else json.loads(REPLAY_FILE.read_bytes())
     w = info[7]
     live = list(league.functions.liveScores(round_id).call()) if phase in ("Started", "Settled") else []
     entries = []
@@ -496,10 +504,13 @@ def results(chain: Chain, round_id: int) -> dict:
                         "stocks": [(bytes(t).rstrip(b"\0").decode(), wt / 100) for t, wt in zip(tickers, weights, strict=True)],
                         "return_pct": ret / 1e16 if ret is not None else None,
                         "winner": phase == "Settled" and score == info[13]})
+    stride = replay.get("window_stride", 1)
+    live_mode = live_round
     out = {"round": round_id, "phase": phase, "window": w,
-           "dates": [replay["dates"][w], replay["dates"][w + RACE_DAYS]] if phase in ("Started", "Settled") else None,
+           "dates": ([replay["dates"][w * stride], replay["dates"][w * stride + RACE_DAYS]]
+                     if phase in ("Started", "Settled") and not live_mode else None),
            "pot": info[14] / 1e18, "stake": info[1] / 1e18, "winners": info[12], "entries": entries}
-    if phase == "Settled":
+    if phase == "Settled" and out["dates"]:
         write_live({"round": round_id, "phase": "settled", "window": w, "firstDate": out["dates"][0],
                     "lastDate": out["dates"][1], "returns": [e["return_pct"] / 100 for e in entries]})
     return out
@@ -545,7 +556,7 @@ def testnet_gas_price() -> int | None:
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="python -m chain.league", description="Fantasy Funds League (testnet only).")
-    ap.add_argument("command", choices=["deploy", "pool", "open", "run", "status", "demo"])
+    ap.add_argument("command", choices=["deploy", "pool", "open", "run", "status", "demo", "weekly", "demo-day"])
     ap.add_argument("--network", default="anvil", choices=list(NETWORKS))
     ap.add_argument("--rpc", help="override the RPC URL")
     ap.add_argument("--keystore", help=f"League operator keystore (Monad testnet), default league-operator in {KEYSTORE_DIR}")
@@ -553,6 +564,12 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--entry-seconds", type=int, default=300, help="how long entries stay open")
     ap.add_argument("--stake", type=float, default=1.0, help="entry stake in MON (default 1)")
     ap.add_argument("--reuse-oracle", action="store_true", help="deploy: only a new FundLeague, keep the League oracle")
+    ap.add_argument("--lock", default="Mon 06:30 PT", help="weekly: entries lock (e.g. 'Mon 06:30 PT', or '+1m')")
+    ap.add_argument("--end", default="Fri 13:00 PT", help="weekly: matchup ends (e.g. 'Fri 13:00 PT', or '+5m')")
+    ap.add_argument("--every", type=int, default=300, help="weekly: seconds between live price updates")
+    ap.add_argument("--weeks", type=int, help="weekly: stop after this many matchups (default: keep going)")
+    ap.add_argument("--simulate-prices", action="store_true", help="weekly (tests): random-walk prices, not live FMP")
+    ap.add_argument("--ignore-market-hours", action="store_true", help="weekly (tests): post prices around the clock")
     args = ap.parse_args(argv)
     try:
         chain = Chain(args.network, rpc=args.rpc, keystore=args.keystore)
@@ -566,6 +583,14 @@ def main(argv: list[str] | None = None) -> int:
             chain.log("Enter ETFs now (league page, or: python -m chain.league_bets enter ...). Running the round ...")
         if args.command in ("run", "demo"):
             print_results(run_round(chain, args.round))
+        if args.command == "weekly":
+            from chain.league_live import weekly
+            weekly(chain, args.lock, args.end, args.stake, every=args.every, simulate=args.simulate_prices,
+                   ignore_market_hours=args.ignore_market_hours, weeks=args.weeks)
+        if args.command == "demo-day":
+            from chain.league_live import demo_day, run_demo_day
+            demo_day(chain, args.entry_seconds, args.stake)
+            run_demo_day(chain)
         if args.command == "status":
             print_results(results(chain, args.round or league_section(args.network).get("currentRound", 1)))
         if chain.costs:

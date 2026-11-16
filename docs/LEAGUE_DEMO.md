@@ -166,3 +166,57 @@ up with 1.05 MON). That leaves well over 100 MON in reserve.
 | `run` crashed before start | Run `python -m chain.league run --network <net>` again |
 | `run` crashed mid-replay | Prices stop moving; once the race time has passed, `python -m chain.league run` can't restart it, so call `settle` with `cast send <FundLeague> "settle(uint256)" <round>` |
 | A round never started | After 1 day anyone can call `cancelStalled`; everyone claims their stake back |
+
+## Weekly matchups (live prices) and the simulated demo day
+
+Both use the deployed FundLeague as it is (no contract changes). Code: `chain/league_live.py`.
+
+### Weekly matchup: like fantasy football
+
+```bash
+python -m chain.league weekly --network monad-testnet --lock "Mon 06:30 PT" --end "Fri 13:00 PT" --stake 1
+```
+
+- Opens this week's matchup right away; anyone can build an ETF and enter until the lock (Monday market open).
+- The contract needs a replay hash and at least one window: the hash is of `league/week.json` (the week's
+  rules: lock, end, price source) and `windowCount = 1` (no random window on live prices).
+- At the lock: `lock` → live FMP prices (`batch-quote`, one request) for the stocks entries use → `start`.
+- During the week: one `postPrices` every `--every` seconds (default 300) while the US market is open (9:30–16:00
+  ET, Mon–Fri; exchange holidays aren't modelled), paused when it's closed. The longest gap (overnight, ~17.5 h)
+  stays inside the contract's 1-day price freshness.
+- At the end: final prices → `settle` (best return from Monday open to Friday close takes the pot) → season
+  standings in `league/season.json` (per wallet: weeks entered, wins, MON won, best weekly return), committed
+  and pushed (`git pull --rebase` first) → next week's matchup opens automatically.
+- A status line every 3 minutes (entries, pot, current leader). After the first price update it prints the
+  estimated MON per week and warns if the League wallet can't cover 1.5× that.
+- Keep it running (e.g. in `tmux` or `screen`) all week. `--weeks N` stops after N matchups.
+- Tests on Anvil: `--lock +1m --end +6m --every 30 --simulate-prices --ignore-market-hours --weeks 1`
+  (Anvil standings go to `data/cache/season_anvil.json`, never the real season file).
+
+**Cost per week.** Measured on Anvil: one price update for 15 used stocks has a 288,458 gas limit (about
+0.029 MON at 102 gwei); it grows by ~14k gas per extra stock. A 6.5-hour session every 5 minutes is 78 updates a
+day, 390 a week:
+
+| Price update every | Updates / week | MON / week (15 used stocks) |
+|---|---|---|
+| 5 min (default) | 390 | ≈ 11.5 |
+| 15 min | 130 | ≈ 3.8 |
+| 30 min | 65 | ≈ 1.9 |
+
+Plus about 0.3 MON per week for open, lock, start and settle. Pick `--every` to fit the League wallet.
+
+### Simulated trading day (demos when the market is closed)
+
+```bash
+python -m chain.league demo-day --network monad-testnet --entry-seconds 300 --stake 1
+```
+
+- Writes `league/replay_prices.json` with 50 simulated trading days, 9:30 AM → 4:00 PM in 20 steps. Each day
+  resamples ONE real historical date for every pool stock together (they move together, as on a real day), and
+  splits each stock's real return for that date into 20 intraday steps: a random path, scaled to the stock's own
+  volatility, pinned to that day's real close. Daily moves are capped at ±15%. Fixed seed (20261115).
+- Rows are labeled by time ("Day 07 · 10:09"); `window_stride = 21`, so window w is rows 21w … 21w + 20.
+- Same fairness as a replay round: the file's hash is recorded at `openRound` with `windowCount = 50`; a future
+  block picks the day after entries close; one step every 3 s (a 60-second race); `settle`.
+- It opens the round, pushes the deployment file and replay file for the page, then waits for the deadline and
+  runs the race. Cost: the same as a replay round, about 1 MON for the operator with ~20 distinct stocks.
