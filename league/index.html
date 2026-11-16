@@ -105,6 +105,8 @@
   .sr-w { font: 600 15px/1.35 var(--sans); text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--ink); }
   .sr-bar { grid-column: 1 / -1; height: 6px; background: var(--raised); border-radius: 6px; overflow: hidden; margin-top: 6px; }
   .sr-bar i { display: block; height: 100%; background: var(--rose); border-radius: 6px; }
+  .next .nextrow { display: flex; align-items: baseline; gap: var(--s2); flex-wrap: wrap; margin-top: 6px; }
+  .nextclock { font: 800 44px/1 var(--display); letter-spacing: .01em; font-variant-numeric: tabular-nums; }
   .tchip { display: inline-block; font: 600 12px/1.35 var(--sans); padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
   .tchip.hi { background: var(--rose-soft); color: var(--blush-text); }
   .tchip.mod { background: #2C1A22; color: #E9A9BF; }
@@ -232,6 +234,11 @@
         </div>
       </div>
 
+      <div id="nextbox" class="card next hidden" aria-live="polite">
+        <div class="label">Next round · taking entries now</div>
+        <div class="nextrow"><span class="nextclock" id="nextclock"></span><span class="status" id="nextline"></span></div>
+      </div>
+
       <div id="winbox" class="card winner hidden">
         <div class="label" style="text-align:center">Winner</div>
         <div class="winbanner" id="winbanner"></div>
@@ -328,6 +335,11 @@ const $ = (id) => document.getElementById(id);
 
 let dep, cfg, readProvider, league, oracle, pool, presets, replay = null;
 let roundId = 0, round = null, entries = [], scores = null, me = null, signer = null, myIndex = 0;
+// The round on screen (roundId) can be one that is racing or just finished, while a NEWER round takes entries
+// (the operator opens the next round the moment one closes). openId / openRound = the round you can enter now.
+let openId = 0, openRound = null, myOpenIndex = 0;
+const finishedRounds = {};  // Settled / Cancelled rounds never change: read them once
+const RECENT_ROUNDS = 4, SHOW_RESULT_SECONDS = 90;
 let ringTotal = 0, lastPot = null, knownEntries = null, prevScores = {}, chartKey = "", prevLen = {}, revealed = 0;
 const prefs = {};      // theme key -> "want" | "avoid"
 let picks = [];        // [{ticker, pct}]
@@ -513,7 +525,7 @@ function validate() {
                  [minOk, "each weight a whole number, at least 5%"], [uniq, "no stock twice"], [nameOk, "a name (up to 32 characters)"]];
   $("check").innerHTML = items.map(([ok, t]) => `<div class="${ok ? "ok" : "no"}">${ok ? "✓" : "✗"} ${esc(t)}</div>`).join("");
   const good = items.every(([ok]) => ok);
-  $("enter").disabled = !(good && signer && round && PHASES[Number(round.phase)] === "Open" && !myIndex);
+  $("enter").disabled = !(good && signer && openRound && !myOpenIndex);
   return good;
 }
 
@@ -599,18 +611,53 @@ async function load() {
   renderThemes(); renderPicks();
 }
 
+async function roundInfo(r) {
+  if (finishedRounds[r]) return finishedRounds[r];
+  const x = await league.getRound(r), ph = PHASES[Number(x.phase)];
+  if (ph === "Settled" || ph === "Cancelled") finishedRounds[r] = x;
+  return x;
+}
+
+// Which round to show: one that is racing (or about to) first; then one that finished in the last 90 s (winner
+// banner + Claim, or "no race, refunded"); otherwise the newest round, the one taking entries.
+async function featuredRound(latest, latestInfo, now) {
+  const first = Math.max(1, latest - RECENT_ROUNDS);
+  for (let r = latest; r >= first; r--) {
+    const x = r === latest ? latestInfo : await roundInfo(r), ph = PHASES[Number(x.phase)];
+    if (ph === "Locked" || ph === "Started") return r;
+    if (ph === "Open" && now >= Number(x.deadline) && Number(x.entryCount) >= 2) return r;  // closed, race about to start
+  }
+  for (let r = latest - 1; r >= first; r--) {
+    const x = await roundInfo(r), ph = PHASES[Number(x.phase)];
+    if (ph === "Settled" && now - (Number(x.startedAt) + Number(x.roundDuration)) < SHOW_RESULT_SECONDS) return r;
+    if (ph === "Cancelled" && Number(x.entryCount) > 0 && now - Number(x.deadline) < SHOW_RESULT_SECONDS) return r;
+  }
+  return latest;
+}
+
 async function refresh() {
   try {
-    roundId = Number(params.get("round")) || Number(await league.roundCount());  // ?round=N shows a past round
-    if (!roundId) { $("phase").innerHTML = "<strong>No round yet.</strong> Waiting for the operator to open one."; return; }
-    round = await league.getRound(roundId);
+    const latest = Number(await league.roundCount());
+    if (!latest) { $("phase").innerHTML = "<strong>No round yet.</strong> Waiting for the operator to open one."; return; }
+    const now = Math.floor(Date.now() / 1000), latestInfo = await league.getRound(latest);
+    const accepting = PHASES[Number(latestInfo.phase)] === "Open" && now < Number(latestInfo.deadline);
+    openId = accepting ? latest : 0; openRound = accepting ? latestInfo : null;
+    const pick = Number(params.get("round")) || await featuredRound(latest, latestInfo, now);  // ?round=N pins a round
+    if (pick !== roundId) {  // a different round on screen: start its view fresh
+      entries = []; scores = null; prevScores = {}; prevLen = {}; chartKey = ""; knownEntries = null; ringTotal = 0; lastPot = null;
+    }
+    roundId = pick;
+    round = pick === latest ? latestInfo : await roundInfo(pick);
     const n = Number(round.entryCount);
     if (entries.length !== n || ["Settled"].includes(PHASES[Number(round.phase)])) {
       entries = await Promise.all(Array.from({ length: n }, (_, i) => league.getEntry(roundId, i)));
     }
     const phase = PHASES[Number(round.phase)];
     scores = phase === "Started" || phase === "Settled" ? (await league.liveScores(roundId)).map((s) => Number(s) / 1e18) : null;
-    if (me) myIndex = Number(await league.entryOf(roundId, me));
+    if (me) {
+      myIndex = Number(await league.entryOf(roundId, me));
+      myOpenIndex = !openId ? 0 : openId === roundId ? myIndex : Number(await league.entryOf(openId, me));
+    }
     await render(phase);
   } catch (e) { msg("Couldn't read the chain: " + esc(e.shortMessage || e.message)); }
 }
@@ -618,7 +665,7 @@ async function refresh() {
 async function raceDay() {
   // Which replay day is on-chain now: match the first used stock's price to the replay file.
   if (!replay || !round.used.length) return null;
-  const t = dec32(round.used[0]), col = replay.tickers.indexOf(t), w = Number(round.windowIndex);
+  const t = dec32(round.used[0]), col = replay.tickers.indexOf(t), w = windowStart();
   if (col < 0) return null;
   const [p] = await oracle.priceOf(round.used[0]);
   const now = Number(p) / 1e8;
@@ -630,16 +677,34 @@ async function raceDay() {
   return { day: best, days: replay.race_days, date: replay.dates[w + best], first: replay.dates[w], last: replay.dates[w + replay.race_days] };
 }
 
+// Row where the round's replay window starts. A simulated-day file stores day w at rows w*window_stride .. +race_days;
+// a historical file's windows overlap (stride 1).
+function windowStart() { return Number(round.windowIndex) * (replay.window_stride || 1); }
+const isDemoDay = () => !!replay && replay.mode === "demo-day";
+function clockTime(hhmm) {  // "13:10" -> "1:10 PM"
+  const [h, m] = hhmm.split(":").map(Number);
+  return `${((h + 11) % 12) + 1}:${String(m).padStart(2, "0")} ${h < 12 ? "AM" : "PM"}`;
+}
+const stepTime = (d) => clockTime(replay.step_times[d]);
+
 async function render(phase) {
   const now = Math.floor(Date.now() / 1000), deadline = Number(round.deadline);
   const open = phase === "Open" && now < deadline;
-  $("enter").textContent = `Enter (${mon(round.entryStake, 4)} MON)`;
+  $("enter").textContent = `Enter (${mon((openRound || round).entryStake, 4)} MON)`;
   const potNow = Number(ethers.formatEther(round.pot));
   $("potline").innerHTML = `Round ${roundId} · ${entries.length} ${entries.length === 1 ? "entry" : "entries"} · Pot <strong id="pot"></strong> <strong>MON</strong>`;
   countTo($("pot"), lastPot, potNow, (v) => v.toLocaleString(undefined, { maximumFractionDigits: 2 }), 600);
   lastPot = potNow;
   const ring = $("ring");
-  $("build").classList.toggle("hidden", !open || !!myIndex);
+  $("build").classList.toggle("hidden", !openId || !!myOpenIndex);
+  const nb = $("nextbox");
+  if (openId && openId !== roundId) {  // a race or result is on screen; the next round is already taking entries
+    const s = Math.max(0, Number(openRound.deadline) - now), k = Number(openRound.entryCount);
+    nb.classList.remove("hidden");
+    $("nextclock").textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+    $("nextline").innerHTML = `Round ${openId} · ${k} ${k === 1 ? "entry" : "entries"} · ` +
+      (myOpenIndex ? "<strong>you're in</strong>" : "build your fund and enter");
+  } else { nb.classList.add("hidden"); }
   if (open) {
     const s = deadline - now;
     $("phase").innerHTML = myIndex ? "<strong>You're in!</strong> Entries close in:" : "<strong>Entries are open.</strong> Closes in:";
@@ -648,19 +713,25 @@ async function render(phase) {
     ring.classList.remove("off");
     $("ringfg").style.strokeDashoffset = (276.46 * (1 - s / ringTotal)).toFixed(1);
   } else if (phase === "Open" || phase === "Locked") {
-    $("phase").innerHTML = "<strong>Entries closed.</strong> Waiting for the future block that picks the window…";
+    $("phase").innerHTML = `<strong>Entries closed.</strong> Waiting for the future block that picks the ${isDemoDay() ? "trading day" : "window"}…`;
     $("clock").textContent = "Locked"; ring.classList.add("off");
   } else if (phase === "Started") {
     const d = await raceDay();
     $("phase").innerHTML = "<strong>The race is on!</strong>";
-    $("clock").textContent = d ? `Day ${d.day} / ${d.days}` : "Racing"; ring.classList.remove("off");
+    $("clock").textContent = d ? (isDemoDay() ? stepTime(d.day) : `Day ${d.day} / ${d.days}`) : "Racing"; ring.classList.remove("off");
     if (d) $("ringfg").style.strokeDashoffset = (276.46 * (1 - d.day / d.days)).toFixed(1);
     drawChart(d ? d.day : 0);
-    $("raceday").textContent = d ? `Replaying ${d.first} → ${d.last} · now ${d.date}` : "";
+    $("raceday").textContent = !d ? "" : isDemoDay()
+      ? `Simulated trading day ${Number(round.windowIndex) + 1} of ${Number(round.windowCount)} · 9:30 AM → 4:00 PM · now ${stepTime(d.day)}`
+      : `Replaying ${d.first} → ${d.last} · now ${d.date}`;
   } else if (phase === "Settled") {
     $("phase").innerHTML = "<strong>Race finished.</strong>"; $("clock").textContent = "Finished"; ring.classList.add("off");
     if (replay) drawChart(replay.race_days);
-    if (replay) { const w = Number(round.windowIndex); $("raceday").textContent = `Replayed ${replay.dates[w]} → ${replay.dates[w + replay.race_days]}`; }
+    if (replay) {
+      const w = windowStart();
+      $("raceday").textContent = isDemoDay() ? `Simulated trading day ${Number(round.windowIndex) + 1} of ${Number(round.windowCount)} · 9:30 AM → 4:00 PM`
+        : `Replayed ${replay.dates[w]} → ${replay.dates[w + replay.race_days]}`;
+    }
   } else if (phase === "Cancelled") {
     $("phase").innerHTML = "<strong>No race this round</strong> (fewer than 2 entries, or it stalled). Everyone gets their stake back.";
     $("clock").textContent = "Refunded"; ring.classList.add("off");
@@ -711,7 +782,7 @@ async function render(phase) {
       const winners = entries.filter((e) => e.score === best);
       $("winbanner").textContent = winners.map((e) => e.name).join(" & ");
       const b = Number(best) / 1e18;
-      $("winline").innerHTML = `<strong class="${b >= 0 ? "up" : "down"}">${b > 0 ? "+" : b < 0 ? "−" : ""}${Math.abs(100 * b).toFixed(2)}%</strong> over the month · ` +
+      $("winline").innerHTML = `<strong class="${b >= 0 ? "up" : "down"}">${b > 0 ? "+" : b < 0 ? "−" : ""}${Math.abs(100 * b).toFixed(2)}%</strong> ${isDemoDay() ? "over the trading day" : "over the month"} · ` +
         (winners.length > 1 ? "the pot is split evenly" : "takes the whole pot");
       if (revealed !== roundId) {  // the calm reveal: blush glow on the card, the pot counting into it
         revealed = roundId;
@@ -735,7 +806,7 @@ async function updateClaim() {
 
 // ───────────── the race chart: every entry's return, day by day, drawing in as days arrive ─────────────
 function curve(e, upto) {
-  const w = Number(round.windowIndex), tk = e.tickers.map(dec32), wt = e.weightsBps.map(Number);
+  const w = windowStart(), tk = e.tickers.map(dec32), wt = e.weightsBps.map(Number);
   const cols = tk.map((t) => replay.tickers.indexOf(t));
   if (cols.some((c) => c < 0)) return null;
   const out = [];
@@ -761,7 +832,8 @@ function drawChart(upto) {
     `<text class="ax" x="${L - 8}" y="${y(0) + 4}" text-anchor="end">0%</text>` +
     `<text class="ax" x="${L - 8}" y="${y(hi) + 10}" text-anchor="end">${fmt(hi)}</text>` +
     `<text class="ax" x="${L - 8}" y="${y(lo)}" text-anchor="end">${fmt(lo)}</text>` +
-    `<text class="ax" x="${L}" y="${H - 6}">Day 0</text><text class="ax" x="${W - R}" y="${H - 6}" text-anchor="end">Day ${days}</text>`;
+    `<text class="ax" x="${L}" y="${H - 6}">${isDemoDay() ? "9:30 AM" : "Day 0"}</text>` +
+    `<text class="ax" x="${W - R}" y="${H - 6}" text-anchor="end">${isDemoDay() ? "4:00 PM" : `Day ${days}`}</text>`;
   // End labels: spread apart vertically so close finishers don't overlap (30px apart, kept inside the chart).
   const ends = cs.map((c, i) => (c ? { i, y: y(c[c.length - 1]) } : null)).filter(Boolean).sort((a, b) => a.y - b.y);
   ends.forEach((e, k) => { e.ly = Math.max(e.y, k ? ends[k - 1].ly + 30 : T); });
@@ -849,7 +921,8 @@ async function enter() {
   const t = toast("Confirm in MetaMask");
   try {
     const proofs = picks.map((p) => merkleProof(p.ticker));  // one proof per stock: "it's in the pool"
-    const tx = await send("enter", [roundId, name, picks.map((p) => ethers.encodeBytes32String(p.ticker)), picks.map((p) => p.pct * 100), proofs], round.entryStake);
+    if (!openId) throw new Error("Entries are closed for this round; the next one opens in a moment.");
+    const tx = await send("enter", [openId, name, picks.map((p) => ethers.encodeBytes32String(p.ticker)), picks.map((p) => p.pct * 100), proofs], openRound.entryStake);
     t.update("Submitting…", "", `${EXPLORER}/tx/${tx.hash}`);
     await tx.wait();
     t.update(`Confirmed ✓ "${name}" is in`, "ok", `${EXPLORER}/tx/${tx.hash}`);
