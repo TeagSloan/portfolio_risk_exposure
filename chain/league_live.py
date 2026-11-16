@@ -60,6 +60,7 @@ from chain.league import (
 ET, PT = ZoneInfo("America/New_York"), ZoneInfo("America/Los_Angeles")
 DAYS = {"mon": 0, "tue": 1, "wed": 2, "thu": 3, "fri": 4, "sat": 5, "sun": 6}
 WEEK_FILE = PAGE / "week.json"
+HISTORY_FILE = PAGE / "week_history.json"
 SEASON_FILE = PAGE / "season.json"
 SEASON_FILE_ANVIL = ROOT / "data" / "cache" / "season_anvil.json"  # Anvil tests never touch the real season
 STATUS_EVERY = 180  # seconds between status lines
@@ -185,8 +186,8 @@ def git_push(paths: list[Path], message: str, log=print, force: list[Path] | Non
         if subprocess.run(["git", "diff", "--cached", "--quiet", "--", *rel], check=False, cwd=ROOT).returncode == 0:
             return
         subprocess.run(["git", "commit", "-m", message, "--", *rel], cwd=ROOT, check=True, capture_output=True)
-        subprocess.run(["git", "pull", "--rebase", "-q"], cwd=ROOT, check=True, capture_output=True)
-        subprocess.run(["git", "push", "-q"], cwd=ROOT, check=True, capture_output=True)
+        subprocess.run(["git", "pull", "--rebase", "-q", "origin", "main"], cwd=ROOT, check=True, capture_output=True)
+        subprocess.run(["git", "push", "-q", "origin", "HEAD:main"], cwd=ROOT, check=True, capture_output=True)
         log(f"  pushed {', '.join(rel)}")
     except subprocess.CalledProcessError as exc:
         log(f"  WARNING: couldn't push ({exc.stderr.decode(errors='ignore')[:200].strip()}). Push by hand.")
@@ -217,19 +218,53 @@ def _wait(chain: Chain, until: float, league, rid: int, log) -> None:
         time.sleep(max(0.0, min(5.0, until - time.time())))
 
 
+def current_weekly(chain: Chain) -> int | None:
+    """The weekly round in league/week.json, if it is still open or racing on this League contract."""
+    if not WEEK_FILE.exists():
+        return None
+    wk = json.loads(WEEK_FILE.read_text())
+    lg = league_section(chain.network)
+    if wk.get("fundLeague") != lg["fundLeague"] or not wk.get("roundId"):
+        return None
+    phase = chain.contract("FundLeague", lg["fundLeague"]).functions.getRound(wk["roundId"]).call()[10]
+    return wk["roundId"] if phase in (1, 2, 3) else None
+
+
+def record_history(chain: Chain, league, rid: int, log=print) -> None:
+    """Append {time, entries: [{entryId, name, returnPct}]} from liveScores to league/week_history.json; push it."""
+    try:
+        info = league.functions.getRound(rid).call()
+        if info[10] not in (3, 4):
+            return
+        scores = league.functions.liveScores(rid).call()
+        names = [league.functions.getEntry(rid, i).call()[1] for i in range(info[11])]
+        hist = json.loads(HISTORY_FILE.read_text()) if HISTORY_FILE.exists() else {"roundId": rid, "points": []}
+        if hist.get("roundId") != rid:
+            hist = {"roundId": rid, "points": []}
+        hist["points"].append({"time": datetime.now(UTC).isoformat(timespec="seconds"),
+                               "entries": [{"entryId": i, "name": n, "returnPct": round(scores[i] / 1e16, 4)}
+                                           for i, n in enumerate(names)]})
+        HISTORY_FILE.write_text(json.dumps(hist, separators=(",", ":")))
+        if chain.network != "anvil":
+            git_push([HISTORY_FILE], f"League: weekly history (round {rid})", log)
+    except Exception as exc:  # noqa: BLE001 - history is a nice-to-have; never stop the matchup for it
+        log(f"  (history not updated: {exc})")
+
+
 def open_weekly(chain: Chain, lock: datetime, end: datetime, stake_mon: float, log=print) -> int:
     lg = league_section(chain.network)
     week = {"mode": "live-weekly", "label": week_label(lock), "lock": lock.isoformat(), "end": end.isoformat(),
             "prices": "FMP live quotes (batch-quote), posted while the US market is open",
             "scoring": "return from the price at lock (Monday open) to the price at the end (Friday close)",
             "pool_size": len(lg["pool"])}
-    raw = json.dumps(week, separators=(",", ":")).encode()
-    PAGE.mkdir(exist_ok=True)
-    WEEK_FILE.write_bytes(raw)
+    raw = json.dumps(week, separators=(",", ":")).encode()  # its hash is recorded on-chain as the round's data hash
     data = {"mode": "live-weekly", "tickers": lg["pool"], "dates": [lock.isoformat(), end.isoformat()]}
     rid = open_round(chain, 0, stake_mon, prepared=(Web3.keccak(raw), 1, data), deadline=int(lock.timestamp()),
-                     duration=int((end - lock).total_seconds()) - SETTLE_MARGIN,
-                     extra={"weekly": {**week, "file": "league/week.json"}})
+                     duration=int((end - lock).total_seconds()) - SETTLE_MARGIN, side=True)
+    PAGE.mkdir(exist_ok=True)
+    WEEK_FILE.write_text(json.dumps({**week, "roundId": rid, "fundLeague": lg["fundLeague"], "rules": raw.decode(),
+                                     "rulesHash": Web3.to_hex(Web3.keccak(raw))}, indent=1))
+    HISTORY_FILE.write_text(json.dumps({"roundId": rid, "points": []}))
     log(f"  {week['label']} · ends {end.astimezone(PT):%a %H:%M} PT")
     return rid
 
@@ -247,13 +282,14 @@ def run_weekly(chain: Chain, rid: int, lock: datetime, end: datetime, every: int
     r = chain.send(league.functions.lock(rid), "lock")
     if league.events.Cancelled().process_receipt(r):
         log("Fewer than 2 entries: no matchup this week; everyone can claim their stake back.")
-        return results(chain, rid)
+        return results(chain, rid, live=True)
     target = league.events.Locked().process_receipt(r)[0]["args"]["targetBlock"]
     used = [bytes(t).rstrip(b"\0").decode() for t in league.functions.getRound(rid).call()[0]]
     post_prices(chain, oracle, feed.prices(used), "lock (Monday open)")
     chain.mine_until(target)
     chain.send(league.functions.start(rid), "start")
     log(f"Matchup started: {len(used)} stocks used by entries get live prices.")
+    record_history(chain, league, rid, log)
 
     chain.phase = "live prices"
     first = True
@@ -264,6 +300,7 @@ def run_weekly(chain: Chain, rid: int, lock: datetime, end: datetime, every: int
             next_post = now + every
             if ignore_market_hours or market_open():
                 post_prices(chain, oracle, feed.prices(used), f"{datetime.now(PT):%a %H:%M} PT")
+                record_history(chain, league, rid, log)
                 if first:
                     first = False
                     _cost_warning(chain, every, ignore_market_hours, log)
@@ -277,7 +314,8 @@ def run_weekly(chain: Chain, rid: int, lock: datetime, end: datetime, every: int
     started = league.functions.getRound(rid).call()[4]
     chain.wait_until_time(started + league.functions.getRound(rid).call()[3])
     chain.send(league.functions.settle(rid), "settle")
-    return results(chain, rid)
+    record_history(chain, league, rid, log)
+    return results(chain, rid, live=True)
 
 
 def _cost_warning(chain: Chain, every: int, ignore_market_hours: bool, log) -> None:
@@ -307,10 +345,16 @@ def weekly(chain: Chain, lock_spec: str, end_spec: str, stake_mon: float, every:
         now = datetime.now(UTC)
         lock = parse_when(lock_spec, now)
         end = parse_when(end_spec, lock)
-        rid = open_weekly(chain, lock, end, stake_mon, log)
-        if chain.network != "anvil":
-            git_push([ROOT / "deployments" / f"{chain.network}-league.json", WEEK_FILE],
-                     f"League: open weekly matchup (round {rid})", log)
+        rid = current_weekly(chain)
+        if rid:
+            wk = json.loads(WEEK_FILE.read_text())
+            lock, end = datetime.fromisoformat(wk["lock"]), datetime.fromisoformat(wk["end"])
+            log(f"Weekly matchup already open: round {rid} ({wk['label']}). Continuing it.")
+        else:
+            rid = open_weekly(chain, lock, end, stake_mon, log)
+            log(f"Weekly matchup: round {rid}")
+            if chain.network != "anvil":
+                git_push([WEEK_FILE, HISTORY_FILE], f"League: open weekly matchup (round {rid})", log)
         r = run_weekly(chain, rid, lock, end, every, feed, ignore_market_hours, log)
         print_results(r, log)
         if r["phase"] == "Settled":

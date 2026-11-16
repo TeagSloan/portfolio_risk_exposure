@@ -393,7 +393,8 @@ def post_prices(chain: Chain, oracle, prices: dict[str, float], label: str):
 
 
 def open_round(chain: Chain, entry_seconds: int, stake_mon: float, prepared: tuple | None = None,
-               deadline: int | None = None, duration: int | None = None, extra: dict | None = None) -> int:
+               deadline: int | None = None, duration: int | None = None, extra: dict | None = None,
+               side: bool = False) -> int:
     """Open a round. prepared = (data_hash, windows, data) from another replay source (demo day, weekly);
     deadline / duration override entry_seconds and the replay length (weekly matchups); extra is saved in the
     deployment file's league section (e.g. the week's lock and end times for the page)."""
@@ -411,6 +412,8 @@ def open_round(chain: Chain, entry_seconds: int, stake_mon: float, prepared: tup
     r = chain.send(league.functions.openRound(root, len(data["tickers"]), stake, deadline,
                                               duration or RACE_DAYS * DAY_SECONDS, data_hash, windows), "opened round")
     round_id = league.events.RoundOpened().process_receipt(r)[0]["args"]["roundId"]
+    if side:  # a side round (the weekly matchup): leave the main round's settings in the deployment file alone
+        return round_id
     lg.update({"currentRound": round_id, "currentDeadline": deadline, "entryStake": str(stake), "pool": data["tickers"],
                "poolRoot": Web3.to_hex(root),
                "replay": {"file": "league/replay_prices.json", "dataHash": Web3.to_hex(data_hash), "windows": windows,
@@ -487,12 +490,12 @@ def run_round(chain: Chain, round_id: int | None = None) -> dict:
     return results(chain, round_id)
 
 
-def results(chain: Chain, round_id: int) -> dict:
+def results(chain: Chain, round_id: int, live: bool | None = None) -> dict:
     lg = league_section(chain.network)
     league = chain.contract("FundLeague", lg["fundLeague"])
     info = league.functions.getRound(round_id).call()
     phase = PHASES[info[10]]
-    live_round = lg.get("replay", {}).get("mode") == "live-weekly"  # weekly matchups use live prices, no replay file
+    live_round = live if live is not None else lg.get("replay", {}).get("mode") == "live-weekly"  # weekly matchups use live prices, no replay file
     replay = {} if live_round else json.loads(REPLAY_FILE.read_bytes())
     w = info[7]
     live = list(league.functions.liveScores(round_id).call()) if phase in ("Started", "Settled") else []
