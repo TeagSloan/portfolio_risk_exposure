@@ -497,36 +497,62 @@ def build_tab() -> None:
 # Fantasy Fund League
 # ---------------------------------------------------------------------------------------------
 
+def league_rows(etf: dict[str, int], portfolio: dict) -> list[dict]:
+    """Entry rows for the card: ticker, company, industry, whole-percent weight and the theme it was picked for."""
+    info = league.pool_info()
+    picked = {h["ticker"]: h for h in portfolio["build"]["holdings"]} if portfolio["kind"] == "build" else {}
+    rows = []
+    for t, w in etf.items():
+        h = picked.get(t, {})
+        theme, tier = h.get("picked_for"), h.get("picked_tier")
+        chips = [style.chip(f"{theme}: {tier}", tier)] if theme and theme != "_cap" and tier else []
+        rows.append({"ticker": t, "name": info.get(t, {}).get("name", ""), "industry": info.get(t, {}).get("industry", ""),
+                     "weight": float(w), "chips": chips})
+    return rows
+
+
+def interleaved(weights: dict[str, float], portfolio: dict) -> dict[str, float]:
+    """Same weights, ordered by alternating the wanted themes (AI, Clean energy, AI, ...), so when the League keeps
+    the 8 largest of equal weights, every wanted theme is represented, like the fund."""
+    if portfolio["kind"] != "build":
+        return weights
+    groups: dict[str, list[str]] = {}
+    for h in portfolio["build"]["holdings"]:
+        if h["ticker"] in weights:
+            groups.setdefault(h.get("picked_for") or "", []).append(h["ticker"])
+    order = [t for i in range(max(map(len, groups.values()), default=0)) for g in groups.values() if i < len(g)
+             for t in [g[i]]]
+    order += [t for t in weights if t not in order]
+    return {t: weights[t] for t in order}
+
+
 def league_tab() -> None:
     weights = st.session_state.get("demo_weights")
     portfolio = st.session_state.get("portfolio")
+    st.html(style.league_intro())
     if not weights or not portfolio:
         st.html(style.empty_state("Build a fund first, then enter it in the League."))
         return
     prefs = portfolio.get("prefs", {}) if portfolio["kind"] == "build" else {}
     name = league.fund_name(prefs, {k: t["name"] for k, t in themes().items()})
-    etf, notes = league.league_fund(weights)
-    st.html(style.step(0, "Fantasy Fund League", "Race your fund against everyone else's over a random month of "
-                       "real past prices, replayed live on Monad. Best return takes the pot. Testnet MON only."))
-    left, right = st.columns([3, 2], gap="large")
+    etf, notes = league.league_fund(interleaved(weights, portfolio))
+    url = league.prefill_url(etf, name) if etf else league.LEAGUE_URL
+    left, right = st.columns(2, gap="large")
     with left:
         if etf:
-            url = league.prefill_url(etf, name)
-            st.html(style.league_entry(name, etf))
-            for n in notes:
-                st.caption(n)
+            st.html(style.league_entry(name, league_rows(etf, portfolio), " ".join(notes)))
             st.link_button("Enter my fund", url, type="primary", width="stretch")
         else:
-            url = league.LEAGUE_URL
             for n in notes:
                 st.warning(n)
         st.link_button("Open the League", league.LEAGUE_URL, width="stretch")
-    with right:
-        st.html(style.qr_card(league.qr_svg(url), "Scan to enter from your phone" if etf else "Scan to open the League",
-                              "Open this link inside the MetaMask app's browser (MetaMask → Browser, or scan with "
-                              "MetaMask's scanner) so your wallet can connect."))
-    st.caption("The live League page below is for watching the race on the big screen. To enter, use the button or "
-               "the QR code: wallets connect on the League page itself.")
+    with right, st.container(key="tf_qr"):
+        st.image(league.qr_png(url), width=220)
+        st.html(style.qr_text("Scan to enter from your phone" if etf else "Scan to open the League",
+                              "Scan with the MetaMask app (or open the link in MetaMask's browser) so your wallet can "
+                              "connect. Your fund is already filled in."))
+        st.code(url, language=None, wrap_lines=True)
+    st.html('<div style="height:24px"></div>')
     st.iframe(league.LEAGUE_URL, height=900)
 
 

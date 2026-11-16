@@ -50,6 +50,7 @@ DISPLAY = "'Barlow Condensed', 'Arial Narrow', 'Roboto Condensed', system-ui, sa
 SANS = "Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif"  # text, buttons, inputs, tables
 MONO = "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace"  # addresses and hashes
 
+# NOTE: no "<" + letter anywhere inside this CSS (Streamlit's sanitizer would drop the whole block).
 CSS = f"""
 <style>
 @import url('{FONTS}');
@@ -93,7 +94,7 @@ div[data-baseweb="select"] > div, input, textarea {{ background: {RAISED} !impor
 /* No raw less-than signs anywhere in this CSS: Streamlit's sanitizer drops the WHOLE style block if its text
    looks like a tag. The grain image is %-encoded and @property syntax uses the CSS escape \\3C. */
 .tf-hero::after {{ content: ""; position: absolute; inset: 0; z-index: -1; opacity: .07; pointer-events: none;
-  background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23n)'/%3E%3C/svg%3E"); }}
+  background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }}
 @keyframes tf-drift {{ from {{ transform: translate3d(-4%, -2%, 0) scale(1); }} to {{ transform: translate3d(4%, 3%, 0) scale(1.08); }} }}
 .tf-hero .eyebrow {{ font-family: {DISPLAY}; font-weight: 700; font-size: 16px; letter-spacing: .06em;
   text-transform: uppercase; color: {BLUSH}; margin-bottom: 12px; }}
@@ -195,7 +196,22 @@ div[data-baseweb="select"] > div, input, textarea {{ background: {RAISED} !impor
 .tf-entry .k {{ font-family: {DISPLAY}; font-weight: 700; font-size: 15px; letter-spacing: 0.04em;
   text-transform: uppercase; color: {MUTED}; }}
 .tf-entry .nm {{ font-family: {DISPLAY}; font-size: 40px; font-weight: 800; text-transform: uppercase;
-  letter-spacing: 0.01em; line-height: 1; margin: 6px 0 16px; }}
+  letter-spacing: 0.01em; line-height: 1; margin: 6px 0 16px; overflow-wrap: anywhere; }}
+.tf-entry .tf-hold .row {{ padding: 10px 0; row-gap: 4px; }}
+.tf-entry .tf-hold .tk {{ font-size: 15px; }}
+.tf-entry .note {{ font-size: 13px; color: {MUTED}; margin-top: 12px; line-height: 1.45; }}
+.tf-intro {{ margin: 32px 0 24px; }}
+.tf-intro h2 {{ font-size: 40px; margin: 0; line-height: 1.1; }}
+.tf-intro p {{ margin: 8px 0 0; color: {MUTED}; font-size: 16px; max-width: 760px; line-height: 1.55; }}
+.tf-intro .modes {{ display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }}
+.tf-intro .modes span {{ font-size: 13px; background: {CARD}; border: 1px solid {LINE}; border-radius: 999px;
+  padding: 6px 12px; color: {TEXT}; }}
+.tf-intro .modes b {{ color: {BLUSH}; font-weight: 600; }}
+.st-key-tf_qr {{ background: {CARD}; border: 1px solid {LINE}; border-radius: 16px; padding: 24px; gap: 12px; }}
+.st-key-tf_qr [data-testid="stImage"] img {{ border-radius: 12px; }}
+.st-key-tf_qr [data-testid="stCode"] pre {{ font-size: 12px; background: {RAISED}; }}
+.tf-qrtext h3 {{ font-family: {DISPLAY}; font-size: 26px; font-weight: 800; text-transform: uppercase; margin: 0 0 8px; }}
+.tf-qrtext p {{ color: {MUTED}; font-size: 14px; line-height: 1.5; margin: 0; }}
 .tf-entry .row {{ display: grid; grid-template-columns: 72px minmax(0, 1fr) 48px; gap: 12px; align-items: center;
   padding: 8px 0; border-top: 1px solid {LINE}; }}
 .tf-entry .tk {{ font-family: {DISPLAY}; font-weight: 700; font-size: 19px; letter-spacing: 0.02em; }}
@@ -407,18 +423,30 @@ def empty_state(text: str, title: str = "Nothing here yet") -> str:
     return f'<div class="tf-empty"><b>{escape(title)}</b>{escape(text)}</div>'
 
 
-def league_entry(name: str, etf: dict[str, int]) -> str:
-    """The fund as it will be entered in the League: name plus each stock's whole-percent weight."""
-    top = max(etf.values())
-    rows = "".join(f'<div class="row"><span class="tk">{escape(t)}</span>'
-                   f'<div class="bar"><span style="width:{100 * w / top:.0f}%"></span></div>'
-                   f'<span class="w">{w}%</span></div>'
-                   for t, w in etf.items())
+def league_entry(name: str, rows: list[dict], note: str = "") -> str:
+    """The fund as it will be entered in the League: full name (wraps, never cut) over a compact holdings table.
+    rows: same as holdings() (ticker, name, industry, weight, chips)."""
+    extra = f'<div class="note">{escape(note)}</div>' if note else ""
     return (f'<div class="tf-entry"><div class="k">Your League entry</div><div class="nm">{escape(name)}</div>'
-            f'{rows}</div>')
+            f'{holdings(rows)}{extra}</div>')
 
 
 def qr_card(svg: str, title: str, sentence: str) -> str:
     """svg comes from segno (generated locally), so it is inserted as is."""
     return (f'<div class="tf-qr"><div class="code">{svg}</div><h3>{escape(title)}</h3>'
             f'<p>{escape(sentence)}</p></div>')
+
+
+def league_intro() -> str:
+    """The League tab's heading: weekly matchups on live prices, plus today's simulated trading day."""
+    return ('<div class="tf-intro"><h2>Fantasy Fund League</h2>'
+            "<p>Put your fund up against everyone else's. Each week is a matchup on live market prices: entries "
+            "lock Monday at 6:30 AM PT (market open) and the best return by Friday's close takes the pot. Today, "
+            "with markets closed, we race a simulated trading day built from real market moves, 9:30 AM to "
+            "4:00 PM in 60 seconds. Testnet MON only.</p>"
+            '<div class="modes"><span><b>Weekly</b> · live prices · locks Mon 6:30 AM PT</span>'
+            '<span><b>Today</b> · simulated trading day · 60-second race</span></div></div>')
+
+
+def qr_text(title: str, sentence: str) -> str:
+    return f'<div class="tf-qrtext"><h3>{escape(title)}</h3><p>{escape(sentence)}</p></div>'

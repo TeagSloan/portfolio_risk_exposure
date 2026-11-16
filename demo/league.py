@@ -67,22 +67,48 @@ def league_fund(weights: dict[str, float], pool: frozenset[str] | None = None) -
     return whole_percents(stocks), notes
 
 
+def short_theme(name: str) -> str:
+    """'Clean energy (solar & renewables)' -> 'Clean Energy'; 'Bank lending / net interest income' -> 'Bank Lending'."""
+    base = name.split(" (")[0].split(" / ")[0].strip()
+    return " ".join(w if w.isupper() or w == "&" else w[:1].upper() + w[1:] for w in base.split())
+
+
 def fund_name(prefs: dict[str, str], theme_names: dict[str, str]) -> str:
-    """A short entry name from the choices, e.g. "AI ex-Oil" (the League allows 32 characters)."""
-    wants = [theme_names[k] for k, v in prefs.items() if v == "want"]
-    avoids = [theme_names[k] for k, v in prefs.items() if v == "avoid"]
-    name = " + ".join(wants) or "My fund"
-    if avoids:
-        name += " ex-" + ", ".join(avoids)
-    if len(name.encode()) <= 32:
-        return name
-    return name.encode()[:29].decode(errors="ignore").rstrip(" ,+-") + "…"  # "…" is 3 bytes: 32 in all
+    """A short entry name from the choices that fits the League's 32-byte limit WITHOUT cutting words:
+    'AI + Clean Energy', 'AI ex-Oil'. Drops the avoids, then later wants (as '+2 more'), until it fits."""
+    wants = [short_theme(theme_names[k]) for k, v in prefs.items() if v == "want"]
+    avoids = [short_theme(theme_names[k]) for k, v in prefs.items() if v == "avoid"]
+    options = []
+    for n in range(len(wants), 0, -1):
+        head = " + ".join(wants[:n]) + (f" +{len(wants) - n} more" if n < len(wants) else "")
+        if n == len(wants) and avoids:
+            options.append(f"{head} ex-{', '.join(avoids)}")
+        options.append(head)
+    if not wants:
+        options += [f"Ex-{', '.join(avoids)}", "My fund"] if avoids else ["My fund"]
+    return next((o for o in options if len(o.encode()) <= 32), "My fund")
+
+
+@cache
+def pool_info() -> dict[str, dict]:
+    """{ticker: {"name", "industry"}} from the League pool file (no FMP calls)."""
+    return {s["ticker"]: {"name": s.get("name") or "", "industry": s.get("industry") or ""}
+            for s in json.loads(POOL_FILE.read_text())["stocks"]}
 
 
 def prefill_url(etf: dict[str, int], name: str) -> str:
     """The League page with this ETF filled in."""
     spec = ",".join(f"{t}:{w}" for t, w in etf.items())  # in the fund's order
     return f"{LEAGUE_URL}?etf={quote(spec, safe=':,')}&name={quote(name)}"
+
+
+def qr_png(url: str, scale: int = 8) -> bytes:
+    """The QR code as a PNG (shown with st.image), drawn locally. Dark on light so phone cameras read it."""
+    import io
+
+    buf = io.BytesIO()
+    segno.make(url, error="m").save(buf, kind="png", scale=scale, border=3, dark="#0B0A0B", light="#F5EEF1")
+    return buf.getvalue()
 
 
 def qr_svg(url: str) -> str:
