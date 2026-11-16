@@ -564,8 +564,29 @@ def league_tab() -> None:
 # Page
 # ---------------------------------------------------------------------------------------------
 
+@st.cache_data(show_spinner=False)
+def hero_facts() -> tuple[list[tuple[str, str, str]], dict[str, int], int]:
+    """Real numbers for the page header: each theme's reference companies with their disclosed share, how many
+    scored stocks are High or Moderate on each theme, and how many stocks were scored."""
+    tape, counts, scored = [], {}, 666
+    for key, theme in themes().items():
+        short = style.RADAR_LABEL.get(key, theme["name"])
+        for ref in (theme.get("references", {}).get("High") or [])[:2]:
+            if ref.get("evidence_pct") is not None:
+                tape.append((ref["ticker"], short, f"{ref['evidence_pct']:g}% of the business"))
+    try:
+        table = builder.prescreen()
+        scored = len(table)
+        for key in themes():
+            counts[key] = sum(1 for results in table.values() if results.get(key, {}).get("tier") in ("High", "Moderate"))
+    except (OSError, KeyError, ValueError):  # the header still draws without the radar
+        counts = {}
+    return tape, counts, scored
+
+
 def main() -> None:
-    st.html(style.hero())
+    tape, counts, scored = hero_facts()
+    st.html(style.hero(tape=tape, radar=counts, scored=scored))
     build, league_view = st.tabs(["Build your fund", "Fantasy Fund League"])
     with build:
         build_tab()
