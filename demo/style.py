@@ -222,6 +222,119 @@ div[data-baseweb="select"] > div, input, textarea {{ background: {RAISED} !impor
 .tf-qr .code svg {{ width: 232px; height: 232px; }}
 .tf-qr h3 {{ font-size: 26px; margin: 16px 0 8px; }}
 .tf-qr p {{ color: {MUTED}; font-size: 14px; line-height: 1.5; margin: 0 auto; max-width: 320px; }}
+/* ============ DRAFT: richer look (backdrop grid, framed hero, radar, ticker tape, lit cards) ============ */
+.stApp {{ background:
+    radial-gradient(900px 520px at 88% -6%, rgba(194, 69, 111, .24), transparent 64%),
+    radial-gradient(760px 520px at -12% 38%, rgba(232, 201, 143, .07), transparent 60%),
+    {INK}; }}
+.stApp::before {{ content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background-image: linear-gradient(rgba(245, 238, 241, .04) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(245, 238, 241, .04) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(ellipse 85% 62% at 50% 18%, #000 25%, transparent 88%);
+          mask-image: radial-gradient(ellipse 85% 62% at 50% 18%, #000 25%, transparent 88%); }}
+[data-testid="stAppViewContainer"], [data-testid="stMain"] {{ background: transparent; position: relative; z-index: 1; }}
+
+.tf-hero {{ padding: 0; border-color: rgba(245, 238, 241, .10); border-radius: 20px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .04), rgba(255, 255, 255, 0) 38%), {CARD};
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06), 0 40px 80px -48px rgba(194, 69, 111, .55); }}
+.tf-hero-grid {{ position: relative; display: grid; grid-template-columns: minmax(0, 1fr) 440px; gap: 12px; align-items: center;
+  padding: 52px 44px 36px; }}
+.tf-hero .c {{ position: absolute; width: 22px; height: 22px; border: 2px solid {BLUSH}; opacity: .75; z-index: 1; }}
+.tf-hero .c.tl {{ top: 14px; left: 14px; border-right: 0; border-bottom: 0; border-radius: 6px 0 0 0; }}
+.tf-hero .c.tr {{ top: 14px; right: 14px; border-left: 0; border-bottom: 0; border-radius: 0 6px 0 0; }}
+.tf-hero .c.bl {{ bottom: 14px; left: 14px; border-right: 0; border-top: 0; border-radius: 0 0 0 6px; }}
+.tf-hero .c.br {{ bottom: 14px; right: 14px; border-left: 0; border-top: 0; border-radius: 0 0 6px 0; }}
+.tf-hero .eyebrow {{ display: flex; align-items: center; gap: 10px; }}
+.tf-hero .live {{ width: 9px; height: 9px; border-radius: 50%; background: {GAIN}; box-shadow: 0 0 0 0 rgba(111, 214, 174, .6);
+  animation: tf-pulse 2.4s ease-out infinite; }}
+@keyframes tf-pulse {{ 0% {{ box-shadow: 0 0 0 0 rgba(111, 214, 174, .55); }} 100% {{ box-shadow: 0 0 0 12px rgba(111, 214, 174, 0); }} }}
+.tf-hero h1 {{ font-size: clamp(64px, 10vw, 128px); letter-spacing: 0;
+  background: linear-gradient(180deg, #FFFFFF 28%, {BLUSH} 118%); -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent; filter: drop-shadow(0 0 34px rgba(194, 69, 111, .38)); }}
+.tf-hero .stats {{ display: flex; gap: 0; margin-top: 30px; flex-wrap: wrap; }}
+.tf-hero .stats div {{ padding: 0 26px; border-left: 1px solid {LINE}; }}
+.tf-hero .stats div:first-child {{ padding-left: 0; border-left: 0; }}
+.tf-hero .stats b {{ display: block; font-family: {DISPLAY}; font-weight: 800; font-size: 46px; line-height: 1; color: {TEXT}; }}
+.tf-hero .stats span {{ display: block; margin-top: 6px; font-size: 13px; color: {MUTED}; }}
+
+.tf-radar {{ margin: 0; }}
+.tf-radar .plot {{ position: relative; width: 100%; aspect-ratio: 1 / 1; }}
+.tf-radar .plot i {{ position: absolute; display: block; }}
+.tf-radar figcaption {{ text-align: center; font-size: 12px; color: {MUTED}; margin-top: -6px; }}
+.tf-radar .ring {{ left: 50%; top: 50%; width: calc(var(--r) * 2); height: calc(var(--r) * 2); transform: translate(-50%, -50%);
+  border-radius: 50%; border: 1px solid rgba(245, 238, 241, .10); }}
+.tf-radar .ring:nth-of-type(6) {{ border-color: rgba(244, 166, 191, .5); box-shadow: 0 0 30px -6px rgba(194, 69, 111, .6); }}
+.tf-radar .spoke {{ left: 50%; top: 50%; width: 1px; height: var(--r); background: rgba(245, 238, 241, .09);
+  transform-origin: 50% 0; transform: rotate(calc(var(--a) + 180deg)); }}
+.tf-radar .ticks {{ left: 50%; top: 50%; width: calc(var(--r) * 2); height: calc(var(--r) * 2); transform: translate(-50%, -50%);
+  border-radius: 50%; background: repeating-conic-gradient(rgba(245, 238, 241, .34) 0deg .7deg, transparent .7deg 6deg);
+  -webkit-mask: radial-gradient(closest-side, transparent 94%, #000 94.5%); mask: radial-gradient(closest-side, transparent 94%, #000 94.5%); }}
+.tf-radar .glow {{ inset: 0; filter: drop-shadow(0 0 12px rgba(194, 69, 111, .75)); transform-origin: 50% 50%;
+  animation: tf-bloom 1100ms cubic-bezier(.2, .8, .2, 1) both; }}
+.tf-radar .shape {{ inset: 0; background: radial-gradient(circle at 50% 50%, rgba(244, 166, 191, .30), rgba(194, 69, 111, .62)); }}
+@keyframes tf-bloom {{ from {{ transform: scale(.2); opacity: 0; }} to {{ transform: scale(1); opacity: 1; }} }}
+.tf-radar .dot {{ width: 7px; height: 7px; margin: -3.5px 0 0 -3.5px; border-radius: 50%; background: #fff;
+  box-shadow: 0 0 10px 2px rgba(244, 166, 191, .9); }}
+.tf-radar .lbl {{ position: absolute; transform: translate(-50%, -50%); white-space: nowrap; font-family: {DISPLAY}; font-weight: 700;
+  font-size: 14px; letter-spacing: .05em; text-transform: uppercase; color: {MUTED}; line-height: 1; }}
+.tf-radar .lbl.right {{ transform: translate(0, -50%); }}
+.tf-radar .lbl.left {{ transform: translate(-100%, -50%); }}
+.tf-radar .lbl b {{ color: {BLUSH}; font-weight: 800; margin-left: 6px; }}
+.tf-radar .sweep {{ left: 50%; top: 50%; width: calc(var(--r) * 2); height: calc(var(--r) * 2); margin: calc(var(--r) * -1) 0 0 calc(var(--r) * -1);
+  border-radius: 50%; background: conic-gradient(from 0deg, rgba(244, 166, 191, .22), transparent 22%, transparent);
+  animation: tf-sweep 14s linear infinite; }}
+@keyframes tf-sweep {{ to {{ transform: rotate(360deg); }} }}
+
+.tf-tape {{ border-top: 1px solid rgba(245, 238, 241, .09); overflow: hidden; padding: 13px 0; background: rgba(11, 10, 11, .45);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }}
+.tf-tape .run {{ display: inline-flex; gap: 38px; white-space: nowrap; width: max-content; animation: tf-tape 60s linear infinite; }}
+.tf-tape span {{ font-size: 13px; color: {MUTED}; display: inline-flex; align-items: baseline; gap: 8px; }}
+.tf-tape b {{ font-family: {DISPLAY}; font-weight: 800; font-size: 17px; letter-spacing: .04em; color: {TEXT}; }}
+.tf-tape em {{ font-style: normal; color: {BLUSH}; }}
+@keyframes tf-tape {{ to {{ transform: translateX(-50%); }} }}
+@media (prefers-reduced-motion: reduce) {{ .tf-hero .live, .tf-radar .shape, .tf-radar .sweep, .tf-tape .run {{ animation: none; }} }}
+@media (max-width: 980px) {{ .tf-hero-grid {{ grid-template-columns: minmax(0, 1fr); padding: 40px 26px 28px; }}
+  .tf-radar {{ max-width: 340px; margin: 0 auto; }} .tf-hero .stats div {{ padding: 0 16px; }} .tf-hero .stats b {{ font-size: 36px; }} }}
+
+/* Section headings: a lit rule with a diamond marker instead of a flat line. */
+.tf-step {{ position: relative; border-top: 0; padding-top: 34px; }}
+.tf-step::before {{ content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, {ROSE}, rgba(194, 69, 111, .3) 16%, {LINE} 42%, transparent); }}
+.tf-step::after {{ content: ""; position: absolute; top: -5px; left: 0; width: 10px; height: 10px; background: {BLUSH};
+  transform: rotate(45deg); box-shadow: 0 0 16px 2px rgba(194, 69, 111, .9); }}
+
+/* Panels catch a little light from above and sit on a soft shadow. */
+.tf-fp, .tf-tile, .tf-check, .tf-rule, .tf-entry, .tf-empty, .st-key-tf_qr, [data-testid="stExpander"] {{
+  background: linear-gradient(180deg, rgba(255, 255, 255, .045), rgba(255, 255, 255, 0) 46%), {CARD};
+  border-color: rgba(245, 238, 241, .09);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06), 0 28px 48px -36px rgba(0, 0, 0, .95); }}
+.tf-tile {{ position: relative; overflow: hidden; }}
+.tf-tile::before {{ content: ""; position: absolute; top: 0; left: 18px; width: 30px; height: 2px; background: {ROSE};
+  box-shadow: 0 0 12px {ROSE}; }}
+.tf-fp-cols {{ background-image: linear-gradient(rgba(245, 238, 241, .06) 1px, transparent 1px); background-size: 100% 25%; }}
+.tf-fp-bar {{ box-shadow: 0 -6px 26px -6px rgba(194, 69, 111, .55), inset 0 1px 0 rgba(255, 255, 255, .28); }}
+.tf-funnel .bar span, .tf-hold .bar span {{ background: linear-gradient(90deg, {ROSE}, {BLUSH}); box-shadow: 0 0 12px rgba(194, 69, 111, .6); }}
+.tf-hold .row {{ transition: background-color 160ms ease; border-radius: 10px; }}
+.tf-hold .row:hover {{ background: rgba(255, 255, 255, .03); }}
+.tf-big {{ filter: drop-shadow(0 0 30px rgba(194, 69, 111, .25)); }}
+
+/* Controls. */
+[data-testid="stBaseButton-primary"], .stButton button[kind="primary"] {{
+  background: linear-gradient(180deg, #D65A84, {ROSE}); border: 0;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .28), 0 10px 26px -10px rgba(194, 69, 111, .85);
+  transition: transform 120ms ease, box-shadow 120ms ease; }}
+[data-testid="stBaseButton-primary"]:hover, .stButton button[kind="primary"]:hover {{
+  background: linear-gradient(180deg, #DE6990, #C74B76); transform: translateY(-1px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .32), 0 14px 30px -10px rgba(194, 69, 111, .95); }}
+[data-testid="stTabs"] [role="tablist"] {{ gap: 30px; }}
+[data-testid="stTabs"] [role="tablist"] [role="tab"] p {{ font-family: {DISPLAY}; font-weight: 700; font-size: 21px;
+  letter-spacing: .05em; text-transform: uppercase; }}
+/* Want / Skip / Avoid: all three labels fit without being cut off. */
+.stApp [data-testid="stButtonGroup"] {{ flex-wrap: nowrap; }}
+.stApp [data-testid="stButtonGroup"] button {{ padding-left: 11px; padding-right: 11px; min-width: 0; }}
+.stApp [data-testid="stButtonGroup"] button p {{ font-size: 14px; }}
 </style>
 """
 
@@ -258,15 +371,64 @@ def chip(text: str, kind: str) -> str:
     return f'<span class="tf-chip" style="background:{bg};color:{fg}">{escape(text)}</span>'
 
 
-def hero(active_step: int = 0) -> str:
-    """The page title over a slowly drifting rose-and-champagne gradient with fine grain. active_step is kept for
-    older callers; the step pills are gone."""
-    props = "".join(f"<span>{escape(p)}</span>" for p in
-                    ("666 stocks scored on 10 themes", "Rules enforced on Monad", "Race your fund in the League"))
-    return ('<div class="tf-hero"><div class="eyebrow">Built on Monad</div><h1>Theme Funds</h1>'
+RADAR_LABEL = {"ai": "AI", "bank_lending": "Banks", "clean_energy": "Clean", "consumer_disc": "Consumer",
+               "cyber": "Cyber", "defense": "Defense", "gold": "Gold", "healthcare": "Health", "metals": "Metals",
+               "oil": "Oil"}
+
+
+def _radar(counts: dict[str, int]) -> str:
+    """A radar chart of real numbers: how many scored stocks are High or Moderate on each theme.
+
+    Drawn with plain HTML and CSS (rings, spokes, a clip-path shape), because Streamlit strips inline SVG."""
+    import math
+
+    keys = [k for k in RADAR_LABEL if k in counts] or list(counts)
+    if len(keys) < 3:
+        return ""
+    top = max(counts[k] for k in keys) or 1
+    reach = 27.0  # radius of the outer ring, as a % of the box
+
+    def at(i: int, r: float) -> tuple[float, float]:
+        a = -math.pi / 2 + 2 * math.pi * i / len(keys)
+        return 50 + r * math.cos(a), 50 + r * math.sin(a)
+
+    rings = "".join(f'<i class="ring" style="--r:{reach * f:.2f}%"></i>' for f in (0.25, 0.5, 0.75, 1))
+    spokes, labels, dots, pts = [], [], [], []
+    for i, k in enumerate(keys):
+        spokes.append(f'<i class="spoke" style="--a:{360 * i / len(keys):.1f}deg;--r:{reach}%"></i>')
+        px, py = at(i, reach * (0.14 + 0.86 * counts[k] / top))
+        pts.append(f"{px:.2f}% {py:.2f}%")
+        dots.append(f'<i class="dot" style="left:{px:.2f}%;top:{py:.2f}%"></i>')
+        lx, ly = at(i, reach + 5)
+        side = "mid" if abs(lx - 50) < 4 else ("right" if lx > 50 else "left")
+        labels.append(f'<span class="lbl {side}" style="left:{lx:.2f}%;top:{ly:.2f}%">'
+                      f'{escape(RADAR_LABEL.get(k, k))}<b>{counts[k]}</b></span>')
+    shape = f'<i class="glow"><i class="shape" style="clip-path:polygon({", ".join(pts)})"></i></i>'
+    return (f'<figure class="tf-radar"><div class="plot" role="img" '
+            f'aria-label="Number of scored stocks rated High or Moderate on each theme">'
+            f'<i class="sweep" style="--r:{reach}%"></i><i class="ticks" style="--r:{reach + 2.6}%"></i>{rings}{"".join(spokes)}'
+            f'{shape}{"".join(dots)}{"".join(labels)}</div>'
+            f'<figcaption>Stocks rated High or Moderate, by theme</figcaption></figure>')
+
+
+def hero(active_step: int = 0, tape: list[tuple[str, str, str]] | None = None,
+         radar: dict[str, int] | None = None, scored: int = 666) -> str:
+    """The page title inside a framed panel: drifting rose glow, corner brackets, a radar of how many stocks carry
+    each theme, and a ticker tape of the reference companies. `tape` is (ticker, theme, fact) and `radar` is
+    {theme key: stocks rated High or Moderate}; both come from the engine and are optional. active_step is kept
+    for older callers."""
+    stats = "".join(f'<div><b>{escape(str(n))}</b><span>{escape(label)}</span></div>' for n, label in (
+        (scored, "stocks scored"), (len(radar) if radar else 10, "themes"), (0, "rule changes after launch")))
+    corners = '<i class="c tl"></i><i class="c tr"></i><i class="c bl"></i><i class="c br"></i>'
+    run = ""
+    if tape:
+        items = "".join(f'<span><b>{escape(t)}</b>{escape(theme)}<em>{escape(fact)}</em></span>' for t, theme, fact in tape)
+        run = f'<div class="tf-tape" aria-hidden="true"><div class="run">{items}{items}</div></div>'
+    return (f'<div class="tf-hero"><div class="tf-hero-grid">{corners}<div class="copy">'
+            '<div class="eyebrow"><i class="live"></i>Built on Monad testnet</div><h1>Theme Funds</h1>'
             '<p>Invest in what you believe in. Tell us the themes you want and the ones to avoid. We pick '
             'stocks by what they actually move with, not their labels, then lock your rules on Monad.</p>'
-            f'<div class="props">{props}</div></div>')
+            f'<div class="stats">{stats}</div></div>{_radar(radar) if radar else ""}</div>{run}</div>')
 
 
 def step(n: int, title: str, sentence: str) -> str:
