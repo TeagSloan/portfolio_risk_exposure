@@ -663,17 +663,20 @@
       "SEDG",
       "LAC"
     ],
-    "currentRound": 3,
+    "currentRound": 4,
     "entryStake": "1000000000000000000",
     "poolRoot": "0x7ada25103cb7d60934ab86acd1233be0247f9ebdce036c0db48732481cb1ccc6",
     "replay": {
       "file": "league/replay_prices.json",
-      "dataHash": "0xfde5a70156a380207670275aadf0de98c595ca78f382039a816c6a81b8387451",
-      "windows": 391,
+      "dataHash": "0xe0aa2af4130e095624b98dc3dd1023ef2f244e10510b6bb6a3c8737e5ef3e35a",
+      "windows": 50,
       "raceDays": 20,
       "daySeconds": 3,
-      "firstDate": "2025-03-28",
-      "lastDate": "2026-11-13"
-    }
+      "firstDate": "Day 01 \u00b7 09:30",
+      "lastDate": "Day 50 \u00b7 16:00",
+      "mode": "demo-day",
+      "windowStride": 21
+    },
+    "currentDeadline": 1794788981
   }
 }
