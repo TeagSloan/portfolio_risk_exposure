@@ -3,8 +3,10 @@
 Nothing here computes a number. Every function takes values the engine already produced and
 returns HTML (or restyles a Plotly figure) so the dashboard looks like one product with the
 League page: black background, rose for buttons and "want", champagne gold for "avoid", mint and
-coral only for gains and losses (always with a + or - sign). Headings and big numbers use a serif
-(Fraunces) so it reads like a private bank, body text a clean sans (Manrope).
+coral only for gains and losses (always with a + or - sign). Type has a sportsbook / scoreboard feel:
+headings, labels and the big numbers in a bold condensed face (Barlow Condensed, uppercase for headers and
+labels), text, buttons and tables in Inter, addresses and hashes in JetBrains Mono. Every digit is tabular
+(fixed width), so numbers don't jiggle while they count.
 """
 
 from __future__ import annotations
@@ -42,20 +44,23 @@ TIER_STYLE = {  # (background, text) per tier, readable on black
     "Not screened": ("#1E191B", MUTED),
 }
 
-FONTS = ("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700"
-         "&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&display=swap")
-SERIF = "Fraunces, Georgia, serif"
-SANS = "Manrope, system-ui, sans-serif"
+FONTS = ("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800"
+         "&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap")
+DISPLAY = "'Barlow Condensed', 'Arial Narrow', 'Roboto Condensed', system-ui, sans-serif"  # headings, labels, big numbers
+SANS = "Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif"  # text, buttons, inputs, tables
+MONO = "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace"  # addresses and hashes
 
 CSS = f"""
 <style>
 @import url('{FONTS}');
-html, body, .stApp, .stMarkdown, p, label, input, textarea, button {{ font-family: {SANS}; }}
-.stApp {{ background: {INK}; color: {TEXT}; }}
+html, body, .stApp, .stMarkdown, p, label, input, textarea, button, table {{ font-family: {SANS}; }}
+.stApp {{ background: {INK}; color: {TEXT}; font-variant-numeric: tabular-nums; -webkit-font-smoothing: antialiased; }}
+code, pre, .tf-mono {{ font-family: {MONO} !important; }}
 [data-testid="stHeader"] {{ background: transparent; }}
 [data-testid="stToolbar"], [data-testid="stDecoration"], footer {{ display: none; }}
 .block-container {{ max-width: 1240px; padding-top: 2.2rem; padding-bottom: 6rem; }}
-h1, h2, h3 {{ font-family: {SERIF} !important; font-weight: 500 !important; letter-spacing: -0.01em; color: {TEXT}; }}
+h1, h2, h3 {{ font-family: {DISPLAY} !important; font-weight: 700 !important; text-transform: uppercase;
+  letter-spacing: 0.02em; line-height: 1.05; color: {TEXT}; }}
 p, li, label, .stMarkdown {{ color: {TEXT}; }}
 [data-testid="stCaptionContainer"], .stCaption {{ color: {MUTED} !important; }}
 [data-testid="stWidgetLabel"] p {{ color: {TEXT}; font-weight: 600; }}
@@ -65,7 +70,14 @@ p, li, label, .stMarkdown {{ color: {TEXT}; }}
 [data-testid="stBaseButton-primary"] p, .stButton button[kind="primary"] p {{ color: #fff; font-weight: 600; }}
 [data-testid="stBaseButton-secondary"] {{ background: {RAISED}; border: 1px solid {LINE}; color: {TEXT}; }}
 [data-testid="stExpander"] {{ background: {CARD}; border: 1px solid {LINE}; border-radius: 14px; }}
-[data-testid="stMetricValue"] {{ font-family: {SERIF}; }}
+.stApp [data-testid="stButtonGroup"] button {{ background: {RAISED}; border-color: {LINE}; color: {MUTED}; }}
+.stApp [data-testid="stButtonGroup"] button p {{ color: {MUTED}; font-weight: 600; }}
+.stApp [data-testid="stButtonGroup"] button:hover {{ border-color: {ROSE}; }}
+.stApp [data-testid="stButtonGroup"] button[aria-checked="true"] {{ background: {ROSE_SOFT}; border-color: {ROSE}; }}
+.stApp [data-testid="stButtonGroup"] button[aria-checked="true"] p {{ color: {BLUSH_TEXT}; }}
+[data-testid="stMetricValue"] {{ font-family: {DISPLAY}; font-weight: 800; font-variant-numeric: tabular-nums; }}
+[data-testid="stMetricLabel"] p {{ font-family: {DISPLAY}; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.04em; color: {MUTED}; }}
 [data-testid="stTabs"] button p {{ font-size: 16px; font-weight: 600; }}
 [data-testid="stTabs"] [aria-selected="true"] p {{ color: {BLUSH}; }}
 div[data-baseweb="select"] > div, input, textarea {{ background: {RAISED} !important; color: {TEXT} !important; }}
@@ -78,15 +90,18 @@ div[data-baseweb="select"] > div, input, textarea {{ background: {RAISED} !impor
               radial-gradient(35% 30% at 80% 20%, rgba(244, 166, 191, .16), transparent 70%),
               radial-gradient(45% 40% at 70% 85%, rgba(232, 201, 143, .12), transparent 70%);
   animation: tf-drift 18s ease-in-out infinite alternate; will-change: transform; }}
+/* No raw less-than signs anywhere in this CSS: Streamlit's sanitizer drops the WHOLE style block if its text
+   looks like a tag. The grain image is %-encoded and @property syntax uses the CSS escape \\3C. */
 .tf-hero::after {{ content: ""; position: absolute; inset: 0; z-index: -1; opacity: .07; pointer-events: none;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }}
+  background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23n)'/%3E%3C/svg%3E"); }}
 @keyframes tf-drift {{ from {{ transform: translate3d(-4%, -2%, 0) scale(1); }} to {{ transform: translate3d(4%, 3%, 0) scale(1.08); }} }}
-.tf-hero .eyebrow {{ font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: {BLUSH}; margin-bottom: 16px; }}
+.tf-hero .eyebrow {{ font-family: {DISPLAY}; font-weight: 700; font-size: 16px; letter-spacing: .06em;
+  text-transform: uppercase; color: {BLUSH}; margin-bottom: 12px; }}
 .tf-hero .props {{ display: flex; gap: 8px; flex-wrap: wrap; margin-top: 24px; }}
 .tf-hero .props span {{ font-size: 13px; color: {TEXT}; background: rgba(23, 19, 21, .7); border: 1px solid {LINE};
   border-radius: 999px; padding: 6px 12px; }}
-@property --tf-a {{ syntax: "<integer>"; initial-value: 0; inherits: false; }}
-@property --tf-b {{ syntax: "<integer>"; initial-value: 0; inherits: false; }}
+@property --tf-a {{ syntax: "\\3C integer\\3E"; initial-value: 0; inherits: false; }}
+@property --tf-b {{ syntax: "\\3C integer\\3E"; initial-value: 0; inherits: false; }}
 .tf-count {{ --tf-a: var(--a); --tf-b: var(--b); counter-reset: a var(--tf-a) b var(--tf-b);
   animation: tf-count 900ms cubic-bezier(.2,.8,.2,1) both; }}
 .tf-count .i::after {{ content: counter(a); }}
@@ -100,11 +115,12 @@ div[data-baseweb="select"] > div, input, textarea {{ background: {RAISED} !impor
 @keyframes tf-bar {{ from {{ transform: scaleX(0); }} to {{ transform: scaleX(1); }} }}
 .tf-hold .why {{ grid-column: 2 / -1; font-size: 13px; color: {MUTED}; line-height: 1.45; }}
 @media (prefers-reduced-motion: reduce) {{ .tf-hero::before, .tf-count, .tf-tile, .tf-hold .bar span {{ animation: none; }} }}
-.tf-hero h1 {{ font-size: 76px; line-height: 0.95; margin: 0; font-weight: 500 !important; letter-spacing: -0.025em; }}
+.tf-hero h1 {{ font-size: clamp(56px, 9vw, 104px); line-height: 0.9; margin: 0; font-weight: 800 !important;
+  letter-spacing: 0.01em; }}
 .tf-hero p {{ margin: 16px 0 0; color: {MUTED}; font-size: 19px; max-width: 640px; line-height: 1.55; }}
 
 .tf-step {{ margin: 64px 0 20px; padding-top: 28px; border-top: 1px solid {LINE}; }}
-.tf-step h2 {{ font-size: 40px; margin: 0; line-height: 1.1; }}
+.tf-step h2 {{ font-size: clamp(34px, 5vw, 46px); margin: 0; line-height: 1; font-weight: 800 !important; }}
 .tf-step p {{ margin: 8px 0 0; color: {MUTED}; font-size: 16px; max-width: 720px; line-height: 1.55; }}
 
 .tf-fp {{ background: {CARD}; border: 1px solid {LINE}; border-radius: 18px; padding: 28px 28px 18px; }}
@@ -114,7 +130,7 @@ div[data-baseweb="select"] > div, input, textarea {{ background: {RAISED} !impor
   align-items: stretch; }}
 .tf-fp-bar {{ border-radius: 8px 8px 2px 2px; min-height: 3px; transform-origin: bottom;
   animation: tf-grow 900ms cubic-bezier(.2,.8,.2,1) both; animation-delay: var(--d); }}
-.tf-fp-val {{ font-family: {SERIF}; font-weight: 500; font-size: 22px; margin-bottom: 6px;
+.tf-fp-val {{ font-family: {DISPLAY}; font-weight: 800; font-size: 26px; margin-bottom: 6px; line-height: 1;
   text-align: center; font-variant-numeric: tabular-nums; }}
 .tf-fp-names {{ display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 12px; padding-top: 10px; }}
 .tf-fp-names div {{ font-size: 13px; line-height: 1.3; color: {MUTED}; text-align: center; }}
@@ -130,37 +146,39 @@ div[data-baseweb="select"] > div, input, textarea {{ background: {RAISED} !impor
 .tf-funnel .lbl {{ font-size: 14px; color: {TEXT}; line-height: 1.35; margin-bottom: 6px; }}
 .tf-funnel .bar {{ background: {RAISED}; border-radius: 6px; height: 10px; overflow: hidden; }}
 .tf-funnel .bar span {{ display: block; height: 100%; background: {ROSE}; border-radius: 6px; }}
-.tf-funnel .num {{ font-family: {SERIF}; font-weight: 500; font-size: 24px; text-align: right;
+.tf-funnel .num {{ font-family: {DISPLAY}; font-weight: 800; font-size: 30px; text-align: right;
   font-variant-numeric: tabular-nums; line-height: 1; }}
 
 .tf-hold {{ display: flex; flex-direction: column; }}
 .tf-hold .row {{ display: grid; grid-template-columns: 76px minmax(0, 1fr) auto 64px; column-gap: 16px; row-gap: 6px;
   align-items: center; padding: 16px 4px; border-top: 1px solid {LINE}; }}
 .tf-hold .row:first-child {{ border-top: 0; }}
-.tf-hold .tk {{ font-family: {SANS}; font-weight: 700; font-size: 16px; letter-spacing: 0.02em; }}
+.tf-hold .tk {{ font-family: {DISPLAY}; font-weight: 700; font-size: 20px; letter-spacing: 0.02em; }}
 .tf-hold .nm {{ font-size: 14px; color: {TEXT}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
 .tf-hold .ind {{ font-size: 13px; color: {MUTED}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
-.tf-hold .w {{ text-align: right; font-variant-numeric: tabular-nums; color: {TEXT}; font-family: {SERIF}; font-size: 18px; }}
+.tf-hold .w {{ text-align: right; font-variant-numeric: tabular-nums; color: {TEXT}; font-family: {SANS};
+  font-weight: 600; font-size: 17px; }}
 .tf-chips {{ display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }}
 .tf-chip {{ font-size: 12px; font-weight: 600; padding: 4px 9px; border-radius: 999px; white-space: nowrap; }}
 
 .tf-tiles {{ display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }}
 @media (max-width: 900px) {{ .tf-tiles {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
-  .tf-hero h1 {{ font-size: 44px; }} .tf-fp-cols {{ height: 200px; }} }}
+  .tf-fp-cols {{ height: 200px; }} .tf-fp-val {{ font-size: 20px; }} }}
 .tf-tile {{ background: {CARD}; border: 1px solid {LINE}; border-radius: 14px; padding: 16px 18px; }}
-.tf-tile .k {{ font-size: 13px; color: {MUTED}; }}
-.tf-tile .v {{ font-family: {SERIF}; font-size: 36px; font-weight: 500; margin-top: 4px;
+.tf-tile .k {{ font-family: {DISPLAY}; font-weight: 700; font-size: 15px; letter-spacing: 0.04em;
+  text-transform: uppercase; color: {MUTED}; line-height: 1.2; }}
+.tf-tile .v {{ font-family: {DISPLAY}; font-size: 48px; font-weight: 800; margin-top: 6px; line-height: 1;
   font-variant-numeric: tabular-nums; }}
 .tf-tile .b {{ font-size: 13px; color: {MUTED}; margin-top: 2px; }}
 
-.tf-big {{ font-family: {SERIF}; font-size: 96px; font-weight: 500; line-height: 1;
-  font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }}
+.tf-big {{ font-family: {DISPLAY}; font-size: clamp(80px, 12vw, 120px); font-weight: 800; line-height: 0.95;
+  font-variant-numeric: tabular-nums; letter-spacing: 0; }}
 .tf-sentence {{ font-size: 17px; line-height: 1.55; color: {TEXT}; max-width: 680px; }}
 .tf-checks {{ display: flex; flex-direction: column; gap: 8px; }}
 .tf-check {{ display: flex; gap: 12px; align-items: flex-start; background: {CARD}; border: 1px solid {LINE};
   border-radius: 12px; padding: 12px 14px; font-size: 15px; line-height: 1.5; }}
 .tf-check .ic {{ flex: none; width: 22px; height: 22px; border-radius: 50%; display: inline-flex; align-items: center;
-  justify-content: center; font-weight: 700; font-size: 13px; margin-top: 1px; }}
+  justify-content: center; font-weight: 600; font-size: 13px; margin-top: 1px; }}
 .tf-rules {{ display: flex; flex-direction: column; gap: 8px; }}
 .tf-rule {{ display: flex; gap: 12px; align-items: center; background: {CARD}; border: 1px solid {LINE};
   border-radius: 12px; padding: 12px 14px; font-size: 15px; }}
@@ -168,23 +186,26 @@ div[data-baseweb="select"] > div, input, textarea {{ background: {RAISED} !impor
 .tf-banner.bad {{ background: #2B1513; border: 1px solid #7A3530; color: #FFB8AC; }}
 .tf-banner.good {{ background: #13261E; border: 1px solid #2B5A46; color: #A6EBCF; }}
 .tf-banner small {{ display: block; font-size: 14px; font-weight: 500; color: {MUTED}; margin-top: 6px; }}
-.tf-addr {{ font-family: ui-monospace, Menlo, monospace; font-size: 14px; color: {MUTED}; word-break: break-all; }}
+.tf-addr {{ font-family: {MONO}; font-size: 12px; color: {MUTED}; word-break: break-all; }}
 .tf-empty {{ background: {CARD}; border: 1px dashed {LINE}; border-radius: 16px; padding: 48px 24px; text-align: center;
   color: {MUTED}; font-size: 17px; margin-top: 24px; }}
-.tf-empty b {{ display: block; font-family: {SERIF}; font-weight: 500; font-size: 28px; color: {TEXT}; margin-bottom: 8px; }}
+.tf-empty b {{ display: block; font-family: {DISPLAY}; font-weight: 800; font-size: 30px; text-transform: uppercase;
+  letter-spacing: 0.02em; color: {TEXT}; margin-bottom: 8px; }}
 .tf-entry {{ background: {CARD}; border: 1px solid {LINE}; border-radius: 16px; padding: 24px; margin-bottom: 16px; }}
-.tf-entry .k {{ font-size: 13px; color: {MUTED}; }}
-.tf-entry .nm {{ font-family: {SERIF}; font-size: 32px; font-weight: 500; margin: 4px 0 16px; }}
+.tf-entry .k {{ font-family: {DISPLAY}; font-weight: 700; font-size: 15px; letter-spacing: 0.04em;
+  text-transform: uppercase; color: {MUTED}; }}
+.tf-entry .nm {{ font-family: {DISPLAY}; font-size: 40px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 0.01em; line-height: 1; margin: 6px 0 16px; }}
 .tf-entry .row {{ display: grid; grid-template-columns: 72px minmax(0, 1fr) 48px; gap: 12px; align-items: center;
   padding: 8px 0; border-top: 1px solid {LINE}; }}
-.tf-entry .tk {{ font-weight: 700; letter-spacing: 0.02em; }}
+.tf-entry .tk {{ font-family: {DISPLAY}; font-weight: 700; font-size: 19px; letter-spacing: 0.02em; }}
 .tf-entry .bar {{ background: {RAISED}; border-radius: 6px; height: 8px; overflow: hidden; }}
 .tf-entry .bar span {{ display: block; height: 100%; background: {ROSE}; border-radius: 6px; }}
-.tf-entry .w {{ text-align: right; font-variant-numeric: tabular-nums; color: {MUTED}; }}
+.tf-entry .w {{ text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; color: {MUTED}; }}
 .tf-qr {{ background: {CARD}; border: 1px solid {LINE}; border-radius: 16px; padding: 24px; text-align: center; }}
 .tf-qr .code {{ display: inline-block; border-radius: 12px; overflow: hidden; line-height: 0; }}
 .tf-qr .code svg {{ width: 232px; height: 232px; }}
-.tf-qr h3 {{ font-size: 22px; margin: 16px 0 8px; }}
+.tf-qr h3 {{ font-size: 26px; margin: 16px 0 8px; }}
 .tf-qr p {{ color: {MUTED}; font-size: 14px; line-height: 1.5; margin: 0 auto; max-width: 320px; }}
 </style>
 """
@@ -293,10 +314,17 @@ def count_up(value: str) -> str:
             f'<span class="f"></span>{pct}</span>')
 
 
+def _sign_color(value: str) -> str:
+    """A signed value is a return: mint when it starts with +, coral when it starts with a minus. Anything else
+    (a probability, "no loss") keeps the normal text color."""
+    v = value.strip()
+    return GAIN if v.startswith("+") else LOSS if v.startswith(("−", "-")) else TEXT
+
+
 def tiles(items: list[tuple[str, str, str]]) -> str:
     """items: [(label, value, comparison line)]. Values count up on first render; tiles rise in one by one."""
     cells = "".join(f'<div class="tf-tile" style="--d:{i * 60}ms"><div class="k">{escape(k)}</div>'
-                    f'<div class="v" aria-label="{escape(v)}">{count_up(v)}</div>'
+                    f'<div class="v" style="color:{_sign_color(v)}" aria-label="{escape(v)}">{count_up(v)}</div>'
                     f'<div class="b">{escape(b)}</div></div>' for i, (k, v, b) in enumerate(items))
     return f'<div class="tf-tiles">{cells}</div>'
 
